@@ -1,0 +1,19 @@
+{
+  "name": "texpress",
+  "version": "1.0.0",
+  "description": "TExpress is a base project setup for using ExpressJS with Typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/sonish777/t-express.git"
+  },
+  "author": "Sonish Maharjan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sonish777/t-express/issues"
+  },
+  "homepage": "https://github.com/sonish777/t-express#readme"
+}
