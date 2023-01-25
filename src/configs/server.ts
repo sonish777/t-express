@@ -1,5 +1,5 @@
 import config from "config";
 
 export const ServerConfig = {
-    PORT: config.get("server.port") || process.env.PORT
+    PORT: process.env.PORT || config.get("server.port")
 };

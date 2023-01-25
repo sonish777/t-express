@@ -1,4 +1,4 @@
-import { Middleware } from "../classes/middleware.abstract";
+import { Middleware } from "../classes/middlewares/middleware.abstract";
 import { MiddlewareProvider } from "./middleware-provider.interface";
 
 export interface StartupOptions {

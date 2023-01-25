@@ -1,2 +1,2 @@
-export * from './base.controller'
-export * from './user.controller';
+export * from './api';
+export * from './web';

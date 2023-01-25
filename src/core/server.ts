@@ -6,11 +6,12 @@ import { ServerConfig } from "../configs";
 import { CommonMiddleware } from "../middlewares/common.middleware";
 import { CORSMiddleware } from "../middlewares/cors.middleware";
 import { StartupOptions } from "./interfaces/startup-options.interface";
-import { Middleware } from "./classes/middleware.abstract";
+import { Middleware } from "./classes/middlewares/middleware.abstract";
 import { MiddlewareProvider } from "./interfaces/middleware-provider.interface";
 import * as controllers from "../controllers";
 import { ControllerMetadataKeys } from "./utils";
 import { Router } from "./interfaces/router.interface";
+import { Container } from "typedi";
 
 dotenv.config({
     path: path.join(__dirname, "../../", ".env")
@@ -47,18 +48,21 @@ export class Server {
 
     private registerRoutes() {
         Object.values(controllers).forEach((controllerClass) => {
-            const controller: { [handlerName: string]: Handler } = new controllerClass() as any;
+            const controllerInstance: { [handlerName: string]: Handler } = Container.get<any>(controllerClass) as any;
             const expressRouter = express.Router();
             const basePath = Reflect.getMetadata(ControllerMetadataKeys.BASE_PATH, controllerClass);
-            const routers: Router[] = Reflect.getMetadata(ControllerMetadataKeys.ROUTERS, controllerClass);
+            const routers: Router[] = Reflect.getMetadata(ControllerMetadataKeys.ROUTERS, controllerClass) || [];
             routers.forEach((router) => {
-                expressRouter[router.method](router.path, [...(router.middlewares || [])], controller[router.handlerName]).bind(controller);
+                expressRouter[router.method](
+                    router.path,
+                    [...(router.middlewares || [])],
+                    controllerInstance[router.handlerName].bind(controllerInstance)
+                );
             });
             this._app.use(basePath, expressRouter);
         });
     }
 
-    
     /**
      * Boots up the express application
      *
