@@ -1,4 +1,4 @@
-import { HttpException } from "@core/classes/exceptions/http.exception";
+import { HttpException } from "@core/exceptions";
 
 export class UnauthorizedException extends HttpException {
     constructor(message: string = "You are not authorized") {
