@@ -1,7 +1,7 @@
 import { Column, Entity, BeforeInsert } from "typeorm";
 import {genSalt, hash} from 'bcrypt';
-import { SetRepository } from "@core/decorators";
-import { BaseEntity } from "@core/classes/entities/base.entity";
+import { BaseEntity, SetRepository } from "@core/entities";
+
 @Entity({
     name: "users"
 })
