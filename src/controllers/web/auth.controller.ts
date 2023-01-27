@@ -1,8 +1,7 @@
-import { BaseController } from "@core/classes/controllers/base.controller";
-import { Controller, Route } from "@core/decorators";
-import { HTTPMethods } from "@core/utils";
 import { Request, Response } from "express";
 import passport from "passport";
+import { BaseController, Controller, Route } from "@core/controllers";
+import { HTTPMethods } from "@core/utils";
 
 @Controller("/auth")
 export class AuthController extends BaseController {

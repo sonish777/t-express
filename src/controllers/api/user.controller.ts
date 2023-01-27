@@ -1,7 +1,7 @@
-import { ApiController, Controller, Route } from "@core/decorators";
+import { Request, Response } from "express";
+import { ApiController, Route } from "@core/controllers";
 import { HTTPMethods } from "@core/utils";
 import { UserService } from "@services";
-import { Request, Response } from "express";
 
 @ApiController("/users")
 export class ApiUserController {
