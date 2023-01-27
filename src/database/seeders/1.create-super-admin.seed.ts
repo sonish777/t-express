@@ -1,4 +1,4 @@
-import { UserEntity } from "@entities/user.entity";
+import { UserEntity } from "@entities";
 import { Seeder, Factory } from "typeorm-seeding";
 import { DataSource } from "typeorm/data-source";
 
