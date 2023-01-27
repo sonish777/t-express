@@ -3,3 +3,7 @@ dist
 .env
 **/config/*.ts
 !**/config/*.example.ts
+
+/public/**
+!public/theme
+!public/theme/**

@@ -1,7 +1,7 @@
-import { Column, Entity } from "typeorm";
-import { BaseEntity } from "../core/classes/entities/base.entity";
-import { SetRepository } from "../core/decorators";
-
+import { Column, Entity, BeforeInsert } from "typeorm";
+import {genSalt, hash} from 'bcrypt';
+import { SetRepository } from "@core/decorators";
+import { BaseEntity } from "@core/classes/entities/base.entity";
 @Entity({
     name: "users"
 })
@@ -29,5 +29,19 @@ export class UserEntity extends BaseEntity {
     email: string;
 
     @Column()
+    password: string;
+
+    @Column()
+    salt: string;
+
+    @Column()
     status: string;
+
+    @BeforeInsert()
+    async hashPassword() {
+        const salt = await genSalt(10);
+        const hashedPassword = await hash(this.password, salt);
+        this.salt = salt;
+        this.password = hashedPassword; 
+    }
 }

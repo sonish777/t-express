@@ -5,7 +5,7 @@ export abstract class BaseController {
     protected readonly _baseView: string = "base";
     abstract _title: string;
     abstract _viewPath: string;
-    page: string;
+    protected page: string = "index";
 
     get title() {
         return this._title;
@@ -27,7 +27,7 @@ export abstract class BaseController {
         return this._baseView;
     }
 
-    render(res: Response, data: Object) {
+    render(res: Response, data: Object = {}) {
         return res.render(this._baseView, {
             title: this._title,
             page: path.join(this._viewPath, this.page),

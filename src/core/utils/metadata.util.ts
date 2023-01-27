@@ -1,4 +1,5 @@
 export enum ControllerMetadataKeys {
-    BASE_PATH = 'base_path',
-    ROUTERS = 'routers'
+    BASE_PATH = "base_path",
+    ROUTERS = "routers",
+    IS_API = "is_api"
 }

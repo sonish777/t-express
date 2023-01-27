@@ -1,11 +1,30 @@
 {
     "presets": ["@babel/preset-typescript", "@babel/preset-env"],
     "plugins": [
-        ["@babel/plugin-transform-typescript", { "onlyRemoveTypeImports": true }],
+        ["@babel/plugin-transform-typescript", { "onlyRemoveTypeImports": true, "strictMode": true }],
         "babel-plugin-transform-typescript-metadata",
         ["@babel/plugin-proposal-decorators", { "legacy": true }],
         ["@babel/plugin-proposal-class-properties", { "loose": true }],
         ["@babel/plugin-proposal-private-property-in-object", { "loose": true }],
-        ["@babel/plugin-proposal-private-methods", { "loose": true }]
+        ["@babel/plugin-proposal-private-methods", { "loose": true }],
+        [
+            "module-resolver",
+            {
+                "alias": {
+                    "@core": "./src/core",
+                    "@configs": "./src/configs",
+                    "@database": "./src/database",
+                    "@entities": "./src/entities",
+                    "@exceptions": "./src/exceptions",
+                    "@middlewares": "./src/middlewares",
+                    "@providers": "./src/providers",
+                    "@services": "./src/services",
+                    "@controllers": "./src/controllers",
+                    "@web-controllers": "./src/controllers/web",
+                    "@api-controllers": "./src/controllers/api",
+                    "@views": "./src/views"
+                }
+            }
+        ]
     ]
 }

@@ -1,5 +1,6 @@
-import { RouteOptions } from "../interfaces/route-options.interface";
-import { Router } from "../interfaces/router.interface";
+import { RouteOptions } from "@core/interfaces/route-options.interface";
+import { Router } from "@core/interfaces/router.interface";
+import { auth } from "@middlewares/auth.middleware";
 import { ControllerMetadataKeys } from "../utils";
 
 export function Route(options: RouteOptions): MethodDecorator {
@@ -12,4 +13,12 @@ export function Route(options: RouteOptions): MethodDecorator {
         });
         Reflect.defineMetadata(ControllerMetadataKeys.ROUTERS, routers, controllerClass);
     };
+}
+
+export function ProtectedRoute({ method, path, middlewares = [] }: RouteOptions): MethodDecorator {
+    return Route({
+        method,
+        path,
+        middlewares: [...middlewares, auth]
+    });
 }

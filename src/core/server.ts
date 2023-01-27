@@ -1,17 +1,18 @@
 import "reflect-metadata";
-import express, { Express, Handler } from "express";
+import express, { Express, Handler, Request } from "express";
 import * as dotenv from "dotenv";
 import path from "path";
-import { ServerConfig } from "../configs";
-import { CommonMiddleware } from "../middlewares/common.middleware";
-import { CORSMiddleware } from "../middlewares/cors.middleware";
-import { StartupOptions } from "./interfaces/startup-options.interface";
-import { Middleware } from "./classes/middlewares/middleware.abstract";
-import { MiddlewareProvider } from "./interfaces/middleware-provider.interface";
-import * as controllers from "../controllers";
-import { ControllerMetadataKeys } from "./utils";
-import { Router } from "./interfaces/router.interface";
 import { Container } from "typedi";
+import { Provider } from "./classes/providers/provider.abstract";
+import { ProviderWithOptions } from "./interfaces/middleware-provider.interface";
+import { CommonProvider } from "@providers/common.provider";
+import { ControllerMetadataKeys } from "./utils";
+import { StartupOptions } from "./interfaces/startup-options.interface";
+import { ServerConfig } from "@configs";
+import * as controllers from "@controllers";
+import { Router } from "./interfaces/router.interface";
+import { RoutePrefixes } from "./interfaces/route-prefixes.interface";
+import { ProviderClass } from "./interfaces/provider-class.interface";
 
 dotenv.config({
     path: path.join(__dirname, "../../", ".env")
@@ -19,6 +20,11 @@ dotenv.config({
 
 export class Server {
     private readonly _app: Express;
+    private _locals: Record<string, Handler>[] = [
+        { errors: (req: Request) => req.flash("errors") },
+        { error: (req: Request) => req.flash("error") },
+        { message: (req: Request) => req.flash("message") }
+    ];
 
     constructor() {
         this._app = express();
@@ -28,29 +34,29 @@ export class Server {
         return this._app;
     }
 
-    private applyMiddlewares(middlewares: any[] = [], middlewareProviders: (Middleware | MiddlewareProvider<any>)[] = []) {
-        CommonMiddleware.apply(this._app);
-        CORSMiddleware.apply(this._app);
+    private applyMiddlewares(middlewares: any[] = [], providers: (ProviderClass | ProviderWithOptions<any>)[] = []) {
+        CommonProvider.register(this._app);
         if (middlewares.length > 0) {
             this._app.use(...middlewares);
         }
-        if (middlewareProviders.length > 0) {
-            middlewareProviders.forEach((middlewareClass) => {
-                if ("class" in middlewareClass) {
-                    middlewareClass.class.apply(this._app, { ...middlewareClass.options });
-                } else if ("apply" in middlewareClass) {
-                    middlewareClass.apply(this._app);
+        if (providers.length > 0) {
+            providers.forEach((provider) => {
+                if ("class" in provider) {
+                    provider.class.register(this._app, { ...provider.options });
+                } else if ("register" in provider) {
+                    provider.register(this._app);
                 }
             });
         }
         return this;
     }
 
-    private registerRoutes() {
+    private registerRoutes(routePrefixes: RoutePrefixes = {}) {
         Object.values(controllers).forEach((controllerClass) => {
             const controllerInstance: { [handlerName: string]: Handler } = Container.get<any>(controllerClass) as any;
             const expressRouter = express.Router();
             const basePath = Reflect.getMetadata(ControllerMetadataKeys.BASE_PATH, controllerClass);
+            const isApi = Reflect.getMetadata(ControllerMetadataKeys.IS_API, controllerClass);
             const routers: Router[] = Reflect.getMetadata(ControllerMetadataKeys.ROUTERS, controllerClass) || [];
             routers.forEach((router) => {
                 expressRouter[router.method](
@@ -59,7 +65,21 @@ export class Server {
                     controllerInstance[router.handlerName].bind(controllerInstance)
                 );
             });
-            this._app.use(basePath, expressRouter);
+            if(isApi) {
+                this._app.use((routePrefixes.apiPrefix || '/api/v1') + basePath, expressRouter);
+            } else {
+                this._app.use((routePrefixes.cmsPrefix || '') + basePath, expressRouter);
+            }
+        });
+    }
+
+    configureLocals(locals: Record<string, Handler>[] = []) {
+        this._app.use((...handlerArgs) => {
+            this._locals = this._locals.concat(locals ?? []);
+            this._locals.forEach((local) => {
+                handlerArgs[1].locals[Object.keys(local)[0]] = Object.values(local)[0](...handlerArgs);
+            });
+            handlerArgs[2]();
         });
     }
 
@@ -70,7 +90,8 @@ export class Server {
      */
     startup(options: StartupOptions = {}) {
         this.applyMiddlewares(options.middlewares, options.middlewareProviders);
-        this.registerRoutes();
+        this.configureLocals(options.locals);
+        this.registerRoutes(options.routePrefixes);
         this._app.listen(ServerConfig.PORT, () => {
             console.log("Server listening on port " + ServerConfig.PORT);
         });

@@ -1,5 +1,5 @@
+import { Database } from "@core/database/database.abstract";
 import { DatabaseType } from "typeorm/driver/types/DatabaseType";
-import { Database } from "../../core/database/database.abstract";
 
 class PostgresConnection extends Database {
     dialect: DatabaseType = "postgres";

@@ -1,5 +1,5 @@
-import { Middleware } from "../classes/middlewares/middleware.abstract";
-import { MiddlewareProvider } from "../interfaces/middleware-provider.interface";
+import { ProviderWithOptions } from "@core/interfaces/middleware-provider.interface";
+import { ProviderClass } from "@core/interfaces/provider-class.interface";
 
 /**
  * Returns a middleware provider
@@ -10,7 +10,7 @@ import { MiddlewareProvider } from "../interfaces/middleware-provider.interface"
  * @param {K} options
  * @returns {MiddlewareProvider<K>}
  */
-export function provideMiddleware<K>(providerClass: Middleware, options: K): MiddlewareProvider<K>  {
+export function provideMiddleware<K>(providerClass: ProviderClass, options: K): ProviderWithOptions<K>  {
     return {
         class: providerClass,
         options

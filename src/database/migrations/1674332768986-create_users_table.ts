@@ -25,12 +25,12 @@ export class createUsersTable1674332768986 implements MigrationInterface {
                     {
                         name: "firstName",
                         type: "varchar",
-                        isNullable: false
+                        isNullable: true
                     },
                     {
                         name: "lastName",
                         type: "varchar",
-                        isNullable: false
+                        isNullable: true
                     },
                     {
                         name: "gender",
@@ -46,18 +46,26 @@ export class createUsersTable1674332768986 implements MigrationInterface {
                         name: "mobileNumber",
                         type: "varchar",
                         isNullable: true,
-                        length: "20"
                     },
                     {
                         name: "email",
                         type: "varchar",
-                        isNullable: true,
-                        length: "100"
+                        isNullable: false,
+                    },
+                    {
+                        name: "password",
+                        type: "varchar",
+                        isNullable: false,
+                    },
+                    {
+                        name: "salt",
+                        type: "varchar",
+                        isNullable: false,
                     },
                     {
                         name: "status",
                         type: "varchar",
-                        default: `'active'`
+                        default: `'inactive'`
                     },
                     {
                         name: "createdAt",

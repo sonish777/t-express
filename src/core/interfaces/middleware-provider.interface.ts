@@ -1,6 +1,6 @@
-import { Middleware } from "../classes/middlewares/middleware.abstract";
+import { ProviderClass } from "./provider-class.interface";
 
-export interface MiddlewareProvider<MiddlewareOption> {
-    class: Middleware;
-    options: MiddlewareOption;
+export interface ProviderWithOptions<ProviderOptions> {
+    class: ProviderClass;
+    options: ProviderOptions;
 }

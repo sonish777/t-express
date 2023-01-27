@@ -1,6 +1,6 @@
+import { DatabaseConfig } from "@configs";
 import { DataSource } from "typeorm";
 import { DatabaseType } from "typeorm/driver/types/DatabaseType";
-import { DatabaseConfig } from "../../configs";
 
 export const dataSource = (dialect: DatabaseType) =>
     new DataSource({
