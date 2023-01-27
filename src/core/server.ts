@@ -1,7 +1,5 @@
 import "reflect-metadata";
 import express, { Express, Handler, Request } from "express";
-import * as dotenv from "dotenv";
-import path from "path";
 import { Container } from "typedi";
 import * as controllers from "@controllers";
 import { CommonProvider } from "@providers";
@@ -11,17 +9,22 @@ import { StartupOptions } from "./interfaces";
 import { Provider, ProviderWithOptions } from "./providers";
 import { RoutePrefixes, Router } from "./controllers";
 
-dotenv.config({
-    path: path.join(__dirname, "../../", ".env")
-});
-
 export class Server {
+    private static _instance: Server;
     private readonly _app: Express;
+
     private _locals: Record<string, Handler>[] = [
         { errors: (req: Request) => req.flash("errors") },
         { error: (req: Request) => req.flash("error") },
         { message: (req: Request) => req.flash("message") }
     ];
+
+    public static get Instance(): Server {
+        if (!this._instance) {
+            return this._instance = new this();
+        }
+        return this._instance;
+    }
 
     constructor() {
         this._app = express();
@@ -70,7 +73,7 @@ export class Server {
         });
     }
 
-    configureLocals(locals: Record<string, Handler>[] = []) {
+    private configureLocals(locals: Record<string, Handler>[] = []) {
         this._app.use((...handlerArgs) => {
             this._locals = this._locals.concat(locals ?? []);
             this._locals.forEach((local) => {

@@ -7,7 +7,7 @@ import { CORSProvider, PassportProvider, StaticServeProvider, StaticServeProvide
 import "@database/connections";
 
 function bootstrap() {
-    const server = new Server();
+    const server = Server.Instance;
     const middlewares: Handler[] = [morgan("dev")];
     server.startup({
         middlewares: [...middlewares],
