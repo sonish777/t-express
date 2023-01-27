@@ -1,10 +1,9 @@
+import { Provider, ProviderWithOptions } from "@core/providers";
 import { Handler } from "express";
-import { ProviderClass } from "./provider-class.interface";
-import { ProviderWithOptions } from "./middleware-provider.interface";
 
 export interface StartupOptions {
     middlewares?: Handler[],
-    middlewareProviders?: (ProviderClass | ProviderWithOptions<any>)[],
+    middlewareProviders?: (Provider | ProviderWithOptions<any>)[],
     locals?: Record<"string", Handler>[],
     routePrefixes?: {
         cmsPrefix?: string;

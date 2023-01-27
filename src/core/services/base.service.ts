@@ -1,5 +1,5 @@
+import { BaseEntity } from "@core/entities";
 import { Repository, FindOptionsWhere } from "typeorm";
-import { BaseEntity } from "../entities/base.entity";
 
 export class BaseService<K extends BaseEntity> {
     repository: Repository<K>;

@@ -1,5 +1,5 @@
+import Container from "typedi";
 import { postgresDataSource } from "@database/connections";
-import Container from "typedi"
 
 export function SetRepository(): ClassDecorator {
     return (target) => {

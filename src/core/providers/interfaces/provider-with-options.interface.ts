@@ -1,6 +1,6 @@
-import { ProviderClass } from "./provider-class.interface";
+import { Provider } from "./provider.interface";
 
 export interface ProviderWithOptions<ProviderOptions> {
-    class: ProviderClass;
+    class: Provider;
     options: ProviderOptions;
 }

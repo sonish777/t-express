@@ -1,8 +1,8 @@
 import { Express } from "express";
 
-export interface ProviderClass {
+export interface Provider {
     new(...args: any[]): any;
     register(app: Express, ...rest: any[]): void;
 }
 
-export type ProviderStaticMethod<I extends ProviderClass> = InstanceType<I>;
+export type ProviderStaticMethod<I extends Provider> = InstanceType<I>;

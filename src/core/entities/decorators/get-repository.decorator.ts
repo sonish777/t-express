@@ -1,5 +1,5 @@
-import { BaseEntity } from "@core/classes/entities/base.entity";
 import Container from "typedi";
+import { BaseEntity } from "../base.entity";
 
 export function GetRepository(entity: ThisType<BaseEntity>): PropertyDecorator {
     return (target: any, propertyKey: string | symbol) => {

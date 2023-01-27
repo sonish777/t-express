@@ -3,16 +3,13 @@ import express, { Express, Handler, Request } from "express";
 import * as dotenv from "dotenv";
 import path from "path";
 import { Container } from "typedi";
-import { Provider } from "./classes/providers/provider.abstract";
-import { ProviderWithOptions } from "./interfaces/middleware-provider.interface";
-import { CommonProvider } from "@providers/common.provider";
-import { ControllerMetadataKeys } from "./utils";
-import { StartupOptions } from "./interfaces/startup-options.interface";
-import { ServerConfig } from "@configs";
 import * as controllers from "@controllers";
-import { Router } from "./interfaces/router.interface";
-import { RoutePrefixes } from "./interfaces/route-prefixes.interface";
-import { ProviderClass } from "./interfaces/provider-class.interface";
+import { CommonProvider } from "@providers";
+import { ServerConfig } from "@configs";
+import { ControllerMetadataKeys } from "./utils";
+import { StartupOptions } from "./interfaces";
+import { Provider, ProviderWithOptions } from "./providers";
+import { RoutePrefixes, Router } from "./controllers";
 
 dotenv.config({
     path: path.join(__dirname, "../../", ".env")
@@ -34,7 +31,7 @@ export class Server {
         return this._app;
     }
 
-    private applyMiddlewares(middlewares: any[] = [], providers: (ProviderClass | ProviderWithOptions<any>)[] = []) {
+    private applyMiddlewares(middlewares: any[] = [], providers: (Provider | ProviderWithOptions<any>)[] = []) {
         CommonProvider.register(this._app);
         if (middlewares.length > 0) {
             this._app.use(...middlewares);
@@ -65,10 +62,10 @@ export class Server {
                     controllerInstance[router.handlerName].bind(controllerInstance)
                 );
             });
-            if(isApi) {
-                this._app.use((routePrefixes.apiPrefix || '/api/v1') + basePath, expressRouter);
+            if (isApi) {
+                this._app.use((routePrefixes.apiPrefix || "/api/v1") + basePath, expressRouter);
             } else {
-                this._app.use((routePrefixes.cmsPrefix || '') + basePath, expressRouter);
+                this._app.use((routePrefixes.cmsPrefix || "") + basePath, expressRouter);
             }
         });
     }
