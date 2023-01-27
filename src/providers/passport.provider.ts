@@ -3,10 +3,10 @@ import passport from "passport";
 import Container from "typedi";
 import { Strategy as LocalStrategy, IStrategyOptionsWithRequest } from "passport-local";
 import { AuthService } from "@services";
-import { UserEntity } from "@entities/user.entity";
-import { UnauthorizedException } from "@exceptions/unauthorize.exception";
-import { validatePassword } from "@core/utils/common-helpers.util";
-import { ProviderStaticMethod } from "@core/interfaces/provider-class.interface";
+import { UserEntity } from "@entities";
+import { UnauthorizedException } from "@exceptions";
+import { validatePassword } from "@core/utils";
+import { ProviderStaticMethod } from "@core/providers";
 
 export class PassportProvider implements ProviderStaticMethod<typeof PassportProvider> {
     private static readonly _authService = Container.get(AuthService);

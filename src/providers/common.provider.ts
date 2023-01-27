@@ -2,7 +2,7 @@ import cookieParser from "cookie-parser";
 import express, { Express } from "express";
 import session from "express-session";
 import flash from 'connect-flash';
-import { ProviderStaticMethod } from "@core/interfaces/provider-class.interface";
+import { ProviderStaticMethod } from "@core/providers";
 
 export class CommonProvider implements ProviderStaticMethod<typeof CommonProvider> {
     public static register(app: Express) {

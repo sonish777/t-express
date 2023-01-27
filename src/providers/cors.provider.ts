@@ -1,6 +1,6 @@
 import { Express } from "express";
 import cors from "cors";
-import { ProviderStaticMethod } from "@core/interfaces/provider-class.interface";
+import { ProviderStaticMethod } from "@core/providers";
 
 export class CORSProvider implements ProviderStaticMethod<typeof CORSProvider> {
     public static register(app: Express, whitelist: string[] = []) {

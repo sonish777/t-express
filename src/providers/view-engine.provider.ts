@@ -1,6 +1,6 @@
-import { ProviderStaticMethod } from "@core/interfaces/provider-class.interface";
 import { Express } from "express";
 import path from "path";
+import { ProviderStaticMethod } from "@core/providers";
 
 export interface ViewEngineOptions {
     engine: string;

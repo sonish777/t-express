@@ -1,5 +1,5 @@
-import { ProviderStaticMethod } from "@core/interfaces/provider-class.interface";
 import express, { Express } from "express";
+import { ProviderStaticMethod } from "@core/providers";
 
 export interface StaticServeProviderOptions {
     pathToStaticContents: string;
