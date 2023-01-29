@@ -1,1 +1,5 @@
-<p style="padding: 6px; color: coral;"><%= typeof error !== 'undefined' ? error: '' %></p>
+<% if(typeof error !== 'undefined' && error.length > 0) { %>
+    <div class="alert alert-danger w-50 m-auto mt-4" role="alert">
+        <%= error %>
+    </div>
+<% } %>

@@ -21,7 +21,7 @@ export class Server {
 
     public static get Instance(): Server {
         if (!this._instance) {
-            return this._instance = new this();
+            return (this._instance = new this());
         }
         return this._instance;
     }
@@ -75,8 +75,7 @@ export class Server {
 
     private configureLocals(locals: Record<string, Handler>[] = []) {
         this._app.use((...handlerArgs) => {
-            this._locals = this._locals.concat(locals ?? []);
-            this._locals.forEach((local) => {
+            this._locals.concat(locals ?? []).forEach((local) => {
                 handlerArgs[1].locals[Object.keys(local)[0]] = Object.values(local)[0](...handlerArgs);
             });
             handlerArgs[2]();

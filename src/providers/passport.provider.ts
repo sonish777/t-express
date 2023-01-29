@@ -44,7 +44,7 @@ export class PassportProvider implements ProviderStaticMethod<typeof PassportPro
         try {
             const user = await PassportProvider._authService.findUserForLogin(username);
             if (!user || !(await validatePassword(password, user.password))) {
-                req.flash("error", "Invalid email or password provided");
+                req.flash("loginError", "Invalid email or password provided");
                 return done(null, false);
             }
             return done(null, user);
