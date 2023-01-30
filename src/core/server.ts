@@ -4,10 +4,12 @@ import { Container } from "typedi";
 import * as controllers from "@controllers";
 import { CommonProvider } from "@providers";
 import { ServerConfig } from "@configs";
+import { ValidationChain } from "express-validator";
 import { ControllerMetadataKeys } from "./utils";
 import { StartupOptions } from "./interfaces";
 import { Provider, ProviderWithOptions } from "./providers";
 import { RoutePrefixes, Router } from "./controllers";
+import { ExceptionHandler } from "./exceptions/handlers";
 
 export class Server {
     private static _instance: Server;
@@ -57,16 +59,26 @@ export class Server {
             const expressRouter = express.Router();
             const basePath = Reflect.getMetadata(ControllerMetadataKeys.BASE_PATH, controllerClass);
             const isApi = Reflect.getMetadata(ControllerMetadataKeys.IS_API, controllerClass);
+            const isFallback = Reflect.getMetadata(ControllerMetadataKeys.IS_FALLBACK, controllerClass);
             const routers: Router[] = Reflect.getMetadata(ControllerMetadataKeys.ROUTERS, controllerClass) || [];
             routers.forEach((router) => {
+                const validationChains: ValidationChain[] = [];
+                if (router.validators && router.validators.length > 0) {
+                    router.validators.forEach((v) => {
+                        validationChains.push(...Object.values(v.rules).flat(1));
+                    });
+                }
                 expressRouter[router.method](
                     router.path,
                     [...(router.middlewares || [])],
+                    [...validationChains],
                     controllerInstance[router.handlerName].bind(controllerInstance)
                 );
             });
             if (isApi) {
                 this._app.use((routePrefixes.apiPrefix || "/api/v1") + basePath, expressRouter);
+            } else if (isFallback) {
+                this._app.use(basePath, expressRouter);
             } else {
                 this._app.use((routePrefixes.cmsPrefix || "") + basePath, expressRouter);
             }
@@ -82,6 +94,12 @@ export class Server {
         });
     }
 
+    private registerErrorHandlers(exceptionHandlers: ExceptionHandler[] = []) {
+        exceptionHandlers.forEach((handler) => {
+            this._app.use(handler.handle);
+        });
+    }
+
     /**
      * Boots up the express application
      *
@@ -91,6 +109,7 @@ export class Server {
         this.applyMiddlewares(options.middlewares, options.middlewareProviders);
         this.configureLocals(options.locals);
         this.registerRoutes(options.routePrefixes);
+        this.registerErrorHandlers(options.exceptionHandlers);
         this._app.listen(ServerConfig.PORT, () => {
             console.log("Server listening on port " + ServerConfig.PORT);
         });
