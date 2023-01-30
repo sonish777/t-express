@@ -6,6 +6,7 @@ import { HTTPMethods } from "@core/utils";
 export class HomeController extends BaseController {
     _title = "Home";
     _viewPath = "home";
+    _module = "home";
 
     @ProtectedRoute({
         path: "/",

@@ -9,6 +9,7 @@ export class AuthController extends BaseController {
     protected _baseView = 'base-login';
     _title = "Auth";
     _viewPath = "auth";
+    _module = "auth";
 
     @Route({
         path: "/login",

@@ -5,6 +5,7 @@ export abstract class BaseController {
     protected readonly _baseView: string = "base";
     abstract _title: string;
     abstract _viewPath: string;
+    abstract _module: string;
     protected page: string = "index";
 
     get title() {
@@ -31,6 +32,7 @@ export abstract class BaseController {
         return res.render(this._baseView, {
             title: this._title,
             page: path.join(this._viewPath, this.page),
+            module: this._module,
             data
         });
     }
