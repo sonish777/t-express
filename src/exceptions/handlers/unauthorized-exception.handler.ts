@@ -1,15 +1,14 @@
 import { HttpException } from "@core/exceptions";
 import { ExceptionHandler } from "@core/exceptions/handlers";
+import { HttpStatus } from "@core/utils/http-status-code.util";
 import { Request, Response, NextFunction } from "express";
 
-class UnauthorizedExceptionHandler extends ExceptionHandler {
+export class UnauthorizedExceptionHandler extends ExceptionHandler {
     public handle(error: HttpException, req: Request, res: Response, next: NextFunction): void {
-        if (error.statusCode !== 401) {
+        if (error.statusCode !== HttpStatus.UNAUTHORIZED) {
             return next(error);
         }
-        req.flash("error", error.message);
+        req.flash("loginError", error.message);
         return res.redirect("/auth/login");
     }
 }
-
-export const unauthorizedExceptionHandler = new UnauthorizedExceptionHandler();

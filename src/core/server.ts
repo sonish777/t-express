@@ -10,6 +10,7 @@ import { StartupOptions } from "./interfaces";
 import { Provider, ProviderWithOptions } from "./providers";
 import { RoutePrefixes, Router } from "./controllers";
 import { ExceptionHandler } from "./exceptions/handlers";
+import { validate } from "@middlewares/validate.middleware";
 
 export class Server {
     private static _instance: Server;
@@ -71,7 +72,7 @@ export class Server {
                 expressRouter[router.method](
                     router.path,
                     [...(router.middlewares || [])],
-                    [...validationChains],
+                    validationChains.length > 0 ? [...validationChains, validate] : [],
                     controllerInstance[router.handlerName].bind(controllerInstance)
                 );
             });

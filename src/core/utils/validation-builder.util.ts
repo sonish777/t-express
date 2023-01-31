@@ -1,9 +1,9 @@
-import { check, ValidationChain } from "express-validator";
+import { check, checkSchema, Schema, ValidationChain } from "express-validator";
 import _ from "lodash";
 import { CustomValidator, ValidationMessageOptions, ValidationOptions } from "@core/validators";
 import { ValidationMessages } from "@core/validators/constants";
 
-const getMessage = (message: string, options: ValidationMessageOptions = {}) => {
+export const getMessage = (message: string, options: ValidationMessageOptions = {}) => {
     const replaceKeys = message.match(/%(.*?)?%/g) || [];
     for (const key of replaceKeys) {
         const replacer = _.get(options, _.trim(key, "%"));
@@ -59,6 +59,25 @@ export class ValidationBuilder {
     static Custom(validator: new (...args: any[]) => CustomValidator) {
         const validatorInstance = new validator();
         this._validators.push(check(this._field).custom(validatorInstance.validate.bind(validatorInstance)));
+        return this;
+    }
+
+    static IsDate(options: ValidationOptions = {}) {
+        this._validators.push(
+            check(this._field)
+                .isDate()
+                .withMessage(
+                    options.message ??
+                        getMessage(ValidationMessages.date, {
+                            field: options.fieldDisplayName || this._field
+                        })
+                )
+        );
+        return this;
+    }
+
+    static CheckSchema(schema: Schema) {
+        this._validators.push(...checkSchema(schema));
         return this;
     }
 

@@ -5,14 +5,14 @@
             <div class="col-md-6 mb-3">
                 <div>
                     <label for="first_name">First Name</label>
-                    <input class="form-control" id="first_name" type="text" placeholder="Enter your first name" required 
+                    <input value="<%= getUserInput(locals.inputData, "firstName") ?? "" %>" class="form-control" id="first_name" type="text" placeholder="Enter your first name" required 
                     name="firstName"/>
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <div>
                     <label for="last_name">Last Name</label>
-                    <input class="form-control" id="last_name" type="text" placeholder="Also your last name" required 
+                    <input value="<%= getUserInput(locals.inputData, "lastName") ?? "" %>" class="form-control" id="last_name" type="text" placeholder="Also your last name" required 
                     name="lastName"/>
                 </div>
             </div>
@@ -30,16 +30,20 @@
                             ></path>
                         </svg>
                     </span>
-                    <input data-datepicker="" class="form-control" id="birthday" type="text" placeholder="dd/mm/yyyy" required 
+                    <input value="<%= getUserInput(locals.inputData, "dob") ?? "" %>" data-datepicker="" class="form-control" id="birthday" type="text" placeholder="dd/mm/yyyy" required 
                     name="dob"/>
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <label for="gender">Gender</label>
                 <select class="form-select mb-0" id="gender" aria-label="Gender select example" name="gender">
-                    <option selected>Gender</option>
-                    <option value="female">Female</option>
-                    <option value="male">Male</option>
+                    <option>Gender</option>
+                    <option 
+                        value="female" 
+                        <%= getUserInput(locals.inputData, "gender") === 'female' ? 'selected': ''%> >Female</option>
+                    <option 
+                        value="male" 
+                        <%= getUserInput(locals.inputData, "gender") === 'male' ? 'selected': '' %> >Male</option>
                 </select>
             </div>
         </div>
@@ -47,20 +51,20 @@
             <div class="col-md-6 mb-3">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input class="form-control" id="email" type="email" placeholder="name@company.com" required name="email" />
+                    <input value="<%= getUserInput(locals.inputData, "email") ?? "" %>" class="form-control" id="email" type="email" placeholder="name@company.com" required name="email" />
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <div class="form-group">
                     <label for="phone">Mobile number</label>
-                    <input class="form-control" id="phone" type="number" placeholder="Mobile number" required name="mobileNumber" />
+                    <input value="<%= getUserInput(locals.inputData, "mobileNumber") ?? "" %>" class="form-control" id="phone" type="number" placeholder="Mobile number" required name="mobileNumber" />
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password" required name="password" />
+                <input value="<%= getUserInput(locals.inputData, "password") ?? "" %>" type="password" class="form-control" id="password" placeholder="Password" required name="password" />
             </div>
         </div>
         <div class="mt-3">
