@@ -11,6 +11,8 @@
         "dev": "cross-env NODE_ENV=development concurrently \"npm run build:dev\" \"nodemon dist/index.js\"",
         "build:tsc": "npx tsc",
         "dev:tsc": "concurrently \"npx tsc --watch\" \"nodemon dist/index.js\"",
+        "prettier:check": "prettier --check .",
+        "prettier:write": "prettier --write .",
         "typeorm": "cross-var ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
         "migration:create": "npm run typeorm migration:create ./src/database/migrations/$npm_config_name",
         "migration:run": "npm run typeorm migration:run -- -d ./src/core/database/data-source.ts -t",
@@ -78,6 +80,7 @@
         "cross-env": "^7.0.3",
         "cross-var": "^1.1.0",
         "nodemon": "^2.0.20",
+        "prettier": "^2.8.3",
         "ts-node": "^10.9.1",
         "tsconfig-paths": "^4.1.2",
         "typescript": "^4.9.4"
