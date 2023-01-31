@@ -1,5 +1,5 @@
 import { Request } from 'express';
 
-export interface TypedRequest<K> extends Request {
+export type TypedRequest<K> = Request & {
   body: K;
-}
+};

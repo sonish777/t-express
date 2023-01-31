@@ -1,4 +1,4 @@
-export interface ICreateUser {
+export type CreateUser = {
   firstName: string;
   lastName: string;
   dob: string;
@@ -6,4 +6,4 @@ export interface ICreateUser {
   email: string;
   mobileNumber: string;
   password: string;
-}
+};

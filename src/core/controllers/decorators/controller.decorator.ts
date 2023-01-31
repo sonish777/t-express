@@ -2,7 +2,7 @@ import { ControllerMetadataKeys } from '@core/utils';
 import { Service } from 'typedi';
 
 export function Controller(
-  basePath: string = '',
+  basePath = '',
   options?: { fallback: boolean }
 ): ClassDecorator {
   return (target) => {

@@ -1,19 +1,19 @@
-interface IModule {
+type Module = {
   name: string;
   route?: string;
   hasSubmodules?: boolean;
   icon?: string;
   subModules?: Omit<
-    Required<IModule>,
+    Required<Module>,
     'hasSubmodules' | 'subModules' | 'icon'
   >[];
-}
+};
 
-interface ICMSModuleConfig {
-  [moduleName: string]: IModule;
-}
+type CMSModuleConfig = {
+  [moduleName: string]: Module;
+};
 
-export const CMSModulesConfig: ICMSModuleConfig = {
+export const CMSModulesConfig: CMSModuleConfig = {
   home: {
     name: 'Dashboard',
     route: '/home',

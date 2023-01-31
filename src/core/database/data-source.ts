@@ -4,7 +4,7 @@ import { DatabaseType } from 'typeorm/driver/types/DatabaseType';
 
 export const dataSource = (dialect: DatabaseType) =>
   new DataSource({
-    type: dialect as any,
+    type: <any>dialect,
     host: DatabaseConfig.HOST,
     port: DatabaseConfig.PORT,
     username: DatabaseConfig.USERNAME,
@@ -22,7 +22,7 @@ export const dataSource = (dialect: DatabaseType) =>
 let dialect: DatabaseType = 'postgres';
 process.argv.forEach(function (val, index, array) {
   if (val === '-t' && array[index + 1]) {
-    dialect = array[index + 1] as any;
+    dialect = array[index + 1] as DatabaseType;
   }
 });
 export default dataSource(dialect);

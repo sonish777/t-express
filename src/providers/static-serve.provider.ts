@@ -1,10 +1,10 @@
 import express, { Express } from 'express';
 import { ProviderStaticMethod } from '@core/providers';
 
-export interface StaticServeProviderOptions {
+export type StaticServeProviderOptions = {
   pathToStaticContents: string;
   prefix?: string;
-}
+};
 
 export class StaticServeProvider
   implements ProviderStaticMethod<typeof StaticServeProvider>

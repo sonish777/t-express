@@ -1,15 +1,10 @@
 import { HttpException } from '@core/exceptions';
 import { ExceptionHandler } from '@core/exceptions/handlers';
 import { HttpStatus } from '@core/utils/http-status-code.util';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 
 export class GlobalExceptionHandler extends ExceptionHandler {
-  public handle(
-    error: HttpException,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): void {
+  public handle(error: HttpException, req: Request, res: Response): void {
     console.log(
       '🚀 ~ file: global-exception.handler.ts:7 ~ GlobalExceptionHandler ~ handle ~ error',
       error

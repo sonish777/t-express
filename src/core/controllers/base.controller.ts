@@ -6,7 +6,7 @@ export abstract class BaseController {
   abstract _title: string;
   abstract _viewPath: string;
   abstract _module: string;
-  protected page: string = 'index';
+  protected page = 'index';
 
   get title() {
     return this._title;

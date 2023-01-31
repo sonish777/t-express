@@ -8,7 +8,7 @@ import {
   ProtectedRoute,
   TypedRequest,
 } from '@core/controllers';
-import { ICreateUser } from './interfaces/create-user.interface';
+import { CreateUser } from './interfaces/create-user.interface';
 import { validationResult } from 'express-validator';
 import { CreateUserValidator } from '@validators/create-user.validator';
 
@@ -46,7 +46,7 @@ export class UserController extends BaseController {
     path: '/',
     validators: [CreateUserValidator],
   })
-  add(req: TypedRequest<ICreateUser>, res: Response) {
+  add(req: TypedRequest<CreateUser>, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors.mapped());

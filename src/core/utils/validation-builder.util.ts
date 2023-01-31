@@ -23,7 +23,9 @@ export class ValidationBuilder {
   private static _field: string;
   private static _validators: ValidationChain[];
 
-  private constructor() {}
+  private constructor() {
+    throw new Error('This class cannot be instantiated');
+  }
 
   static build() {
     return this._validators;

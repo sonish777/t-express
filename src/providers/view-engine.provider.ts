@@ -2,11 +2,11 @@ import { Express } from 'express';
 import path from 'path';
 import { ProviderStaticMethod } from '@core/providers';
 
-export interface ViewEngineOptions {
+export type ViewEngineOptions = {
   engine: string;
   path?: string;
   options?: Object;
-}
+};
 
 export class ViewEngineProvider
   implements ProviderStaticMethod<typeof ViewEngineProvider>
