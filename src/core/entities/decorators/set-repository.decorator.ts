@@ -1,8 +1,8 @@
-import Container from "typedi";
-import { postgresDataSource } from "@database/connections";
+import Container from 'typedi';
+import { postgresDataSource } from '@database/connections';
 
 export function SetRepository(): ClassDecorator {
-    return (target) => {
-        Container.set(target.name, postgresDataSource.getRepository(target));
-    }
+  return (target) => {
+    Container.set(target.name, postgresDataSource.getRepository(target));
+  };
 }

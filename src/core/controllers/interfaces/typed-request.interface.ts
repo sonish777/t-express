@@ -1,5 +1,5 @@
-import { Request } from "express";
+import { Request } from 'express';
 
 export interface TypedRequest<K> extends Request {
-    body: K;
+  body: K;
 }

@@ -1,4 +1,4 @@
 export interface ValidationOptions {
-    fieldDisplayName?: string;
-    message?: string;
+  fieldDisplayName?: string;
+  message?: string;
 }
