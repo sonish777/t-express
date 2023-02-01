@@ -21,7 +21,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepare": "husky install",
-    "precommit": "lint-staged"
+    "precommit": "npm run lint && lint-staged"
   },
   "repository": {
     "type": "git",
