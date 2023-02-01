@@ -39,7 +39,7 @@ export class Server {
 
   private applyMiddlewares(
     middlewares: any[] = [],
-    providers: (Provider | ProviderWithOptions<any>)[] = []
+    providers: (Provider | ProviderWithOptions<Object>)[] = []
   ) {
     CommonProvider.register(this._app);
     if (middlewares.length > 0) {

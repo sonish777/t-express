@@ -4,7 +4,7 @@ import { Provider, ProviderWithOptions } from '@core/providers';
 
 export type StartupOptions = {
   middlewares?: Handler[];
-  middlewareProviders?: (Provider | ProviderWithOptions<any>)[];
+  middlewareProviders?: (Provider | ProviderWithOptions<Object>)[];
   locals?: Record<string, Handler>[];
   routePrefixes?: {
     cmsPrefix?: string;

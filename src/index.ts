@@ -23,7 +23,7 @@ import { UnprocessableEntityExceptionHandler } from '@exceptions/handlers/unproc
 
 function bootstrap() {
   const server = Server.Instance;
-  const middlewares: Handler[] = [];
+  const middlewares: Handler[] = [morgan('dev')];
   server.startup({
     middlewares: [...middlewares],
     middlewareProviders: [
@@ -52,7 +52,7 @@ function bootstrap() {
     exceptionHandlers: [
       new UnauthorizedExceptionHandler(),
       new UnprocessableEntityExceptionHandler(),
-      new GlobalExceptionHandler(),
+      new GlobalExceptionHandler(), // GlobalExceptionHandler should be kept at the end of the list;
     ],
   });
 }
