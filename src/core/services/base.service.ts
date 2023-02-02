@@ -2,7 +2,7 @@ import { BaseEntity } from '@core/entities';
 import { Repository, FindOptionsWhere } from 'typeorm';
 
 export class BaseService<K extends BaseEntity> {
-  repository: Repository<K>;
+  protected readonly repository: Repository<K>;
 
   findAll(): Promise<K[]> {
     return this.repository.find();

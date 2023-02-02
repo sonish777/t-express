@@ -2,13 +2,13 @@ import { HTTPMethods } from '@core/utils';
 import { Validator } from '@core/validators';
 import { Handler } from 'express';
 
-export type RouteOptions = {
+export interface RouteOptions {
   method: HTTPMethods;
   path: string;
   middlewares?: Handler[];
   validators?: Validator[];
-};
+}
 
-export type FallbackRouteOptions = {
+export interface FallbackRouteOptions {
   fallback: true;
-};
+}

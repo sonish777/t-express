@@ -1,4 +1,4 @@
-export type ValidationOptions = {
+export interface ValidationOptions {
   fieldDisplayName?: string;
   message?: string;
-};
+}

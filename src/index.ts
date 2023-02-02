@@ -1,7 +1,6 @@
 import { Handler } from 'express';
 import path from 'path';
 import _ from 'lodash';
-import morgan from 'morgan';
 import { Server } from '@core/server';
 import { provideMiddleware } from '@core/utils';
 import {
@@ -23,7 +22,7 @@ import { UnprocessableEntityExceptionHandler } from '@exceptions/handlers/unproc
 
 function bootstrap() {
   const server = Server.Instance;
-  const middlewares: Handler[] = [morgan('dev')];
+  const middlewares: Handler[] = [];
   server.startup({
     middlewares: [...middlewares],
     middlewareProviders: [
@@ -48,6 +47,7 @@ function bootstrap() {
       },
       { cmsModulesConfig: () => CMSModulesConfig },
       { inputData: (req) => req.flash('inputData') },
+      { mappedErrors: (req) => req.flash('mappedErrors') },
     ],
     exceptionHandlers: [
       new UnauthorizedExceptionHandler(),

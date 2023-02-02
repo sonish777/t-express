@@ -17,7 +17,7 @@ export class UserEntity extends BaseEntity {
   lastName: string;
 
   @Column()
-  dob: Date;
+  dob: string;
 
   @Column()
   gender: string;

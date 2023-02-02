@@ -6,6 +6,7 @@ import {
   ValidationOptions,
 } from '@core/validators';
 import { ValidationMessages } from '@core/validators/constants';
+import moment from 'moment';
 
 export const getMessage = (
   message: string,
@@ -88,7 +89,9 @@ export class ValidationBuilder {
   static IsDate(options: ValidationOptions = {}) {
     this._validators.push(
       check(this._field)
-        .isDate()
+        .custom((value: string) => {
+          return moment(value).isValid();
+        })
         .withMessage(
           options.message ??
             getMessage(ValidationMessages.date, {

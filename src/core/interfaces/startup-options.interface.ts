@@ -2,7 +2,7 @@ import { Handler } from 'express';
 import { ExceptionHandler } from '@core/exceptions/handlers';
 import { Provider, ProviderWithOptions } from '@core/providers';
 
-export type StartupOptions = {
+export interface StartupOptions {
   middlewares?: Handler[];
   middlewareProviders?: (Provider | ProviderWithOptions<Object>)[];
   locals?: Record<string, Handler>[];
@@ -11,4 +11,4 @@ export type StartupOptions = {
     apiPrefix?: string;
   };
   exceptionHandlers?: ExceptionHandler[];
-};
+}

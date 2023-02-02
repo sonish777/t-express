@@ -1,4 +1,4 @@
-type Module = {
+interface Module {
   name: string;
   route?: string;
   hasSubmodules?: boolean;
@@ -7,11 +7,11 @@ type Module = {
     Required<Module>,
     'hasSubmodules' | 'subModules' | 'icon'
   >[];
-};
+}
 
-type CMSModuleConfig = {
+interface CMSModuleConfig {
   [moduleName: string]: Module;
-};
+}
 
 export const CMSModulesConfig: CMSModuleConfig = {
   home: {

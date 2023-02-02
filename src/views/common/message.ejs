@@ -1,0 +1,23 @@
+<span id="message" class="message d-none"><%= get(locals.message) %></span>
+<script>
+  const message = document.getElementById('message')?.innerText || '';
+  if (message) {
+    const notyf = new Notyf({
+      position: {
+        x: 'right',
+        y: 'top',
+      },
+      types: [
+        {
+          type: 'success',
+          dismissible: true,
+          duration: 5000,
+        },
+      ],
+    });
+    notyf.open({
+      type: 'success',
+      message: document.getElementById('message')?.innerText || '',
+    });
+  }
+</script>

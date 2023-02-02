@@ -6,10 +6,9 @@ import {
   BaseController,
   Controller,
   ProtectedRoute,
-  TypedRequest,
+  TypedBody,
 } from '@core/controllers';
 import { CreateUser } from './interfaces/create-user.interface';
-import { validationResult } from 'express-validator';
 import { CreateUserValidator } from '@validators/create-user.validator';
 
 @Controller('/users')
@@ -36,7 +35,7 @@ export class UserController extends BaseController {
     method: HTTPMethods.Get,
     path: '/create',
   })
-  create(req: Request, res: Response) {
+  create(_req: Request, res: Response) {
     this.page = 'create';
     return this.render(res);
   }
@@ -46,14 +45,9 @@ export class UserController extends BaseController {
     path: '/',
     validators: [CreateUserValidator],
   })
-  add(req: TypedRequest<CreateUser>, res: Response) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.log(errors.mapped());
-    }
-    console.log(req.body.firstName);
-    console.log(req.body.lastName);
-
+  async add(req: TypedBody<CreateUser>, res: Response) {
+    await this.service.create(req.body);
+    req.flash('message', 'User created successfully');
     return res.redirect('back');
   }
 }

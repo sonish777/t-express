@@ -1,6 +1,6 @@
 import { Provider } from './provider.interface';
 
-export type ProviderWithOptions<ProviderOptions> = {
+export interface ProviderWithOptions<ProviderOptions> {
   class: Provider;
   options: ProviderOptions;
-};
+}

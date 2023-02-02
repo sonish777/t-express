@@ -1,5 +1,6 @@
 import { ProviderStaticMethod } from '@core/providers';
 import { Express } from 'express';
+import { ValidationError } from 'express-validator';
 import moment from 'moment';
 
 export class AppLocalsProvider
@@ -33,6 +34,16 @@ export class AppLocalsProvider
         return inputData[0][key] ?? null;
       }
       return inputData && inputData[key] ? inputData[key] : null;
+    };
+
+    app.locals.getErrorMessage = (
+      errorPayload: Record<string, ValidationError>,
+      key: string
+    ) => {
+      if (Array.isArray(errorPayload) && errorPayload.length > 0) {
+        return errorPayload[0][key]?.msg ?? null;
+      }
+      return errorPayload && errorPayload[key] ? errorPayload[key].msg : null;
     };
   }
 }

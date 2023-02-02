@@ -1,4 +1,4 @@
-export type CreateUser = {
+export interface CreateUser {
   firstName: string;
   lastName: string;
   dob: string;
@@ -6,4 +6,4 @@ export type CreateUser = {
   email: string;
   mobileNumber: string;
   password: string;
-};
+}

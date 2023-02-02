@@ -4,6 +4,8 @@
     <%- include('common/head') %> 
 </head>
 <body>
+    <%- include('common/partials/_vendor-js') %>
+    <%- include('common/message') %>
     <%- include('common/sidebar') %>
     <main class="content">
         <%- include('common/navbar') %> 
@@ -12,6 +14,5 @@
         <%- include('common/header') %> 
         <%- include(page) %> 
     </main>
-    <%- include('common/partials/_vendor-js') %>
 </body>
 </html>

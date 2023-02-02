@@ -1,0 +1,12 @@
+<label for="<%= name %>"><%= label %></label>
+<input
+  type="<%= typeof (type) !== 'undefined' ? type: "text" %>"
+  class="form-control <%= errorMessage ? "is-invalid": "" %>"
+  required
+  id="<%= name %>"
+  name="<%= name %>"
+  value="<%= value %>"
+  placeholder="<%= placeholder %>"
+  <%= typeof (required) !== 'undefined' && !required ? '': 'required' %>
+/>
+<%- include('./invalid-feedback') %>

@@ -3,18 +3,22 @@
     <form method="post" action="/users">
         <div class="row">
             <div class="col-md-6 mb-3">
-                <div>
-                    <label for="first_name">First Name</label>
-                    <input value="<%= getUserInput(locals.inputData, "firstName") ?? "" %>" class="form-control" id="first_name" type="text" placeholder="Enter your first name" required 
-                    name="firstName"/>
-                </div>
+                <%- include('../common/input-field', { 
+                    label: 'First Name', 
+                    name: 'firstName', 
+                    value: getUserInput(locals.inputData, "firstName") ?? "", 
+                    placeholder: "Enter your first name",
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'firstName')
+                }) %>
             </div>
             <div class="col-md-6 mb-3">
-                <div>
-                    <label for="last_name">Last Name</label>
-                    <input value="<%= getUserInput(locals.inputData, "lastName") ?? "" %>" class="form-control" id="last_name" type="text" placeholder="Also your last name" required 
-                    name="lastName"/>
-                </div>
+                <%- include('../common/input-field', { 
+                    label: 'Last Name', 
+                    name: 'lastName', 
+                    placeholder: "Also your last name",
+                    value: getUserInput(locals.inputData, "lastName") ?? "", 
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'firstName')
+                }) %>
             </div>
         </div>
         <div class="row align-items-center">
@@ -30,13 +34,18 @@
                             ></path>
                         </svg>
                     </span>
-                    <input value="<%= getUserInput(locals.inputData, "dob") ?? "" %>" data-datepicker="" class="form-control" id="birthday" type="text" placeholder="dd/mm/yyyy" required 
-                    name="dob"/>
+                    <input 
+                        id="birthday" type="text" placeholder="yyyy/mm/dd" required 
+                        value="<%= getUserInput(locals.inputData, "dob") ?? "" %>"
+                        class="form-control <%= getErrorMessage(locals.mappedErrors, 'dob') ? "is-invalid": "" %> datepicker" 
+                        name="dob"
+                        autocomplete="off"/>
+                    <%- include('../common/invalid-feedback', {errorMessage: getErrorMessage(locals.mappedErrors, 'dob')}) %>
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <label for="gender">Gender</label>
-                <select class="form-select mb-0" id="gender" aria-label="Gender select example" name="gender">
+                <select class="form-select mb-0 <%= getErrorMessage(locals.mappedErrors, 'gender') ? "is-invalid": "" %>" id="gender" aria-label="Gender select example" name="gender" required>
                     <option>Gender</option>
                     <option 
                         value="female" 
@@ -45,26 +54,41 @@
                         value="male" 
                         <%= getUserInput(locals.inputData, "gender") === 'male' ? 'selected': '' %> >Male</option>
                 </select>
+                <%- include('../common/invalid-feedback', {errorMessage: getErrorMessage(locals.mappedErrors, 'gender')}) %>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input value="<%= getUserInput(locals.inputData, "email") ?? "" %>" class="form-control" id="email" type="email" placeholder="name@company.com" required name="email" />
-                </div>
+                <%- include('../common/input-field', { 
+                    label: 'Email', 
+                    name: 'email', 
+                    type: 'email',
+                    value: getUserInput(locals.inputData, "email") ?? "", 
+                    placeholder: "name@company.com",
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'email')
+                }) %>
             </div>
             <div class="col-md-6 mb-3">
-                <div class="form-group">
-                    <label for="phone">Mobile number</label>
-                    <input value="<%= getUserInput(locals.inputData, "mobileNumber") ?? "" %>" class="form-control" id="phone" type="number" placeholder="Mobile number" required name="mobileNumber" />
-                </div>
+                <%- include('../common/input-field', { 
+                    label: 'Mobile number', 
+                    name: 'mobileNumber',  
+                    type: 'number',
+                    value: getUserInput(locals.inputData, "mobileNumber") ?? "", 
+                    placeholder: "Mobile number",
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'mobileNumber')
+                }) %>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label for="password">Password</label>
-                <input value="<%= getUserInput(locals.inputData, "password") ?? "" %>" type="password" class="form-control" id="password" placeholder="Password" required name="password" />
+                <%- include('../common/input-field', { 
+                    label: 'Password', 
+                    name: 'password', 
+                    type: 'password',
+                    value: getUserInput(locals.inputData, "password") ?? "", 
+                    placeholder: "Password",
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'password')
+                }) %>
             </div>
         </div>
         <div class="mt-3">
@@ -72,3 +96,9 @@
         </div>
     </form>
 </div>
+<script>
+    const el = document.querySelector(".datepicker");
+    new Datepicker(el, {
+        format: 'yyyy/mm/dd'
+    })
+</script>

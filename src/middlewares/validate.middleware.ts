@@ -3,9 +3,9 @@ import { Handler } from 'express';
 import { validationResult } from 'express-validator';
 
 export const validate: Handler = (req, _res, next) => {
-  const errors = validationResult(req).formatWith(({ msg }) => `- ${msg}`);
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const mappedErrors = errors.array();
+    const mappedErrors = errors.mapped();
     return next(new UnprocessableEntityException(mappedErrors));
   }
   next();
