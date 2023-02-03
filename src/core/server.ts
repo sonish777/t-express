@@ -20,6 +20,8 @@ export class Server {
     { errors: (req: Request) => req.flash('errors') },
     { error: (req: Request) => req.flash('error') },
     { message: (req: Request) => req.flash('message') },
+    { url: (req: Request) => req.url },
+    { query: (req: Request) => req.query },
   ];
 
   public static get Instance(): Server {

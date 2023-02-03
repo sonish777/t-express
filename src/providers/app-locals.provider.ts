@@ -18,6 +18,10 @@ export class AppLocalsProvider
       return typeof value !== 'undefined' && value !== null;
     };
 
+    app.locals.objectExists = (obj: Object) => {
+      return Object.keys(obj).length > 0;
+    };
+
     app.locals.get = (value: any, defaultValue = '') => {
       return app.locals.exists(value) ? value : defaultValue;
     };

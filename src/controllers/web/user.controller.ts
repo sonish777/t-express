@@ -10,6 +10,8 @@ import {
 } from '@core/controllers';
 import { CreateUser } from './interfaces/create-user.interface';
 import { CreateUserValidator } from '@validators/create-user.validator';
+import { TypedQuery } from '@core/controllers/interfaces/typed-query.interface';
+import { CommonSearchQuery } from '@core/interfaces';
 
 @Controller('/users')
 export class UserController extends BaseController {
@@ -25,9 +27,11 @@ export class UserController extends BaseController {
     method: HTTPMethods.Get,
     path: '/',
   })
-  async index(req: Request, res: Response) {
+  async index(req: TypedQuery<CommonSearchQuery>, res: Response) {
     this.page = 'index';
-    const data = await this.service.findAll();
+    const data = await this.service.paginate({
+      ...req.query,
+    });
     return this.render(res, data);
   }
 

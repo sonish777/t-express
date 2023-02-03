@@ -28,7 +28,7 @@
             </tr>
         </thead>
         <tbody>
-            <% exists(locals.data) && locals.data.forEach((el, i) => { %>
+            <% exists(locals.data?.data) && locals.data.data.forEach((el, i) => { %>
                 <%- include('partials/_table-row', {user: el, sn: i+1}) %>
             <% }) %>
         </tbody>

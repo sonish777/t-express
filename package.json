@@ -17,7 +17,7 @@
     "migration:create": "npm run typeorm migration:create ./src/database/migrations/$npm_config_name",
     "migration:run": "npm run typeorm migration:run -- -d ./src/core/database/data-source.ts -t",
     "migration:rollback": "npm run typeorm migration:revert -- -d ./src/core/database/data-source.ts",
-    "seed": "ts-node ./node_modules/typeorm-seeding/dist/cli.js --configName ./src/core/database/database-seeder-config.ts seed",
+    "seed": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js --configName ./src/core/database/database-seeder-config.ts seed",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepare": "husky install",
