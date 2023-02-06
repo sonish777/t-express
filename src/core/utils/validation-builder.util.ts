@@ -41,7 +41,7 @@ export class ValidationBuilder {
   static Required(options: ValidationOptions = {}) {
     this._validators.push(
       check(this._field)
-        .exists()
+        .notEmpty()
         .withMessage(
           options.message ??
             getMessage(ValidationMessages.required, {

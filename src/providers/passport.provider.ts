@@ -28,9 +28,12 @@ export class PassportProvider
     });
 
     passport.deserializeUser(async (_id: string, done) => {
-      const userExists = await PassportProvider._authService.findOne({
-        _id: _id,
-      });
+      const userExists = await PassportProvider._authService.findOne(
+        {
+          _id: _id,
+        },
+        ['userRole', 'userRole.role', 'userRole.role.permissions']
+      );
       if (!userExists) {
         return done(new UnauthorizedException());
       }
@@ -61,6 +64,7 @@ export class PassportProvider
       }
       return done(null, user);
     } catch (error) {
+      console.log('🚀 ~ file: passport.provider.ts:65 ~ error', error);
       return done(null, false);
     }
   }

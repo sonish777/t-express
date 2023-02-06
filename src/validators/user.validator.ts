@@ -1,5 +1,6 @@
 import { ValidationBuilder } from '@core/utils/validation-builder.util';
 import { ValidatorWithStaticProps } from '@core/validators';
+import { customize } from '@core/validators/helpers/customize-validator';
 import { ValidationChain } from 'express-validator';
 import { UniqueEmailValidator } from './customs';
 import { GenderValidator } from './customs/gender.validator';
@@ -40,3 +41,7 @@ export class CreateUserValidator
     };
   }
 }
+
+const validationCustomizer = customize(CreateUserValidator);
+validationCustomizer.removeRules(['password']);
+export const UpdateUserValidator = validationCustomizer.done();

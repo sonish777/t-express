@@ -1,12 +1,12 @@
-<label for="<%= name %>"><%= label %></label>
+<label for="<%= get(locals.name) %>"><%= get(locals.label) %></label>
 <input
   type="<%= typeof (type) !== 'undefined' ? type: "text" %>"
-  class="form-control <%= errorMessage ? "is-invalid": "" %>"
-  required
-  id="<%= name %>"
-  name="<%= name %>"
-  value="<%= value %>"
-  placeholder="<%= placeholder %>"
+  class="form-control <%= get(locals.errorMessage) ? "is-invalid": "" %>"
+  id="<%= get(locals.name) %>"
+  name="<%= get(locals.name) %>"
+  value="<%= get(locals.value) %>"
+  placeholder="<%= get(locals.placeholder) %>"
   <%= typeof (required) !== 'undefined' && !required ? '': 'required' %>
+  <%= typeof (options) !== 'undefined' && Array.isArray(options) ? options.map(option => ` ${option} `): '' %>
 />
 <%- include('./invalid-feedback') %>

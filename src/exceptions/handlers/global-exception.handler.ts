@@ -10,6 +10,10 @@ export class GlobalExceptionHandler extends ExceptionHandler {
     res: Response,
     _next: NextFunction
   ): void {
+    console.log(
+      '🚀 ~ file: global-exception.handler.ts:13 ~ GlobalExceptionHandler ~ error',
+      error
+    );
     if (!error.isOperational) {
       switch (error.statusCode) {
         case HttpStatus.NOT_FOUND:

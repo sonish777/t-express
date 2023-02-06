@@ -1,6 +1,7 @@
 import { Handler } from 'express';
 import path from 'path';
 import _ from 'lodash';
+import methodOverride from 'method-override';
 import { Server } from '@core/server';
 import { provideMiddleware } from '@core/utils';
 import {
@@ -14,6 +15,7 @@ import {
 import { AppLocalsProvider } from '@providers';
 import '@database/connections';
 import {
+  ForbiddenExceptionHandler,
   GlobalExceptionHandler,
   UnauthorizedExceptionHandler,
 } from '@exceptions/handlers';
@@ -22,7 +24,7 @@ import { UnprocessableEntityExceptionHandler } from '@exceptions/handlers/unproc
 
 function bootstrap() {
   const server = Server.Instance;
-  const middlewares: Handler[] = [];
+  const middlewares: Handler[] = [methodOverride('_method')];
   server.startup({
     middlewares: [...middlewares],
     middlewareProviders: [
@@ -42,16 +44,18 @@ function bootstrap() {
       {
         user: (req) =>
           req.user
-            ? _.pick(req.user, ['firstName', 'lastName', 'email'])
+            ? _.pick(req.user, ['firstName', 'lastName', 'email', 'userRole'])
             : null,
       },
       { cmsModulesConfig: () => CMSModulesConfig },
       { inputData: (req) => req.flash('inputData') },
       { mappedErrors: (req) => req.flash('mappedErrors') },
+      { errorToast: (req) => req.flash('error:toast') },
     ],
     exceptionHandlers: [
       new UnauthorizedExceptionHandler(),
       new UnprocessableEntityExceptionHandler(),
+      new ForbiddenExceptionHandler(),
       new GlobalExceptionHandler(), // GlobalExceptionHandler should be kept at the end of the list;
     ],
   });

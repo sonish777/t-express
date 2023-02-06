@@ -1,1 +1,1 @@
-export * from './create-user.validator';
+export * from './user.validator';

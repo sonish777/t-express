@@ -1,4 +1,5 @@
 import { ProviderStaticMethod } from '@core/providers';
+import { UserEntity } from '@entities';
 import { Express } from 'express';
 import { ValidationError } from 'express-validator';
 import moment from 'moment';
@@ -27,7 +28,7 @@ export class AppLocalsProvider
     };
 
     app.locals.formatDate = (value: string, format = 'YYYY/MM/DD') => {
-      return moment(value).format(format);
+      return moment(value, format).format(format);
     };
 
     app.locals.getUserInput = (
@@ -40,6 +41,21 @@ export class AppLocalsProvider
       return inputData && inputData[key] ? inputData[key] : null;
     };
 
+    app.locals.getEditFormData = (
+      data: Record<string, string>,
+      key: string,
+      inputData: Record<string, string>
+    ) => {
+      let value = null;
+      if (inputData) {
+        value = app.locals.getUserInput(inputData, key);
+      }
+      if (!value) {
+        value = app.locals.getUserInput(data, key);
+      }
+      return value;
+    };
+
     app.locals.getErrorMessage = (
       errorPayload: Record<string, ValidationError>,
       key: string
@@ -48,6 +64,15 @@ export class AppLocalsProvider
         return errorPayload[0][key]?.msg ?? null;
       }
       return errorPayload && errorPayload[key] ? errorPayload[key].msg : null;
+    };
+
+    app.locals.hasPermission = (user: UserEntity, action: string): boolean => {
+      if (user.userRole?.role?.permissions) {
+        return user.userRole.role.permissions.some(
+          (permission) => permission.action === action
+        );
+      }
+      return false;
     };
   }
 }

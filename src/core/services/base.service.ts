@@ -1,4 +1,5 @@
 import { BaseEntity } from '@core/entities';
+import { HttpException } from '@core/exceptions';
 import { CommonSearchQuery } from '@core/interfaces';
 import { PaginationResponse } from '@core/interfaces/pagination/pagination-options.interface';
 import {
@@ -16,17 +17,48 @@ export class BaseService<K extends BaseEntity> {
     return this.repository.find();
   }
 
-  findOne(where: FindOptionsWhere<K>): Promise<K | null> {
+  findOne(
+    where: FindOptionsWhere<K>,
+    relations: string[] = []
+  ): Promise<K | null> {
     return this.repository.findOne({
       where: {
         ...where,
       },
+      relations,
     });
   }
 
   create(payload: DeepPartial<K>): Promise<K> {
     const newEntity = this.repository.create(payload);
     return this.repository.save(newEntity);
+  }
+
+  async update(id: number, payload: DeepPartial<K>): Promise<K> {
+    const entity = await this.repository.findOne({
+      where: {
+        id: <any>id,
+      },
+    });
+    if (!entity) {
+      throw new HttpException(400, 'User not found', true);
+    }
+    return this.repository.save({
+      ...entity,
+      ...payload,
+    });
+  }
+
+  async delete(id: number): Promise<K> {
+    const entity = await this.repository.findOne({
+      where: {
+        id: <any>id,
+      },
+    });
+    if (!entity) {
+      throw new HttpException(400, 'User not found', true);
+    }
+    return this.repository.remove(entity);
   }
 
   async paginate(

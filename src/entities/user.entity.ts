@@ -1,6 +1,7 @@
-import { Column, Entity, BeforeInsert } from 'typeorm';
+import { Column, Entity, BeforeInsert, OneToOne, JoinColumn } from 'typeorm';
 import { genSalt, hash } from 'bcrypt';
 import { BaseEntity, SetRepository } from '@core/entities';
+import { UserRoleEntity } from './user-role.entity';
 
 @Entity({
   name: 'users',
@@ -44,4 +45,11 @@ export class UserEntity extends BaseEntity {
     this.salt = salt;
     this.password = hashedPassword;
   }
+
+  @OneToOne(() => UserRoleEntity)
+  @JoinColumn({
+    name: 'id',
+    referencedColumnName: 'userId',
+  })
+  userRole: UserRoleEntity;
 }

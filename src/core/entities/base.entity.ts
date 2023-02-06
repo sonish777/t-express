@@ -15,6 +15,7 @@ export class BaseEntity {
 
   @UpdateDateColumn({
     default: `now()`,
+    onUpdate: 'now()',
   })
   updatedAt: Date;
 }

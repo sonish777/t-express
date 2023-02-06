@@ -32,14 +32,16 @@
             <% Object.keys(locals.cmsModulesConfig).forEach(key => { %> 
                 <% const module = locals.cmsModulesConfig[key]; %>
                 <% if(!module.hasSubmodules) { %>
-                    <li class="nav-item <%= key === locals.module ? 'active': '' %>">
-                        <a href="<%= module.route %>" class="nav-link">
-                            <span class="sidebar-icon">
-                                <%- module.icon %> 
-                            </span>
-                            <span class="sidebar-text"><%= module.name %></span>
-                        </a>
-                    </li>
+                    <% if(hasPermission(locals.user, module.default)) { %>
+                        <li class="nav-item <%= key === locals.module ? 'active': '' %>">
+                            <a href="<%= module.route %>" class="nav-link">
+                                <span class="sidebar-icon">
+                                    <%- module.icon %> 
+                                </span>
+                                <span class="sidebar-text"><%= module.name %></span>
+                            </a>
+                        </li>
+                    <% } %>
                 <% } else { %>
                     <li class="nav-item <%= key === locals.module ? 'active': '' %>">
                         <span
@@ -70,6 +72,7 @@
                             </span>
                         </span>
                         <% module.subModules.forEach(subModule => { %>
+                            <% if(hasPermission(locals.user, module.default)) { %>
                             <div class="multi-level collapse" role="list" id="submenu-app" aria-expanded="false">
                                 <ul class="flex-column nav">
                                     <li class="nav-item">
@@ -79,6 +82,7 @@
                                     </li>
                                 </ul>
                             </div>
+                            <% } %>
                         <% }) %>
                     </li>
                 <% } %> 

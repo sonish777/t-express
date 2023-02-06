@@ -4,4 +4,28 @@
         <%= locals.error %>
         <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+<% } else if(exists(locals.errorToast)) { %>
+    <span class="d-none" id="error_toast_message"><%= locals.errorToast %></span>
 <% } %>
+<script>
+    const errorMessage = document.getElementById('error_toast_message')?.innerText || '';
+    if (errorMessage) {
+      const notyf = new Notyf({
+        position: {
+          x: 'right',
+          y: 'top',
+        },
+        types: [
+          {
+            type: 'error',
+            dismissible: true,
+            duration: 5000,
+          },
+        ],
+      });
+      notyf.open({
+        type: 'error',
+        message: errorMessage
+      });
+    }
+  </script>
