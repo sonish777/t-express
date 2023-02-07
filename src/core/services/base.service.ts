@@ -11,7 +11,7 @@ import {
 
 export class BaseService<K extends BaseEntity> {
   protected readonly repository: Repository<K>;
-  private readonly filterColumns: string[] = [];
+  protected readonly filterColumns: string[] = [];
 
   findAll(): Promise<K[]> {
     return this.repository.find();
@@ -86,26 +86,19 @@ export class BaseService<K extends BaseEntity> {
     filter: Pick<CommonSearchQuery, 'active' | 'keywords'> = {},
     qb: SelectQueryBuilder<K>
   ) {
-    let useAndWhereForActive = false;
     if (filter.keywords && this.filterColumns.length > 0) {
-      useAndWhereForActive = true;
-      for (const [idx, column] of this.filterColumns.entries()) {
-        if (idx === 0) {
-          qb.where(`${column} like :keyword`, { keyword: filter.keywords });
-        } else {
-          qb.andWhere(`${column} like :keyword`, { keyword: filter.keywords });
-        }
+      for (const column of this.filterColumns) {
+        qb.orWhere(`"table"."${column}" like :keyword`, {
+          keyword: `%${filter.keywords}%`,
+        });
       }
     }
 
     if (typeof filter.active === 'boolean') {
-      qb[useAndWhereForActive ? 'andWhere' : 'where'](`table.status is true`);
+      qb.andWhere(`"table"."status" is true`);
     } else if (Array.isArray(filter.active)) {
       const [column, value] = filter.active;
-      qb[useAndWhereForActive ? 'andWhere' : 'where'](
-        `table.${column} = :active`,
-        { active: value }
-      );
+      qb.andWhere(`"table"."${column}" = :active`, { active: value });
     }
   }
 }

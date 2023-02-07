@@ -1,3 +1,5 @@
-export class TypedQuery<Query> extends Request {
-  query: Query;
+import { Request } from 'express';
+
+export interface TypedQuery<Query> extends Request {
+  query: Query & {};
 }

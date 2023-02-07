@@ -4,7 +4,6 @@ import { CommonSearchQuery } from '@core/interfaces';
 import { BaseService } from '@core/services';
 import { HTTPMethods } from '@core/utils';
 import { Validator } from '@core/validators';
-import { canAccess } from '@middlewares/can-access.middleware';
 import { Request, Response } from 'express';
 import { BaseController } from './base.controller';
 import { ProtectedRoute } from './decorators';
@@ -34,7 +33,6 @@ export function ResourceControllerFactory<
     @ProtectedRoute({
       method: HTTPMethods.Get,
       path: '/',
-      middlewares: [canAccess(`${options.resource}:view`)],
     })
     async index(req: TypedQuery<CommonSearchQuery>, res: Response) {
       this.page = 'index';
@@ -47,7 +45,6 @@ export function ResourceControllerFactory<
     @ProtectedRoute({
       method: HTTPMethods.Get,
       path: '/create',
-      middlewares: [canAccess(`${options.resource}:create`)],
     })
     create(_req: Request, res: Response) {
       this.page = 'create';
@@ -57,7 +54,6 @@ export function ResourceControllerFactory<
     @ProtectedRoute({
       method: HTTPMethods.Post,
       path: '/',
-      middlewares: [canAccess(`${options.resource}:create`)],
       validators: [...(options.validators?.create ?? [])],
     })
     async add(req: Request, res: Response) {
@@ -72,7 +68,6 @@ export function ResourceControllerFactory<
     @ProtectedRoute({
       method: HTTPMethods.Get,
       path: '/:id',
-      middlewares: [canAccess(`${options.resource}:edit`)],
     })
     async edit(req: Request, res: Response) {
       this.page = 'edit';
@@ -88,7 +83,6 @@ export function ResourceControllerFactory<
     @ProtectedRoute({
       method: HTTPMethods.Put,
       path: '/:id',
-      middlewares: [canAccess(`${options.resource}:edit`)],
       validators: [...(options.validators?.update ?? [])],
     })
     async update(req: Request, res: Response) {
@@ -105,7 +99,6 @@ export function ResourceControllerFactory<
     @ProtectedRoute({
       method: HTTPMethods.Delete,
       path: '/:id',
-      middlewares: [canAccess(`${options.resource}:delete`)],
     })
     async delete(req: Request, res: Response) {
       const id = req.params.id;

@@ -18,4 +18,7 @@ export class PermissionEntity extends BaseEntity {
 
   @Column()
   action: string;
+
+  @Column()
+  module: string;
 }

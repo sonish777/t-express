@@ -46,9 +46,15 @@ export const CMSModulesConfig: CMSModuleConfig = {
     icon: `<i class="icofont-ui-user"></i>`,
     permissions: [
       {
-        name: 'View all users',
+        name: 'View users',
         value: 'users:view',
         route: '/users',
+        method: HTTPMethods.Get,
+      },
+      {
+        name: 'Create new user view',
+        value: 'users:create',
+        route: '/users/create',
         method: HTTPMethods.Get,
       },
       {
@@ -57,6 +63,24 @@ export const CMSModulesConfig: CMSModuleConfig = {
         route: '/users',
         method: HTTPMethods.Post,
       },
+      {
+        name: 'Edit user view',
+        value: 'users:edit',
+        route: '/users/:id',
+        method: HTTPMethods.Get,
+      },
+      {
+        name: 'Edit user',
+        value: 'users:edit',
+        route: '/users/:id',
+        method: HTTPMethods.Put,
+      },
+      {
+        name: 'Delete user',
+        value: 'users:delete',
+        route: '/users/:id',
+        method: HTTPMethods.Delete,
+      },
     ],
   },
   roles: {
@@ -64,15 +88,42 @@ export const CMSModulesConfig: CMSModuleConfig = {
     route: '/roles',
     default: 'roles:view',
     icon: `<i class="icofont-users-social"></i>`,
-  },
-  tables: {
-    name: 'Tables',
-    hasSubmodules: true,
-    subModules: [
+    permissions: [
       {
-        name: 'Bootstrap Tables',
-        route: '/tables',
-        permissions: [],
+        name: 'View roles',
+        value: 'roles:view',
+        method: HTTPMethods.Get,
+        route: '/roles',
+      },
+      {
+        name: 'Create new role view',
+        value: 'roles:create',
+        method: HTTPMethods.Get,
+        route: '/roles/create',
+      },
+      {
+        name: 'Create new role',
+        value: 'roles:create',
+        method: HTTPMethods.Post,
+        route: '/roles',
+      },
+      {
+        name: 'Edit role view',
+        value: 'roles:edit',
+        method: HTTPMethods.Get,
+        route: '/roles/:id',
+      },
+      {
+        name: 'Edit role',
+        value: 'roles:edit',
+        method: HTTPMethods.Put,
+        route: '/roles/:id',
+      },
+      {
+        name: 'Delete role',
+        value: 'roles:view',
+        method: HTTPMethods.Delete,
+        route: '/roles/:id',
       },
     ],
   },

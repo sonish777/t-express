@@ -11,6 +11,7 @@ import { Provider, ProviderWithOptions } from './providers';
 import { RoutePrefixes, Router } from './controllers';
 import { ExceptionHandler } from './exceptions/handlers';
 import { validate } from '@middlewares/validate.middleware';
+import { canAccess } from '@middlewares/can-access.middleware';
 
 export class Server {
   private static _instance: Server;
@@ -79,6 +80,14 @@ export class Server {
       const routers: Router[] =
         Reflect.getMetadata(ControllerMetadataKeys.ROUTERS, controllerClass) ||
         [];
+      const permissionGuard: Handler[] = [];
+      const checkPermissions = Reflect.getMetadata(
+        ControllerMetadataKeys.CHECK_PERMISSIONS,
+        controllerClass
+      );
+      if (checkPermissions) {
+        permissionGuard.push(canAccess());
+      }
       routers.forEach((router) => {
         const validationChains: ValidationChain[] = [];
         if (router.validators && router.validators.length > 0) {
@@ -88,6 +97,7 @@ export class Server {
         }
         expressRouter[router.method](
           router.path,
+          ...permissionGuard,
           [...(router.middlewares || [])],
           validationChains.length > 0 ? [...validationChains, validate] : [],
           controllerInstance[router.handlerName].bind(controllerInstance)

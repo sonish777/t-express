@@ -1,8 +1,9 @@
-import { ProviderStaticMethod } from '@core/providers';
-import { UserEntity } from '@entities';
 import { Express } from 'express';
 import { ValidationError } from 'express-validator';
 import moment from 'moment';
+import _ from 'lodash';
+import { ProviderStaticMethod } from '@core/providers';
+import { UserEntity } from '@entities';
 
 export class AppLocalsProvider
   implements ProviderStaticMethod<typeof AppLocalsProvider>
@@ -46,14 +47,10 @@ export class AppLocalsProvider
       key: string,
       inputData: Record<string, string>
     ) => {
-      let value = null;
-      if (inputData) {
-        value = app.locals.getUserInput(inputData, key);
+      if (inputData && Array.isArray(inputData) && inputData.length > 0) {
+        return app.locals.getUserInput(inputData, key);
       }
-      if (!value) {
-        value = app.locals.getUserInput(data, key);
-      }
-      return value;
+      return app.locals.getUserInput(data, key);
     };
 
     app.locals.getErrorMessage = (
@@ -67,6 +64,9 @@ export class AppLocalsProvider
     };
 
     app.locals.hasPermission = (user: UserEntity, action: string): boolean => {
+      if (action === 'dashboard:view') {
+        return true;
+      }
       if (user.userRole?.role?.permissions) {
         return user.userRole.role.permissions.some(
           (permission) => permission.action === action
@@ -74,5 +74,7 @@ export class AppLocalsProvider
       }
       return false;
     };
+
+    app.locals.capitalize = _.capitalize;
   }
 }

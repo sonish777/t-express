@@ -8,4 +8,5 @@ import { UserEntity } from '@entities';
 export class UserService extends BaseService<UserEntity> {
   @GetRepository(UserEntity)
   protected readonly repository: Repository<UserEntity>;
+  protected readonly filterColumns = ['firstName', 'lastName'];
 }

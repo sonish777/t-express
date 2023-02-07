@@ -7,8 +7,10 @@ import {
 } from '@validators/user.validator';
 import { UserEntity } from '@entities';
 import { ResourceControllerFactory } from '@core/controllers/resource.controller';
+import { CanAccess } from '@core/controllers/decorators/can-access.decorator';
 
 @Controller('/users')
+@CanAccess
 export class UserController extends ResourceControllerFactory<
   UserEntity,
   UserService

@@ -14,9 +14,6 @@ export class ForbiddenExceptionHandler extends ExceptionHandler {
       return next(error);
     }
     req.flash('error:toast', error.message);
-    if (!req.headers.referer) {
-      return res.redirect('/home');
-    }
     return res.redirect('back');
   }
 }
