@@ -8,6 +8,7 @@ import { RoleService } from '@services/role.service';
 import { CreateRoleValidator } from '@validators/role.validator';
 import { CreateRole } from './interfaces/create-role.interface';
 import { CanAccess } from '@core/controllers/decorators/can-access.decorator';
+import { CatchAsync } from '@core/exceptions/decorators/catch-async.decorator';
 
 @Controller('/roles')
 @CanAccess
@@ -40,6 +41,7 @@ export class RoleController extends ResourceControllerFactory<
     path: '/',
     validators: [CreateRoleValidator],
   })
+  @CatchAsync
   async add(req: TypedBody<CreateRole>, res: Response) {
     await this.service.createRoleWithPermissions(req.body);
     return res.redirect('/roles');

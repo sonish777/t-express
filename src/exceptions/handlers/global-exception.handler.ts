@@ -19,7 +19,16 @@ export class GlobalExceptionHandler extends ExceptionHandler {
         case HttpStatus.NOT_FOUND:
           return res.render('errors/404');
         default:
-          return res.render('errors/500');
+          return res.render(
+            'errors/500',
+            process.env.NODE_ENV === 'development'
+              ? {
+                  errorName: error.name,
+                  errorMessage: error.message,
+                  errorStack: error.stack,
+                }
+              : {}
+          );
       }
     }
     req.flash('error', error.message);
