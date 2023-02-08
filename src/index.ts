@@ -21,6 +21,7 @@ import {
 } from '@exceptions/handlers';
 import { CMSModulesConfig } from '@configs/cms-config';
 import { UnprocessableEntityExceptionHandler } from '@exceptions/handlers/unprocessable-entity-exception.handler';
+import { ApiExceptionHandler } from '@exceptions/handlers/api-exception.handler';
 
 function bootstrap() {
   const server = Server.Instance;
@@ -53,6 +54,7 @@ function bootstrap() {
       { errorToast: (req) => req.flash('error:toast') },
     ],
     exceptionHandlers: [
+      new ApiExceptionHandler(),
       new UnauthorizedExceptionHandler(),
       new UnprocessableEntityExceptionHandler(),
       new ForbiddenExceptionHandler(),

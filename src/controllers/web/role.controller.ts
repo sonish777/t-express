@@ -30,6 +30,7 @@ export class RoleController extends ResourceControllerFactory<
     method: HTTPMethods.Get,
     path: '/create',
   })
+  @CatchAsync
   async create(_req: Request, res: Response) {
     this.page = 'create';
     const data = await this.service.getModulePermissions();
@@ -51,6 +52,7 @@ export class RoleController extends ResourceControllerFactory<
     method: HTTPMethods.Get,
     path: '/:id',
   })
+  @CatchAsync
   async edit(req: Request, res: Response) {
     this.page = 'edit';
     const id = Number(req.params.id);

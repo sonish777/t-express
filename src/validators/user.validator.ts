@@ -21,7 +21,7 @@ export class CreateUserValidator
         .MaxCharacters(25, { fieldDisplayName: 'Last name' })
         .build(),
       email: ValidationBuilder.ForField('email')
-        .Required({ fieldDisplayName: 'email' })
+        .Required({ fieldDisplayName: 'Email' })
         .IsEmail({ fieldDisplayName: 'Email' })
         .Custom(UniqueEmailValidator)
         .build(),

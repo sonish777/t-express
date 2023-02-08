@@ -1,4 +1,4 @@
-import { check, ValidationChain } from 'express-validator';
+import { ValidationChain } from 'express-validator';
 import { Validator } from '../interfaces';
 
 export const customize = (validator: Validator) => {
