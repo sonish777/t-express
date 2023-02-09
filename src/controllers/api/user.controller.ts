@@ -11,6 +11,7 @@ import { HttpStatus } from '@core/utils/http-status-code.util';
 import { CreateUser } from '@controllers/web/interfaces/create-user.interface';
 import { CatchAsync } from '@core/exceptions/decorators/catch-async.decorator';
 import { CreateUserValidator } from '@validators';
+import { APIProtectedRoute } from '@core/controllers/decorators/api-protected-route.decorator';
 
 @ApiController('/users')
 export class ApiUserController extends APIBaseController {
@@ -21,7 +22,7 @@ export class ApiUserController extends APIBaseController {
     super();
   }
 
-  @Route({ method: HTTPMethods.Get, path: '/' })
+  @APIProtectedRoute({ method: HTTPMethods.Get, path: '/' })
   @CatchAsync
   async findAll(req: TypedQuery<CommonSearchQuery>, res: Response) {
     const data = await this.service.paginate({
@@ -30,7 +31,7 @@ export class ApiUserController extends APIBaseController {
     return this.paginate<UserEntity>(res, data);
   }
 
-  @Route({ method: HTTPMethods.Get, path: '/:id' })
+  @APIProtectedRoute({ method: HTTPMethods.Get, path: '/:id' })
   @CatchAsync
   async findById(req: Request, res: Response, next: NextFunction) {
     const id = Number(req.params.id);
@@ -48,7 +49,7 @@ export class ApiUserController extends APIBaseController {
     return this.send(res, user);
   }
 
-  @Route({
+  @APIProtectedRoute({
     method: HTTPMethods.Post,
     path: '/',
     validators: [CreateUserValidator],
