@@ -6,12 +6,12 @@ import { UserEntity } from 'shared/entities';
 
 @Service()
 export class AuthService extends BaseService<UserEntity> {
-  @GetRepository(UserEntity)
-  readonly repository: Repository<UserEntity>;
+    @GetRepository(UserEntity)
+    readonly repository: Repository<UserEntity>;
 
-  async findUserForLogin(username: string) {
-    return this.repository.findOne({
-      where: [{ email: username }, { mobileNumber: username }],
-    });
-  }
+    async findUserForLogin(username: string) {
+        return this.repository.findOne({
+            where: [{ email: username }, { mobileNumber: username }],
+        });
+    }
 }

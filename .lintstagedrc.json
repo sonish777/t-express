@@ -1,4 +1,4 @@
 {
-  "./apps/**/*.{ts,js,json,*rc}": ["npm run prettier:write", "git add ."],
-  "./packages/**/*.{ts,js,json,*rc}": ["npm run prettier:write", "git add ."]
+    "./apps/**/*.{ts,js,json,*rc}": ["npm run prettier:write", "git add ."],
+    "./packages/**/*.{ts,js,json,*rc}": ["npm run prettier:write", "git add ."]
 }

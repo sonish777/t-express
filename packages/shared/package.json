@@ -1,7 +1,7 @@
 {
-  "name": "shared",
-  "version": "0.0.1",
-  "devDependencies": {
-    "tsconfig": "*"
-  }
+    "name": "shared",
+    "version": "0.0.1",
+    "devDependencies": {
+        "tsconfig": "*"
+    }
 }

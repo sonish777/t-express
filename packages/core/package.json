@@ -1,7 +1,7 @@
 {
-  "name": "core",
-  "version": "0.0.1",
-  "devDependencies": {
-    "tsconfig": "*"
-  }
+    "name": "core",
+    "version": "0.0.1",
+    "devDependencies": {
+        "tsconfig": "*"
+    }
 }

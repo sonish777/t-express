@@ -1,9 +1,9 @@
 {
-  "extends": "tsconfig/tsconfig.base.json",
-  "compilerOptions": {
-    "rootDir": "./src",
-    "paths": {
-      "@*": ["./src/*"]
+    "extends": "tsconfig/tsconfig.base.json",
+    "compilerOptions": {
+        "rootDir": "./src",
+        "paths": {
+            "@*": ["./src/*"]
+        }
     }
-  }
 }

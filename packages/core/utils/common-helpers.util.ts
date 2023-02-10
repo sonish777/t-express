@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 
 export const validatePassword = (
-  suppliedPassword: string,
-  hashedPassword: string
+    suppliedPassword: string,
+    hashedPassword: string
 ): Promise<boolean> => {
-  return bcrypt.compare(suppliedPassword, hashedPassword);
+    return bcrypt.compare(suppliedPassword, hashedPassword);
 };

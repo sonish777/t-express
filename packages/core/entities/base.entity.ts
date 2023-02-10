@@ -1,21 +1,21 @@
 import {
-  CreateDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    CreateDateColumn,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
 
 export class BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @CreateDateColumn({
-    default: `now()`,
-  })
-  createdAt: Date;
+    @CreateDateColumn({
+        default: `now()`,
+    })
+    createdAt: Date;
 
-  @UpdateDateColumn({
-    default: `now()`,
-    onUpdate: 'now()',
-  })
-  updatedAt: Date;
+    @UpdateDateColumn({
+        default: `now()`,
+        onUpdate: 'now()',
+    })
+    updatedAt: Date;
 }

@@ -1,4 +1,4 @@
 export interface RoutePrefixes {
-  cmsPrefix?: string;
-  apiPrefix?: string;
+    cmsPrefix?: string;
+    apiPrefix?: string;
 }

@@ -6,26 +6,26 @@ import { postgresDataSource } from '../connections';
 @Entity({ name: 'roles' })
 @SetRepository(postgresDataSource)
 export class RoleEntity extends BaseEntity {
-  @Column()
-  _id: string;
+    @Column()
+    _id: string;
 
-  @Column()
-  name: string;
+    @Column()
+    name: string;
 
-  @Column()
-  slug: string;
+    @Column()
+    slug: string;
 
-  @ManyToMany(() => PermissionEntity)
-  @JoinTable({
-    name: 'role_permissions',
-    joinColumn: {
-      name: 'roleId',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'permissionId',
-      referencedColumnName: 'id',
-    },
-  })
-  permissions: PermissionEntity[];
+    @ManyToMany(() => PermissionEntity)
+    @JoinTable({
+        name: 'role_permissions',
+        joinColumn: {
+            name: 'roleId',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'permissionId',
+            referencedColumnName: 'id',
+        },
+    })
+    permissions: PermissionEntity[];
 }

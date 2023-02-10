@@ -9,19 +9,19 @@ import { CreateUserValidator, UpdateUserValidator } from 'shared/validators';
 @Controller('/users')
 @CanAccess
 export class UserController extends ResourceControllerFactory<
-  UserEntity,
-  UserService
+    UserEntity,
+    UserService
 >({
-  resource: 'users',
-  validators: {
-    create: [CreateUserValidator],
-    update: [UpdateUserValidator],
-  },
+    resource: 'users',
+    validators: {
+        create: [CreateUserValidator],
+        update: [UpdateUserValidator],
+    },
 }) {
-  _title = 'Users';
-  _viewPath = 'users';
+    _title = 'Users';
+    _viewPath = 'users';
 
-  constructor(@Inject() readonly service: UserService) {
-    super(service);
-  }
+    constructor(@Inject() readonly service: UserService) {
+        super(service);
+    }
 }

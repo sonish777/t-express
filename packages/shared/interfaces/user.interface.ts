@@ -1,9 +1,9 @@
 import { IRole } from './role.interface';
 
 export interface IUser {
-  userRole: IUserRole;
+    userRole: IUserRole;
 }
 
 interface IUserRole {
-  role: IRole;
+    role: IRole;
 }

@@ -10,11 +10,11 @@ import { Provider, ProviderWithOptions } from 'core/providers';
  * @returns {MiddlewareProvider<K>}
  */
 export function provideMiddleware<K>(
-  providerClass: Provider,
-  options: K
+    providerClass: Provider,
+    options: K
 ): ProviderWithOptions<K> {
-  return {
-    class: providerClass,
-    options,
-  };
+    return {
+        class: providerClass,
+        options,
+    };
 }

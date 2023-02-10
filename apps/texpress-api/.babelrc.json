@@ -1,20 +1,20 @@
 {
-  "plugins": [
-    [
-      "module-resolver",
-      {
-        "alias": {
-          "@configs": "./src/configs",
-          "@database": "./src/database",
-          "@exceptions": "./src/exceptions",
-          "@providers": "./src/providers",
-          "@services": "./src/services",
-          "@controllers": "./src/controllers",
-          "@web-controllers": "./src/controllers/web",
-          "@api-controllers": "./src/controllers/api",
-          "@validators": "./src/validators"
-        }
-      }
+    "plugins": [
+        [
+            "module-resolver",
+            {
+                "alias": {
+                    "@configs": "./src/configs",
+                    "@database": "./src/database",
+                    "@exceptions": "./src/exceptions",
+                    "@providers": "./src/providers",
+                    "@services": "./src/services",
+                    "@controllers": "./src/controllers",
+                    "@web-controllers": "./src/controllers/web",
+                    "@api-controllers": "./src/controllers/api",
+                    "@validators": "./src/validators"
+                }
+            }
+        ]
     ]
-  ]
 }

@@ -9,52 +9,59 @@ import { PermissionService } from './permission.service';
 
 @Service()
 export class RoleService extends BaseService<RoleEntity> {
-  @GetRepository(RoleEntity)
-  protected readonly repository: Repository<RoleEntity>;
+    @GetRepository(RoleEntity)
+    protected readonly repository: Repository<RoleEntity>;
 
-  constructor(@Inject() private readonly permissionService: PermissionService) {
-    super();
-  }
-
-  async createRoleWithPermissions(payload: CreateRole) {
-    const { name, slug, permissions } = payload;
-    const role = await this.create({ name, slug });
-    const rolePermissions = await this.permissionService.getPermissionInIds(
-      permissions.map((p) => Number(p))
-    );
-    role.permissions = rolePermissions;
-    return this.repository.save(role);
-  }
-
-  getModulePermissions() {
-    return this.permissionService.getModulePermissions();
-  }
-
-  async update(
-    id: number,
-    payload: DeepPartial<RoleEntity>
-  ): Promise<RoleEntity> {
-    const entity = await this.repository.findOne({
-      where: {
-        id,
-      },
-    });
-    if (!entity) {
-      throw new HttpException(400, 'Role not found', 'NotFoundException', true);
+    constructor(
+        @Inject() private readonly permissionService: PermissionService
+    ) {
+        super();
     }
-    if (!payload.permissions) {
-      payload.permissions = [];
+
+    async createRoleWithPermissions(payload: CreateRole) {
+        const { name, slug, permissions } = payload;
+        const role = await this.create({ name, slug });
+        const rolePermissions = await this.permissionService.getPermissionInIds(
+            permissions.map((p) => Number(p))
+        );
+        role.permissions = rolePermissions;
+        return this.repository.save(role);
     }
-    if (!Array.isArray(payload.permissions)) {
-      payload.permissions = [payload.permissions];
+
+    getModulePermissions() {
+        return this.permissionService.getModulePermissions();
     }
-    const rolePermissions = await this.permissionService.getPermissionInIds(
-      payload.permissions.map((p) => Number(p))
-    );
-    return this.repository.save({
-      ...entity,
-      ...payload,
-      permissions: rolePermissions,
-    });
-  }
+
+    async update(
+        id: number,
+        payload: DeepPartial<RoleEntity>
+    ): Promise<RoleEntity> {
+        const entity = await this.repository.findOne({
+            where: {
+                id,
+            },
+        });
+        if (!entity) {
+            throw new HttpException(
+                400,
+                'Role not found',
+                'NotFoundException',
+                true
+            );
+        }
+        if (!payload.permissions) {
+            payload.permissions = [];
+        }
+        if (!Array.isArray(payload.permissions)) {
+            payload.permissions = [payload.permissions];
+        }
+        const rolePermissions = await this.permissionService.getPermissionInIds(
+            payload.permissions.map((p) => Number(p))
+        );
+        return this.repository.save({
+            ...entity,
+            ...payload,
+            permissions: rolePermissions,
+        });
+    }
 }
