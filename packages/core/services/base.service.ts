@@ -41,7 +41,7 @@ export class BaseService<K extends BaseEntity> {
       },
     });
     if (!entity) {
-      throw new HttpException(400, 'User not found', "NotFoundException", true);
+      throw new HttpException(400, 'User not found', 'NotFoundException', true);
     }
     return this.repository.save({
       ...entity,
@@ -56,7 +56,7 @@ export class BaseService<K extends BaseEntity> {
       },
     });
     if (!entity) {
-      throw new HttpException(400, 'User not found', "NotFoundException", true);
+      throw new HttpException(400, 'User not found', 'NotFoundException', true);
     }
     return this.repository.remove(entity);
   }

@@ -1,8 +1,8 @@
 node_modules
 dist
 .env
-**/config/*.ts
-!**/config/*.example.ts
+**/config/*.json
+!**/config/*.example.json
 
 /public/**
 !public/theme

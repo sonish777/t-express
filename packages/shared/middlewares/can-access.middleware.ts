@@ -15,8 +15,7 @@ export const canAccess =
       const url = _.trimEnd(req.baseUrl + req.route.path, '/');
       const method = req.method?.toLowerCase();
       const canAccess = user.userRole.role.permissions.some(
-        (permission) =>
-          permission.route === url && permission.method === method
+        (permission) => permission.route === url && permission.method === method
       );
       if (!canAccess) {
         return next(new ForbiddenException());
