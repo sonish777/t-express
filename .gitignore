@@ -4,10 +4,10 @@ dist
 **/config/*.json
 !**/config/*.example.json
 
-/public/**
-!public/theme
-!public/theme/**
-!public/backend
-!public/backend/**
+**/public/**
+!**/public/theme
+!**/blic/theme/**
+!**/public/backend
+!**/public/backend/**
 
 .turbo
