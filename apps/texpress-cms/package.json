@@ -1,0 +1,32 @@
+{
+  "name": "texpress-cms",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js",
+    "build": "babel src --root-mode upward --out-dir dist --extensions \".ts,.tsx\" --copy-files",
+    "build:dev": "babel src --root-mode upward --out-dir dist --extensions \".ts,.tsx\" --source-maps inline --watch --copy-files",
+    "dev": "rimraf ./dist/ && cross-env NODE_ENV=development concurrently \"npm run build:dev\" \"nodemon dist/index.js\"",
+    "build:tsc": "npx tsc",
+    "dev:tsc": "concurrently \"npx tsc --watch\" \"nodemon dist/index.js\"",
+    "prettier:check": "prettier --check .",
+    "prettier:write": "prettier --write .",
+    "typeorm": "cross-var ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js",
+    "migration:create": "npm run typeorm migration:create ./src/database/migrations/$npm_config_name",
+    "migration:run": "npm run typeorm migration:run -- -d ../../packages/shared/connections/postgres.ts",
+    "migration:rollback": "npm run typeorm migration:revert -- -d ../../packages/shared/connections/postgres.ts",
+    "seed": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm-seeding/dist/cli.js --configName ../../packages/shared/connections/postgres.ts seed",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky install",
+    "precommit": "npm run lint && lint-staged"
+  },
+  "dependencies": {
+    "core": "*",
+    "shared": "*"
+  },
+  "devDependencies": {
+    "tsconfig": "*"
+  }
+}

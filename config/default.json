@@ -1,6 +1,7 @@
 {
   "server": {
-    "port": 8000
+    "cms:port": 8000,
+    "api:port": 8001
   },
   "database": {
     "host": "localhost",

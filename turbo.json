@@ -1,0 +1,14 @@
+{
+  "pipeline": {
+    "dev": {
+      "cache": false
+    },
+    "build": {
+      "outputs": ["dist/**"]
+    },
+    "migration:create": { "cache": false },
+    "migration:run": { "cache": false },
+    "migration:rollback": { "cache": false },
+    "seed": { "cache": false }
+  }
+}
