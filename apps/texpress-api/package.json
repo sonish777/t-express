@@ -7,7 +7,7 @@
         "start": "node dist/index.js",
         "build": "babel src --root-mode upward --out-dir dist --extensions \".ts,.tsx\" --copy-files",
         "build:dev": "babel src --root-mode upward --out-dir dist --extensions \".ts,.tsx\" --source-maps inline --watch --copy-files",
-        "dev": "rimraf ./dist/ && cross-env NODE_ENV=development concurrently \"npm run build:dev\" \"nodemon dist/index.js\"",
+        "dev": "rimraf ./dist/ && cross-env NODE_ENV=development concurrently \"npm run build:dev\" \"wait-on dist/index.js && nodemon\"",
         "prettier:check": "prettier --check .",
         "prettier:write": "prettier --write .",
         "typeorm": "cross-var ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js",
@@ -16,6 +16,9 @@
         "lint:fix": "eslint . --fix",
         "prepare": "husky install",
         "precommit": "npm run lint && lint-staged"
+    },
+    "nodemonConfig": {
+        "exec": "ts-node ./dist/index.js"
     },
     "dependencies": {
         "core": "*",
