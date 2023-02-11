@@ -17,6 +17,8 @@
         "precommit": "npm run lint && lint-staged",
         "dev": "turbo run dev --parallel",
         "build": "turbo run build",
+        "clean": "turbo run clean",
+        "build:tsc": "turbo run build:tsc",
         "migration:create": "turbo run migration:create --filter=texpress-cms --",
         "migration:run": "turbo run migration:run --filter=texpress-cms",
         "migration:rollback": "turbo run migration:rollback --filter=texpress-cms",

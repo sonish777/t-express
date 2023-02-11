@@ -1,6 +1,13 @@
 {
     "name": "shared",
     "version": "0.0.1",
+    "scripts": {
+        "clean": "rimraf dist .turbo",
+        "build:tsc": "npx tsc",
+        "dev": "rimraf ./dist/ && cross-env NODE_ENV=development npm run build:dev",
+        "build:dev": "babel . --root-mode upward --out-dir dist --extensions \".ts,.tsx\" --source-maps inline --watch --copy-files",
+        "build": "babel . --root-mode upward --out-dir dist --extensions \".ts,.tsx\" --copy-files"
+    },
     "devDependencies": {
         "tsconfig": "*"
     }
