@@ -1,6 +1,9 @@
 {
     "name": "core",
     "version": "0.0.1",
+    "main": "./dist/server.js",
+    "types": "./dist/server.d.ts",
+    "source": "./server.ts",
     "scripts": {
         "clean": "rimraf dist .turbo",
         "build:tsc": "npx tsc",

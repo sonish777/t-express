@@ -17,7 +17,7 @@ export class ApiExceptionHandler extends ExceptionHandler {
         _next: NextFunction
     ): Response<APIErrorPayload | APIValidationErrorPayload> {
         if (!req.headers.accept || req.headers.accept !== 'application/json') {
-            res.sendStatus(HttpStatus.BAD_REQUEST);
+            return res.sendStatus(HttpStatus.BAD_REQUEST);
         }
         return res
             .status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR)
