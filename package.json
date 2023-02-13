@@ -14,7 +14,7 @@
         "lint": "eslint ./apps && eslint ./packages",
         "lint:fix": "eslint ./apps --fix && eslint ./packages --fix",
         "prepare": "husky install",
-        "precommit": "npm run lint && lint-staged && git add .",
+        "precommit": "lint-staged",
         "dev": "turbo run dev --parallel",
         "build": "turbo run build",
         "clean": "turbo run clean",
