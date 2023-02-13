@@ -16,9 +16,6 @@ import {
 
 function bootstrap() {
     const server = new Server(controllers);
-
-    console.log('TEST');
-
     const middlewares: Handler[] = [methodOverride('_method')];
     server.startup(Number(ServerConfig.PORT), {
         middlewares: [...middlewares],
