@@ -62,8 +62,7 @@
         "pg-hstore": "^2.3.4",
         "reflect-metadata": "^0.1.13",
         "typedi": "^0.10.0",
-        "typeorm": "^0.3.11",
-        "typeorm-seeding": "^1.6.1"
+        "typeorm": "^0.3.11"
     },
     "devDependencies": {
         "@babel/cli": "^7.20.7",
