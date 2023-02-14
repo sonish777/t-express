@@ -11,10 +11,6 @@
         "lint": { "cache": true },
         "lint:fix": { "cache": true },
         "clean": { "cache": false },
-        "build:tsc": { "cache": false, "outputs": ["dist/**"] },
-        "migration:create": { "cache": false },
-        "migration:run": { "cache": false },
-        "migration:rollback": { "cache": false },
-        "seed": { "cache": false }
+        "build:tsc": { "cache": false, "outputs": ["dist/**"] }
     }
 }

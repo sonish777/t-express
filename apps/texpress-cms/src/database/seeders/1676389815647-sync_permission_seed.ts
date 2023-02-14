@@ -1,13 +1,12 @@
 import { CMSModulesConfig } from '@cms/configs';
 import { PermissionEntity, RoleEntity } from 'shared/entities';
-import { DataSource, DeepPartial } from 'typeorm';
-import { Factory, Seeder } from 'typeorm-seeding';
+import { DeepPartial, MigrationInterface, QueryRunner } from 'typeorm';
 
-export class SyncPermissionsSeeder implements Seeder {
-    async run(_factory: Factory, dataSource: DataSource): Promise<void> {
+export class syncPermissionSeed1676389815647 implements MigrationInterface {
+    public async up(queryRunner: QueryRunner): Promise<void> {
         const permissionsRepository =
-            dataSource.getRepository(PermissionEntity);
-        const roleRepository = dataSource.getRepository(RoleEntity);
+            queryRunner.manager.getRepository(PermissionEntity);
+        const roleRepository = queryRunner.manager.getRepository(RoleEntity);
         await permissionsRepository.query(
             `TRUNCATE TABLE public.permissions RESTART IDENTITY CASCADE;`
         );
@@ -32,5 +31,9 @@ export class SyncPermissionsSeeder implements Seeder {
         }
         superAdminRole.permissions = syncedPermissions;
         await roleRepository.save(superAdminRole);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.manager.getRepository(PermissionEntity).delete({});
     }
 }

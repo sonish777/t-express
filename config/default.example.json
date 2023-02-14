@@ -1,5 +1,7 @@
 {
     "server": {
+        "cms:host": "http://localhost",
+        "api:host": "http://localhost",
         "cms:port": 8000,
         "api:port": 8001
     },

@@ -1,5 +1,4 @@
 {
-    "extends": "../../tsconfig.paths.json",
     "compilerOptions": {
         "target": "es2015",
         "experimentalDecorators": true,
@@ -12,6 +11,12 @@
         "strict": true,
         "strictPropertyInitialization": false,
         "noImplicitThis": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "paths": {
+            "core/*": ["../core/src/*"],
+            "shared/*": ["../shared/src/*"],
+            "@cms/*": ["../../apps/texpress-cms/src/*"],
+            "@api/*": ["../../apps/texpress-api/src/*"]
+        }
     }
 }

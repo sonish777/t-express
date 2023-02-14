@@ -19,10 +19,13 @@
         "build": "turbo run build",
         "clean": "turbo run clean",
         "build:tsc": "turbo run build:tsc",
-        "migration:create": "turbo run migration:create --filter=texpress-cms --",
-        "migration:run": "turbo run migration:run --filter=texpress-cms",
-        "migration:rollback": "turbo run migration:rollback --filter=texpress-cms",
-        "seed": "turbo run seed --filter=texpress-cms"
+        "typeorm": "cross-var ts-node --project ./packages/tsconfig/tsconfig.base.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+        "migration:create": "npm run typeorm migration:create ./apps/texpress-cms/src/database/migrations/$npm_config_name",
+        "seeder:create": "npm run typeorm migration:create ./apps/texpress-cms/src/database/seeders/$npm_config_name",
+        "migration:run": "npm run typeorm migration:run -- -d ./packages/shared/src/data-sources/migration.data-source.ts",
+        "seeder:run": "npm run typeorm migration:run -- -d ./packages/shared/src/data-sources/seeder.data-source.ts",
+        "migration:rollback": "npm run typeorm migration:revert -- -d ./packages/shared/src/data-sources/migration.data-source.ts",
+        "seeder:rollback": "npm run typeorm migration:revert -- -d ./packages/shared/src/data-sources/seeder.data-source.ts"
     },
     "repository": {
         "type": "git",
