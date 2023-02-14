@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import passport from 'passport';
 import { BaseController, Controller, Route } from 'core/controllers';
 import { HTTPMethods } from 'core/utils';
-import { redirectIfLoggedIn } from 'shared/middlewares/auth.middleware';
+import { redirectIfLoggedIn } from 'shared/middlewares';
 
 @Controller('/auth')
 export class AuthController extends BaseController {

@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { Inject } from 'typedi';
 import { Controller, ProtectedRoute, TypedBody } from 'core/controllers';
-import { ResourceControllerFactory } from 'core/controllers/resource.controller';
+import { ResourceControllerFactory } from 'core/controllers';
 import { HTTPMethods } from 'core/utils';
-import { RoleService } from '@services/role.service';
-import { CanAccess } from 'core/controllers/decorators/can-access.decorator';
-import { CatchAsync } from 'core/exceptions/decorators/catch-async.decorator';
+import { RoleService } from '@cms/services/role.service';
+import { CanAccess } from 'core/controllers';
+import { CatchAsync } from 'core/exceptions';
 import { RoleEntity } from 'shared/entities';
 import { CreateRoleValidator } from 'shared/validators';
 import { CreateRole } from 'shared/dtos';

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { ExceptionHandler } from 'core/exceptions/handlers';
-import { HttpStatus } from 'core/utils/http-status-code.util';
+import { ExceptionHandler } from 'core/exceptions';
+import { HttpStatus } from 'core/utils';
 import { UnprocessableEntityException } from 'shared/exceptions';
 import { ValidationError } from 'express-validator';
 

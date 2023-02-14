@@ -4,17 +4,7 @@
             "module-resolver",
             {
                 "alias": {
-                    "@configs": "./src/configs",
-                    "@database": "./src/database",
-                    "@entities": "./src/entities",
-                    "@exceptions": "./src/exceptions",
-                    "@providers": "./src/providers",
-                    "@services": "./src/services",
-                    "@controllers": "./src/controllers",
-                    "@web-controllers": "./src/controllers/web",
-                    "@api-controllers": "./src/controllers/api",
-                    "@validators": "./src/validators",
-                    "@views": "./src/views"
+                    "@cms": "./src"
                 }
             }
         ]

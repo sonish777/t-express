@@ -8,18 +8,18 @@ import {
     PassportProvider,
     ViewEngineOptions,
     ViewEngineProvider,
-} from '@providers';
-import { AppLocalsProvider } from '@providers';
+} from '@cms/providers';
+import { AppLocalsProvider } from '@cms/providers';
 import 'shared/connections';
 import {
     ForbiddenExceptionHandler,
     GlobalExceptionHandler,
     UnauthorizedExceptionHandler,
-} from '@exceptions/handlers';
-import { CMSModulesConfig } from '@configs/cms.config';
-import { UnprocessableEntityExceptionHandler } from '@exceptions/handlers/unprocessable-entity-exception.handler';
-import * as controllers from '@controllers';
-import { ServerConfig } from '@configs';
+} from '@cms/exceptions/handlers';
+import { CMSModulesConfig } from '@cms/configs/cms.config';
+import { UnprocessableEntityExceptionHandler } from '@cms/exceptions/handlers/unprocessable-entity-exception.handler';
+import * as controllers from '@cms/controllers';
+import { ServerConfig } from '@cms/configs';
 import {
     CORSProvider,
     StaticServeProvider,

@@ -1,4 +1,4 @@
-import { CMSModulesConfig } from '@configs';
+import { CMSModulesConfig } from '@cms/configs';
 import { PermissionEntity, RoleEntity } from 'shared/entities';
 import { DataSource, DeepPartial } from 'typeorm';
 import { Factory, Seeder } from 'typeorm-seeding';

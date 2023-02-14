@@ -1,6 +1,6 @@
 import { HttpException } from 'core/exceptions';
-import { ExceptionHandler } from 'core/exceptions/handlers';
-import { HttpStatus } from 'core/utils/http-status-code.util';
+import { ExceptionHandler } from 'core/exceptions';
+import { HttpStatus } from 'core/utils';
 import { Request, Response, NextFunction } from 'express';
 
 export class UnauthorizedExceptionHandler extends ExceptionHandler {

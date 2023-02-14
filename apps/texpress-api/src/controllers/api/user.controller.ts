@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import { ApiController, TypedBody } from 'core/controllers';
 import { HTTPMethods } from 'core/utils';
-import { UserService } from '@services';
-import { APIBaseController } from 'core/controllers/api-base.controller';
+import { UserService } from '@api/services';
+import { APIBaseController } from 'core/controllers';
 import { UserEntity } from 'shared/entities';
-import { TypedQuery } from 'core/controllers/interfaces/typed-query.interface';
+import { TypedQuery } from 'core/controllers';
 import { CommonSearchQuery } from 'core/interfaces';
 import { HttpException } from 'core/exceptions';
-import { HttpStatus } from 'core/utils/http-status-code.util';
+import { HttpStatus } from 'core/utils';
 import { CreateUser } from 'shared/dtos';
-import { CatchAsync } from 'core/exceptions/decorators/catch-async.decorator';
-import { APIProtectedRoute } from 'core/controllers/decorators/api-protected-route.decorator';
+import { CatchAsync } from 'core/exceptions';
+import { APIProtectedRoute } from 'core/controllers';
 import { CreateUserValidator } from 'shared/validators';
 
 @ApiController('/users')

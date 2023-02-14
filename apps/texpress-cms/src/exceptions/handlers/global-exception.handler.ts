@@ -1,6 +1,6 @@
 import { HttpException } from 'core/exceptions';
-import { ExceptionHandler } from 'core/exceptions/handlers';
-import { HttpStatus } from 'core/utils/http-status-code.util';
+import { ExceptionHandler } from 'core/exceptions';
+import { HttpStatus } from 'core/utils';
 import { NextFunction, Request, Response } from 'express';
 
 export class GlobalExceptionHandler extends ExceptionHandler {
@@ -10,10 +10,6 @@ export class GlobalExceptionHandler extends ExceptionHandler {
         res: Response,
         _next: NextFunction
     ): void {
-        console.log(
-            '🚀 ~ file: global-exception.handler.ts:13 ~ GlobalExceptionHandler ~ error',
-            error
-        );
         if (!error.isOperational) {
             switch (error.statusCode) {
                 case HttpStatus.NOT_FOUND:

@@ -3,7 +3,7 @@ import {
     APIErrorPayload,
     APIValidationErrorPayload,
     ValidationErrorsArray,
-} from '@exceptions/interfaces';
+} from '@api/exceptions/interfaces';
 import { UnprocessableEntityException } from 'shared/exceptions';
 import { ValidationError } from 'express-validator';
 import _ from 'lodash';

@@ -3,16 +3,16 @@ import path from 'path';
 import methodOverride from 'method-override';
 import { Server } from 'core/server';
 import { provideMiddleware } from 'core/utils';
-import { PassportProvider } from '@providers';
 import 'shared/connections';
-import { ApiExceptionHandler } from '@exceptions/handlers';
-import * as controllers from '@controllers';
-import { ServerConfig } from '@configs';
+import * as controllers from '@api/controllers';
+import { ServerConfig } from '@api/configs';
 import {
     CORSProvider,
     StaticServeProvider,
     StaticServeProviderOptions,
 } from 'shared/providers';
+import { PassportProvider } from '@api/providers';
+import { ApiExceptionHandler } from '@api/exceptions/handlers';
 
 function bootstrap() {
     const server = new Server(controllers);

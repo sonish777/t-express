@@ -1,8 +1,8 @@
 import { Route, ApiController, TypedBody } from 'core/controllers';
-import { APIBaseController } from 'core/controllers/api-base.controller';
+import { APIBaseController } from 'core/controllers';
 import { HTTPMethods, validatePassword } from 'core/utils';
 import { UnauthorizedException } from 'shared/exceptions';
-import { AuthService } from '@services';
+import { AuthService } from '@api/services';
 import { NextFunction, Response } from 'express';
 import { Login } from './interfaces/login.interface';
 import jwt from 'jsonwebtoken';

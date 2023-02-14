@@ -14,13 +14,7 @@
         "prettier:write": "prettier --write .",
         "typeorm": "cross-var ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js",
         "seed": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm-seeding/dist/cli.js --configName ../../packages/shared/connections/postgres.ts seed",
-        "lint": "eslint .",
-        "lint:fix": "eslint . --fix",
-        "prepare": "husky install",
-        "precommit": "npm run lint && lint-staged"
-    },
-    "nodemonConfig": {
-        "exec": "ts-node ./dist/index.js"
+        "lint": "eslint ./src"
     },
     "dependencies": {
         "core": "*",

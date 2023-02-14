@@ -5,7 +5,7 @@ import {
     Strategy as LocalStrategy,
     IStrategyOptionsWithRequest,
 } from 'passport-local';
-import { AuthService } from '@services';
+import { AuthService } from '@cms/services';
 import { UserEntity } from 'shared/entities';
 import { UnauthorizedException } from 'shared/exceptions';
 import { validatePassword } from 'core/utils';

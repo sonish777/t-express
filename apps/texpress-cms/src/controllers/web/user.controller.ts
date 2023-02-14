@@ -1,8 +1,7 @@
 import { Inject } from 'typedi';
-import { UserService } from '@services';
-import { Controller } from 'core/controllers';
-import { ResourceControllerFactory } from 'core/controllers/resource.controller';
-import { CanAccess } from 'core/controllers/decorators/can-access.decorator';
+import { UserService } from '@cms/services';
+import { Controller, CanAccess } from 'core/controllers';
+import { ResourceControllerFactory } from 'core/controllers';
 import { UserEntity } from 'shared/entities';
 import { CreateUserValidator, UpdateUserValidator } from 'shared/validators';
 

@@ -1,11 +1,15 @@
 {
     "pipeline": {
         "dev": {
-            "cache": false
+            "cache": false,
+            "persistent": true
         },
         "build": {
+            "dependsOn": ["^build"],
             "outputs": ["dist/**"]
         },
+        "lint": { "cache": true },
+        "lint:fix": { "cache": true },
         "clean": { "cache": false },
         "build:tsc": { "cache": false, "outputs": ["dist/**"] },
         "migration:create": { "cache": false },
