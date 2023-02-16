@@ -67,6 +67,16 @@ export class addApiUsersTable1676047777753 implements MigrationInterface {
                         default: `'inactive'`,
                     },
                     {
+                        name: 'token',
+                        type: 'varchar',
+                        isNullable: true,
+                    },
+                    {
+                        name: 'tokenExpiry',
+                        type: 'timestamp',
+                        isNullable: true,
+                    },
+                    {
                         name: 'createdAt',
                         type: 'timestamp',
                         default: 'now()',

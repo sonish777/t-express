@@ -17,7 +17,7 @@ import {
     UnauthorizedExceptionHandler,
 } from '@cms/exceptions/handlers';
 import { CMSModulesConfig } from '@cms/configs/cms.config';
-import { UnprocessableEntityExceptionHandler } from '@cms/exceptions/handlers/unprocessable-entity-exception.handler';
+import { UnprocessableEntityExceptionHandler } from '@cms/exceptions/handlers';
 import * as controllers from '@cms/controllers';
 import { ServerConfig } from '@cms/configs';
 import {

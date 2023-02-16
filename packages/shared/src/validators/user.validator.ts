@@ -2,13 +2,14 @@ import { ValidationBuilder } from 'core/utils';
 import { ValidatorWithStaticProps } from 'core/validators';
 import { customize } from 'core/validators';
 import { ValidationChain } from 'express-validator';
-import { UniqueEmailValidator } from './customs';
+import { UniqueUserEmailValidator } from './customs';
 import { GenderValidator } from './customs/gender.validator';
+import { UniqueApiUserEmailValidator } from './customs/unique-email.validator';
 
 export class CreateUserValidator
     implements ValidatorWithStaticProps<typeof CreateUserValidator>
 {
-    static get rules(): Record<string, ValidationChain[]> {
+    static get rules(): Record<string, ValidationChain> {
         return {
             firstName: ValidationBuilder.ForField('firstName')
                 .Required({ fieldDisplayName: 'First name' })
@@ -23,7 +24,7 @@ export class CreateUserValidator
             email: ValidationBuilder.ForField('email')
                 .Required({ fieldDisplayName: 'Email' })
                 .IsEmail({ fieldDisplayName: 'Email' })
-                .Custom(UniqueEmailValidator)
+                .Custom(UniqueUserEmailValidator)
                 .build(),
             mobileNumber: ValidationBuilder.ForField('mobileNumber')
                 .MinCharacters(7, { fieldDisplayName: 'Mobile number' })
@@ -34,6 +35,7 @@ export class CreateUserValidator
                 .build(),
             password: ValidationBuilder.ForField('password')
                 .MinCharacters(8, { fieldDisplayName: 'password' })
+                .MaxCharacters(20, { fieldDisplayName: 'password' })
                 .build(),
             gender: ValidationBuilder.ForField('gender')
                 .Custom(GenderValidator)
@@ -42,6 +44,17 @@ export class CreateUserValidator
     }
 }
 
-const validationCustomizer = customize(CreateUserValidator);
-validationCustomizer.removeRules(['password']);
-export const UpdateUserValidator = validationCustomizer.done();
+const updateUserValidatorCustomizer = customize(CreateUserValidator);
+updateUserValidatorCustomizer.makeOptional(['password']);
+export const UpdateUserValidator = updateUserValidatorCustomizer.done();
+
+const createApiUserValidatorCustomizer = customize(CreateUserValidator);
+createApiUserValidatorCustomizer.replace(
+    'email',
+    ValidationBuilder.ForField('email')
+        .Required({ fieldDisplayName: 'Email' })
+        .IsEmail({ fieldDisplayName: 'Email' })
+        .Custom(UniqueApiUserEmailValidator)
+        .build()
+);
+export const CreateApiUserValidator = createApiUserValidatorCustomizer.done();

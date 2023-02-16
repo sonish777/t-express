@@ -22,7 +22,7 @@ export const getMessage = (
 
 export class ValidationBuilder {
     private static _field: string;
-    private static _validators: ValidationChain[];
+    private static _validators: ValidationChain;
 
     private constructor() {
         throw new Error('This class cannot be instantiated');
@@ -34,34 +34,30 @@ export class ValidationBuilder {
 
     static ForField(field: string) {
         this._field = field;
-        this._validators = [];
+        this._validators = check(this._field);
         return this;
     }
 
     static Required(options: ValidationOptions = {}) {
-        this._validators.push(
-            check(this._field)
-                .notEmpty()
-                .withMessage(
-                    options.message ??
-                        getMessage(ValidationMessages.required, {
-                            field: options.fieldDisplayName ?? this._field,
-                        })
-                )
+        this._validators.notEmpty().withMessage(
+            options.message ??
+                getMessage(ValidationMessages.required, {
+                    field: options.fieldDisplayName ?? this._field,
+                })
         );
         return this;
     }
 
+    static IsOptional() {
+        this._validators.if((value: any) => value);
+    }
+
     static IsEmail(options: ValidationOptions = {}) {
-        this._validators.push(
-            check(this._field)
-                .isEmail()
-                .withMessage(
-                    options.message ??
-                        getMessage(ValidationMessages.email, {
-                            field: options.fieldDisplayName ?? this._field,
-                        })
-                )
+        this._validators.isEmail().withMessage(
+            options.message ??
+                getMessage(ValidationMessages.email, {
+                    field: options.fieldDisplayName ?? this._field,
+                })
         );
         return this;
     }
@@ -78,33 +74,29 @@ export class ValidationBuilder {
 
     static Custom(validator: new (...args: any[]) => CustomValidator) {
         const validatorInstance = new validator();
-        this._validators.push(
-            check(this._field).custom(
-                validatorInstance.validate.bind(validatorInstance)
-            )
+        this._validators.custom(
+            validatorInstance.validate.bind(validatorInstance)
         );
         return this;
     }
 
     static IsDate(options: ValidationOptions = {}) {
-        this._validators.push(
-            check(this._field)
-                .custom((value: string) => {
-                    return moment(value).isValid();
-                })
-                .withMessage(
-                    options.message ??
-                        getMessage(ValidationMessages.date, {
-                            field: options.fieldDisplayName || this._field,
-                        })
-                )
-        );
+        this._validators
+            .custom((value: string) => {
+                return moment(value).isValid();
+            })
+            .withMessage(
+                options.message ??
+                    getMessage(ValidationMessages.date, {
+                        field: options.fieldDisplayName || this._field,
+                    })
+            );
         return this;
     }
 
     static CheckSchema(schema: Schema) {
-        this._validators.push(...checkSchema(schema));
-        return this;
+        // this._validators.push(...checkSchema(schema));
+        // return this;
     }
 
     private static checkLength(
@@ -112,16 +104,12 @@ export class ValidationBuilder {
         length: number,
         options: ValidationOptions = {}
     ) {
-        this._validators.push(
-            check(this._field)
-                .isLength({ [minOrMax]: length })
-                .withMessage(
-                    options.message ??
-                        getMessage(ValidationMessages[minOrMax], {
-                            field: options.fieldDisplayName ?? this._field,
-                            min: length,
-                        })
-                )
+        this._validators.isLength({ [minOrMax]: length }).withMessage(
+            options.message ??
+                getMessage(ValidationMessages[minOrMax], {
+                    field: options.fieldDisplayName ?? this._field,
+                    [minOrMax]: length,
+                })
         );
         return this;
     }

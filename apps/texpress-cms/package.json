@@ -13,11 +13,6 @@
         "dev:tsc": "concurrently \"npx tsc --watch\" \"nodemon dist/index.js\"",
         "prettier:check": "prettier --check .",
         "prettier:write": "prettier --write .",
-        "typeorm": "cross-var ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js",
-        "migration:create": "npm run typeorm migration:create ./src/database/migrations/$npm_config_name",
-        "migration:run": "npm run typeorm migration:run -- -d ../../packages/shared/src/connections/postgres.ts",
-        "migration:rollback": "npm run typeorm migration:revert -- -d ../../packages/shared/connections/postgres.ts",
-        "seed": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm-seeding/dist/cli.js --configName ../../packages/shared/connections/postgres.ts seed",
         "lint": "eslint ./src"
     },
     "dependencies": {

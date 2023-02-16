@@ -21,6 +21,7 @@
         "./interfaces": "./dist/interfaces/index.js",
         "./middlewares": "./dist/middlewares/index.js",
         "./providers": "./dist/providers/index.js",
-        "./validators": "./dist/validators/index.js"
+        "./validators": "./dist/validators/index.js",
+        "./utils": "./dist/utils/index.js"
     }
 }

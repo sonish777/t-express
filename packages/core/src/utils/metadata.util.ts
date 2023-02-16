@@ -5,3 +5,7 @@ export enum ControllerMetadataKeys {
     IS_FALLBACK = 'is_fallback',
     CHECK_PERMISSIONS = 'check_permissions',
 }
+
+export enum DTOMetadataKey {
+    DTO_PARAMETER_INDICES = 'dto_parameter_indices',
+}

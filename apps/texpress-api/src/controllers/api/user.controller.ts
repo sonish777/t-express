@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { ApiController, TypedBody } from 'core/controllers';
 import { HTTPMethods } from 'core/utils';
-import { UserService } from '@api/services';
+import { ApiUserService } from '@api/services';
 import { APIBaseController } from 'core/controllers';
-import { UserEntity } from 'shared/entities';
+import { ApiUserEntity } from 'shared/entities';
 import { TypedQuery } from 'core/controllers';
 import { CommonSearchQuery } from 'core/interfaces';
 import { HttpException } from 'core/exceptions';
@@ -18,7 +18,7 @@ export class ApiUserController extends APIBaseController {
     protected title = 'Users';
     protected module = 'users';
 
-    constructor(private readonly service: UserService) {
+    constructor(private readonly service: ApiUserService) {
         super();
     }
 
@@ -28,7 +28,7 @@ export class ApiUserController extends APIBaseController {
         const data = await this.service.paginate({
             ...req.query,
         });
-        return this.paginate<UserEntity>(res, data);
+        return this.paginate<ApiUserEntity>(res, data);
     }
 
     @APIProtectedRoute({ method: HTTPMethods.Get, path: '/:id' })

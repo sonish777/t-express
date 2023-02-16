@@ -11,5 +11,9 @@
         "username": "postgres",
         "password": "test",
         "database_name": "texpress"
+    },
+    "jwt": {
+        "secret": "t3X:pR3Ss",
+        "expirationTime": 900
     }
 }

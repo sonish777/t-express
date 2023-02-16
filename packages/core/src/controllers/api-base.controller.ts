@@ -17,6 +17,10 @@ export abstract class APIBaseController {
         return res.status(HttpStatus.CREATED).json(payload);
     }
 
+    public deleted(res: Response) {
+        return res.sendStatus(HttpStatus.NO_CONTENT);
+    }
+
     public send<PayloadType>(
         res: Response<{ data: PayloadType }>,
         payload: PayloadType

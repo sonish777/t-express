@@ -41,6 +41,7 @@
         "@types/config": "^3.3.0",
         "@types/sequelize": "^4.28.14",
         "bcrypt": "^5.1.0",
+        "class-transformer": "^0.5.1",
         "config": "^3.3.9",
         "connect-flash": "^0.1.1",
         "cookie-parser": "^1.4.6",
