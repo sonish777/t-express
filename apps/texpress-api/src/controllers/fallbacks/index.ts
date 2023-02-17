@@ -11,6 +11,13 @@ export class FallbackController {
         method: HTTPMethods.All,
     })
     handleFallback(_req: Request, _res: Response, next: NextFunction) {
-        return next(new HttpException(HttpStatus.NOT_FOUND, 'Not found'));
+        return next(
+            new HttpException(
+                HttpStatus.NOT_FOUND,
+                'Not found',
+                'Fallback',
+                false
+            )
+        );
     }
 }

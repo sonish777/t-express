@@ -1,6 +1,11 @@
+import {
+    ClassConstructor,
+    ClassTransformOptions,
+    plainToClass,
+} from 'class-transformer';
 import { BaseEntity } from 'core/entities';
 import { HttpException } from 'core/exceptions';
-import { CommonSearchQuery } from 'core/interfaces';
+import { Class, CommonSearchQuery } from 'core/interfaces';
 import { PaginationResponse } from 'core/interfaces';
 import {
     Repository,
@@ -9,8 +14,8 @@ import {
     SelectQueryBuilder,
 } from 'typeorm';
 
-export class BaseService<K extends BaseEntity> {
-    protected readonly repository: Repository<K>;
+export abstract class BaseService<K extends BaseEntity> {
+    protected abstract readonly repository: Repository<K>;
     protected readonly filterColumns: string[] = [];
 
     findAll(): Promise<K[]> {
@@ -110,5 +115,15 @@ export class BaseService<K extends BaseEntity> {
             const [column, value] = filter.active;
             qb.andWhere(`"table"."${column}" = :active`, { active: value });
         }
+    }
+
+    serialize<RetClass extends Class>(
+        model: K,
+        serializeToClass: RetClass,
+        options: ClassTransformOptions = {}
+    ): InstanceType<RetClass> {
+        return <InstanceType<RetClass>>plainToClass(serializeToClass, model, {
+            ...options,
+        });
     }
 }

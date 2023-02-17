@@ -1,16 +1,22 @@
-import { Route, ApiController, TypedBody } from 'core/controllers';
+import {
+    Route,
+    ApiController,
+    TypedBody,
+    APIProtectedRoute,
+} from 'core/controllers';
 import { APIBaseController } from 'core/controllers';
-import { HTTPMethods, validatePassword } from 'core/utils';
-import { UnauthorizedException } from 'shared/exceptions';
+import { HTTPMethods } from 'core/utils';
 import { AuthService } from '@api/services';
-import { NextFunction, Response } from 'express';
-import { Login } from './interfaces/login.interface';
-import jwt from 'jsonwebtoken';
-import config from 'config';
+import { Request, Response } from 'express';
 import { CreateApiUserValidator } from 'shared/validators';
 import { CatchAsync } from 'core/exceptions';
-import { CreateUserDto, VerifyOTPDto } from '@api/dtos';
-import { VerifyOTPValidator } from '@api/validators';
+import { CreateUserDto, RefreshTokenDto, VerifyOTPDto } from '@api/dtos';
+import {
+    RefreshTokenValidator,
+    SetPasswordValidator,
+    VerifyOTPValidator,
+} from '@api/validators';
+import { LoginDto, SetPasswordDto } from 'shared/dtos';
 
 @ApiController('/auth')
 export class ApiAuthController extends APIBaseController {
@@ -39,31 +45,54 @@ export class ApiAuthController extends APIBaseController {
     })
     @CatchAsync
     async verifyOtp(req: TypedBody<VerifyOTPDto>, res: Response) {
-        await this.authService.verifyOtp(req.body);
+        const tokens = await this.authService.verifyOtp(req.body);
+        return this.send(res, tokens);
+    }
+
+    @APIProtectedRoute({
+        method: HTTPMethods.Post,
+        path: '/set-password',
+        validators: [SetPasswordValidator],
+    })
+    @CatchAsync
+    async setPassword(req: TypedBody<SetPasswordDto>, res: Response) {
+        await this.authService.setPassword(req.user!.id, req.body);
         return this.ok(res);
+    }
+
+    @APIProtectedRoute({ method: HTTPMethods.Get, path: '/profile' })
+    @CatchAsync
+    async profile(req: Request, res: Response) {
+        const user = await this.authService.getProfile(req.user!.id);
+        this.send(res, user);
     }
 
     @Route({ method: HTTPMethods.Post, path: '/login' })
     @CatchAsync
-    async login(req: TypedBody<Login>, res: Response, next: NextFunction) {
+    async login(req: TypedBody<LoginDto>, res: Response) {
         const { username, password } = req.body;
-        const userExists = await this.authService.findUserForLogin(username);
-        if (
-            !userExists ||
-            !(await validatePassword(password, userExists.password))
-        ) {
-            return next(new UnauthorizedException('Invalid email or password'));
+        const tokens = await this.authService.login(username, password);
+        return this.send(res, tokens);
+    }
+
+    @Route({ method: HTTPMethods.Post, path: '/logout' })
+    @CatchAsync
+    async logout(req: TypedBody<RefreshTokenDto>, res: Response) {
+        if (req.body.refreshToken) {
+            this.authService.logout(req.body).catch(console.log);
         }
-        const token = jwt.sign(
-            { _id: userExists?._id },
-            config.get<string>('jwt.secret'),
-            {
-                expiresIn: config.get('jwt.expiresIn'),
-            }
-        );
-        return this.send(res, {
-            message: 'Log in successful',
-            token,
-        });
+        return this.deleted(res);
+    }
+
+    @Route({
+        method: HTTPMethods.Post,
+        path: '/refresh',
+        validators: [RefreshTokenValidator],
+    })
+    @CatchAsync
+    async refresh(req: TypedBody<RefreshTokenDto>, res: Response) {
+        const accessToken =
+            await this.authService.getAccessTokenFromRefreshToken(req.body);
+        this.send(res, accessToken);
     }
 }

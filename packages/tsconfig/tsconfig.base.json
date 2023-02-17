@@ -17,6 +17,8 @@
             "shared/*": ["../shared/src/*"],
             "@cms/*": ["../../apps/texpress-cms/src/*"],
             "@api/*": ["../../apps/texpress-api/src/*"]
-        }
-    }
+        },
+        "typeRoots": ["../types", "../../node_modules/@types"]
+    },
+    "references": [{ "path": "../types/tsconfig.json" }]
 }

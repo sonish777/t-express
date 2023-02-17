@@ -35,14 +35,13 @@ export class ApiErrorFormatter {
                 name: error.name || 'Internal Server Error',
                 message: error.message || 'Something went wrong',
                 statusCode: error.statusCode || 500,
-                stack: error.stack,
+                ...(!error.isOperational ? { stack: error.stack } : {}),
             };
         }
         return {
             name: 'Internal Server Error',
             message: 'Something went wrong',
             statusCode: error.statusCode || 500,
-            stack: error.stack,
         };
     }
 

@@ -1,4 +1,10 @@
-import { check, checkSchema, Schema, ValidationChain } from 'express-validator';
+import {
+    check,
+    checkSchema,
+    Meta,
+    Schema,
+    ValidationChain,
+} from 'express-validator';
 import _ from 'lodash';
 import {
     CustomValidator,
@@ -111,6 +117,18 @@ export class ValidationBuilder {
                     [minOrMax]: length,
                 })
         );
+        return this;
+    }
+
+    static ConfirmPassword(options: ValidationOptions = {}) {
+        this._validators
+            .custom(
+                (value: string, { req }: Meta) => value === req.body.password
+            )
+            .withMessage(
+                options.message ??
+                    getMessage(ValidationMessages.confirmPassword)
+            );
         return this;
     }
 }

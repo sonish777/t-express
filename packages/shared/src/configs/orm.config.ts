@@ -8,6 +8,10 @@ export const OrmConfig: DataSourceOptions = {
     username: DatabaseConfig.USERNAME,
     password: DatabaseConfig.PASSWORD,
     database: DatabaseConfig.DATABASE_NAME,
-    entities: [__dirname + '/../entities/*.entity{.ts,.js}'],
+    entities: [
+        __dirname + '/../entities/*.entity{.ts,.js}',
+        __dirname +
+            '/../../../../apps/texpress-api/*/entities/*.entity{.ts,.js}',
+    ],
     synchronize: false,
 };

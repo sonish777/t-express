@@ -7,6 +7,7 @@ export const jwtAuth = (req: Request, res: Response, next: NextFunction) => {
         if (err || !user) {
             return next(new UnauthorizedException());
         }
+        req.user = user;
         return next();
     })(req, res, next);
 };

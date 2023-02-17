@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
     CreateDateColumn,
     PrimaryGeneratedColumn,
@@ -6,6 +7,7 @@ import {
 
 export class BaseEntity {
     @PrimaryGeneratedColumn()
+    @Exclude({ toPlainOnly: true })
     id: number;
 
     @CreateDateColumn({

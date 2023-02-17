@@ -10,7 +10,6 @@ import { UserEntity } from 'shared/entities';
 import { UnauthorizedException } from 'shared/exceptions';
 import { validatePassword } from 'core/utils';
 import { ProviderStaticMethod } from 'core/providers';
-import { ExtractJwt, Strategy as JWTStrategy } from 'passport-jwt';
 
 export class PassportProvider
     implements ProviderStaticMethod<typeof PassportProvider>
@@ -47,27 +46,6 @@ export class PassportProvider
             passReqToCallback: true,
         };
         passport.use(new LocalStrategy(options, PassportProvider._verify));
-        passport.use(
-            new JWTStrategy(
-                {
-                    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-                    secretOrKey: 'TESTTT!',
-                },
-                async (payload, done) => {
-                    console.log(
-                        '🚀 ~ file: passport.provider.ts:57 ~ payload',
-                        payload
-                    );
-                    const user = await PassportProvider._authService.findOne({
-                        _id: payload._id,
-                    });
-                    if (!user) {
-                        return done(null, false);
-                    }
-                    return done(null, user);
-                }
-            )
-        );
     }
 
     private static async _verify(
@@ -86,7 +64,6 @@ export class PassportProvider
             }
             return done(null, user);
         } catch (error) {
-            console.log('🚀 ~ file: passport.provider.ts:65 ~ error', error);
             return done(null, false);
         }
     }

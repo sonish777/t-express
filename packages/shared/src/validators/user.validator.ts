@@ -31,6 +31,7 @@ export class CreateUserValidator
                 .MaxCharacters(10, { fieldDisplayName: 'Mobile number' })
                 .build(),
             dob: ValidationBuilder.ForField('dob')
+                .Required({ fieldDisplayName: 'Date of birth' })
                 .IsDate({ fieldDisplayName: 'Date of birth' })
                 .build(),
             password: ValidationBuilder.ForField('password')
@@ -49,6 +50,7 @@ updateUserValidatorCustomizer.makeOptional(['password']);
 export const UpdateUserValidator = updateUserValidatorCustomizer.done();
 
 const createApiUserValidatorCustomizer = customize(CreateUserValidator);
+createApiUserValidatorCustomizer.removeRules(['password']);
 createApiUserValidatorCustomizer.replace(
     'email',
     ValidationBuilder.ForField('email')

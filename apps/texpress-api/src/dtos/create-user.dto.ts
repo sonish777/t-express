@@ -7,5 +7,4 @@ export class CreateUserDto {
     @Expose() gender: string;
     @Expose() email: string;
     @Expose() mobileNumber: string;
-    @Expose() password: string;
 }
