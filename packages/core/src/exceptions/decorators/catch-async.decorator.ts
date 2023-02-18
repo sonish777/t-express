@@ -15,4 +15,5 @@ export const CatchAsync: MethodDecorator = function (
             routeHandler.bind(this)(req, res, next).catch(next);
         }
     };
+    return descriptor;
 };

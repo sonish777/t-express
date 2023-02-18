@@ -7,30 +7,29 @@ import { UserStatusEnum, generateOTP } from 'shared/utils';
 import { CreateUserDto, RefreshTokenDto, VerifyOTPDto } from '@api/dtos';
 import { DTO, Sanitize, ToPlain, validatePassword } from 'core/utils';
 import moment from 'moment';
-import { SetPasswordDto } from 'shared/dtos';
-import {
-    BadRequestException,
-    NotFoundException,
-    UnauthorizedException,
-} from 'shared/exceptions';
+import { LoginDto, SetPasswordDto } from 'shared/dtos';
+import { BadRequestException, UnauthorizedException } from 'shared/exceptions';
 import { TokenService } from './token.service';
 
 @Service()
 export class AuthService extends BaseService<ApiUserEntity> {
     @GetRepository(ApiUserEntity)
     readonly repository: Repository<ApiUserEntity>;
+    protected readonly resource: string = 'User';
 
     constructor(private readonly tokensService: TokenService) {
         super();
     }
 
+    findUserByUsername(username: string) {
+        return this.findOrFail([
+            { email: username },
+            { mobileNumber: username },
+        ]);
+    }
+
     async login(username: string, password: string) {
-        const user = await this.repository.findOne({
-            where: [{ email: username }, { mobileNumber: username }],
-        });
-        if (!user) {
-            throw new UnauthorizedException('Invalid email or password');
-        }
+        const user = await this.findUserByUsername(username);
         if (user.status === UserStatusEnum.Inactive) {
             throw new UnauthorizedException('User not verified');
         }
@@ -45,14 +44,12 @@ export class AuthService extends BaseService<ApiUserEntity> {
     }
 
     @Sanitize
+    @ToPlain
     async register(
         @DTO
         createUserDto: CreateUserDto
     ) {
-        let otp = '000000';
-        if (process.env.NODE_ENV !== 'development') {
-            otp = await generateOTP();
-        }
+        const otp = await this.generateAndSendOTP();
         return this.create({
             ...createUserDto,
             token: otp,
@@ -60,15 +57,18 @@ export class AuthService extends BaseService<ApiUserEntity> {
         });
     }
 
+    generateAndSendOTP(): Promise<string> {
+        if (process.env.NODE_ENV === 'development') {
+            return Promise.resolve('000000');
+        }
+        // TODO: Send OTP to email/phone.
+        return generateOTP();
+    }
+
     @Sanitize
     async verifyOtp(@DTO verifyOTPDto: VerifyOTPDto) {
         const { username, otpCode } = verifyOTPDto;
-        const user = await this.repository.findOne({
-            where: [{ email: username }, { mobileNumber: username }],
-        });
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
+        const user = await this.findUserByUsername(username);
         if (
             user.token !== otpCode ||
             moment().isAfter(moment(user.tokenExpiry))
@@ -78,31 +78,32 @@ export class AuthService extends BaseService<ApiUserEntity> {
         user.token = '';
         user.tokenExpiry = new Date();
         user.status = UserStatusEnum.OTPVerified;
+        return this.repository.save(user);
+    }
+
+    @Sanitize
+    async setPassword(@DTO setPasswordDto: SetPasswordDto) {
+        const user = await this.findUserByUsername(setPasswordDto.username);
+        if (
+            [UserStatusEnum.OTPVerified, UserStatusEnum.Active].indexOf(
+                <UserStatusEnum>user.status
+            ) === -1
+        ) {
+            throw new BadRequestException(
+                'Resend and verify OTP to set your password.'
+            );
+        }
+        user.password = setPasswordDto.password;
+        user.status = UserStatusEnum.Active;
         await this.repository.save(user);
         return this.tokensService.signTokens(user);
     }
 
-    @Sanitize
-    async setPassword(id: number, @DTO setPasswordDto: SetPasswordDto) {
-        const user = await this.findOne({
-            id,
-        });
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
-        user.password = setPasswordDto.password;
-        return this.repository.save(user);
-    }
-
     @ToPlain
     async getProfile(userId: number) {
-        const user = await this.findOne({
+        return this.findOrFail({
             id: userId,
         });
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
-        return user;
     }
 
     logout(logoutDto: RefreshTokenDto) {
@@ -111,5 +112,12 @@ export class AuthService extends BaseService<ApiUserEntity> {
 
     getAccessTokenFromRefreshToken(refreshTokenDto: RefreshTokenDto) {
         return this.tokensService.refresh(refreshTokenDto.refreshToken);
+    }
+
+    async forgotPassword(forgotPasswordDto: Pick<LoginDto, 'username'>) {
+        const user = await this.findUserByUsername(forgotPasswordDto.username);
+        user.token = await this.generateAndSendOTP();
+        user.tokenExpiry = new Date(Date.now() + 10 * 60 * 1000);
+        return this.repository.save(user);
     }
 }

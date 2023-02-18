@@ -6,3 +6,4 @@ export * from './http-status-code.util';
 export * from './validation-builder.util';
 export * from './sanitize-decorator.util';
 export * from './to-plain-decorator.util';
+export * from './api-responder-decorator.util';

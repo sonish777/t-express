@@ -6,15 +6,21 @@ export abstract class APIBaseController {
     protected abstract title: string;
     protected abstract module: string;
 
-    public ok(res: Response) {
-        return res.sendStatus(HttpStatus.OK);
+    public ok(res: Response, message = '') {
+        if (!message) {
+            return res.sendStatus(HttpStatus.OK);
+        }
+        return res.status(200).send(message);
     }
 
     public created<PayloadType>(
-        res: Response<PayloadType>,
+        res: Response<{ data: PayloadType }>,
         payload?: PayloadType
     ) {
-        return res.status(HttpStatus.CREATED).json(payload);
+        if (payload) {
+            return res.status(HttpStatus.CREATED).json({ data: payload });
+        }
+        return res.sendStatus(HttpStatus.CREATED);
     }
 
     public deleted(res: Response) {

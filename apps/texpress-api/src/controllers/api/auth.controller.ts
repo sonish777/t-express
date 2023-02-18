@@ -3,13 +3,20 @@ import {
     ApiController,
     TypedBody,
     APIProtectedRoute,
+    APIBaseController,
+    TypedQuery,
 } from 'core/controllers';
-import { APIBaseController } from 'core/controllers';
-import { HTTPMethods } from 'core/utils';
+import {
+    RespondCreated,
+    RespondDeleted,
+    HTTPMethods,
+    RespondOK,
+    RespondPaginated,
+    RespondItem,
+} from 'core/utils';
 import { AuthService } from '@api/services';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { CreateApiUserValidator } from 'shared/validators';
-import { CatchAsync } from 'core/exceptions';
 import { CreateUserDto, RefreshTokenDto, VerifyOTPDto } from '@api/dtos';
 import {
     RefreshTokenValidator,
@@ -17,6 +24,8 @@ import {
     VerifyOTPValidator,
 } from '@api/validators';
 import { LoginDto, SetPasswordDto } from 'shared/dtos';
+import { PaginationOptions, PaginationResponse } from 'core/interfaces';
+import { ApiUserEntity } from 'shared/entities';
 
 @ApiController('/auth')
 export class ApiAuthController extends APIBaseController {
@@ -32,10 +41,9 @@ export class ApiAuthController extends APIBaseController {
         path: '/register',
         validators: [CreateApiUserValidator],
     })
-    @CatchAsync
-    async register(req: TypedBody<CreateUserDto>, res: Response) {
-        const user = await this.authService.register(req.body);
-        return this.created(res, user);
+    @RespondCreated(true)
+    register(req: TypedBody<CreateUserDto>) {
+        return this.authService.register(req.body);
     }
 
     @Route({
@@ -43,45 +51,40 @@ export class ApiAuthController extends APIBaseController {
         path: '/verify-otp',
         validators: [VerifyOTPValidator],
     })
-    @CatchAsync
-    async verifyOtp(req: TypedBody<VerifyOTPDto>, res: Response) {
-        const tokens = await this.authService.verifyOtp(req.body);
-        return this.send(res, tokens);
+    @RespondOK()
+    verifyOtp(req: TypedBody<VerifyOTPDto>) {
+        return this.authService.verifyOtp(req.body);
     }
 
-    @APIProtectedRoute({
+    @Route({
         method: HTTPMethods.Post,
         path: '/set-password',
         validators: [SetPasswordValidator],
     })
-    @CatchAsync
-    async setPassword(req: TypedBody<SetPasswordDto>, res: Response) {
-        await this.authService.setPassword(req.user!.id, req.body);
-        return this.ok(res);
+    @RespondItem()
+    setPassword(req: TypedBody<SetPasswordDto>) {
+        return this.authService.setPassword(req.body);
     }
 
     @APIProtectedRoute({ method: HTTPMethods.Get, path: '/profile' })
-    @CatchAsync
-    async profile(req: Request, res: Response) {
-        const user = await this.authService.getProfile(req.user!.id);
-        this.send(res, user);
+    @RespondItem()
+    profile(req: Request) {
+        return this.authService.getProfile(req.user!.id);
     }
 
     @Route({ method: HTTPMethods.Post, path: '/login' })
-    @CatchAsync
-    async login(req: TypedBody<LoginDto>, res: Response) {
+    @RespondItem()
+    login(req: TypedBody<LoginDto>) {
         const { username, password } = req.body;
-        const tokens = await this.authService.login(username, password);
-        return this.send(res, tokens);
+        return this.authService.login(username, password);
     }
 
     @Route({ method: HTTPMethods.Post, path: '/logout' })
-    @CatchAsync
-    async logout(req: TypedBody<RefreshTokenDto>, res: Response) {
+    @RespondDeleted()
+    logout(req: TypedBody<RefreshTokenDto>) {
         if (req.body.refreshToken) {
             this.authService.logout(req.body).catch(console.log);
         }
-        return this.deleted(res);
     }
 
     @Route({
@@ -89,10 +92,22 @@ export class ApiAuthController extends APIBaseController {
         path: '/refresh',
         validators: [RefreshTokenValidator],
     })
-    @CatchAsync
-    async refresh(req: TypedBody<RefreshTokenDto>, res: Response) {
-        const accessToken =
-            await this.authService.getAccessTokenFromRefreshToken(req.body);
-        this.send(res, accessToken);
+    @RespondItem()
+    async refresh(req: TypedBody<RefreshTokenDto>) {
+        return this.authService.getAccessTokenFromRefreshToken(req.body);
+    }
+
+    @Route({ method: HTTPMethods.Post, path: '/forgot-password' })
+    @RespondOK('Check your email to reset your password')
+    forgotPassword(req: TypedBody<Pick<LoginDto, 'username'>>) {
+        return this.authService.forgotPassword(req.body);
+    }
+
+    @Route({ method: HTTPMethods.Get, path: '/all-users' })
+    @RespondPaginated()
+    findAll(
+        req: TypedQuery<PaginationOptions>
+    ): Promise<PaginationResponse<ApiUserEntity>> {
+        return this.authService.paginate(req.query);
     }
 }

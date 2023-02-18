@@ -1,12 +1,9 @@
-import {
-    ClassConstructor,
-    ClassTransformOptions,
-    plainToClass,
-} from 'class-transformer';
+import { ClassTransformOptions, plainToClass } from 'class-transformer';
 import { BaseEntity } from 'core/entities';
 import { HttpException } from 'core/exceptions';
 import { Class, CommonSearchQuery } from 'core/interfaces';
 import { PaginationResponse } from 'core/interfaces';
+import { NotFoundException } from 'shared/exceptions';
 import {
     Repository,
     FindOptionsWhere,
@@ -17,19 +14,29 @@ import {
 export abstract class BaseService<K extends BaseEntity> {
     protected abstract readonly repository: Repository<K>;
     protected readonly filterColumns: string[] = [];
+    protected readonly resource: string = 'Resource';
 
     findAll(): Promise<K[]> {
         return this.repository.find();
     }
 
+    async findOrFail(
+        where: FindOptionsWhere<K> | FindOptionsWhere<K>[],
+        relations: string[] = []
+    ): Promise<K> {
+        const entity = await this.findOne(where, relations);
+        if (!entity) {
+            throw new NotFoundException(`${this.resource} not found`);
+        }
+        return entity;
+    }
+
     findOne(
-        where: FindOptionsWhere<K>,
+        where: FindOptionsWhere<K> | FindOptionsWhere<K>[],
         relations: string[] = []
     ): Promise<K | null> {
         return this.repository.findOne({
-            where: {
-                ...where,
-            },
+            where,
             relations,
         });
     }

@@ -7,6 +7,9 @@ export class SetPasswordValidator
 {
     static get rules(): Record<string, ValidationChain> {
         return {
+            username: ValidationBuilder.ForField('username')
+                .Required({ fieldDisplayName: 'Email or phone number' })
+                .build(),
             password: ValidationBuilder.ForField('password')
                 .Required({ fieldDisplayName: 'Password' })
                 .MinCharacters(8, {
