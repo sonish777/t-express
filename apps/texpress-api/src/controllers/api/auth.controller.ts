@@ -26,6 +26,7 @@ import {
 import { LoginDto, SetPasswordDto } from 'shared/dtos';
 import { PaginationOptions, PaginationResponse } from 'core/interfaces';
 import { ApiUserEntity } from 'shared/entities';
+import { Log } from '@api/logger';
 
 @ApiController('/auth')
 export class ApiAuthController extends APIBaseController {
@@ -74,6 +75,7 @@ export class ApiAuthController extends APIBaseController {
 
     @Route({ method: HTTPMethods.Post, path: '/login' })
     @RespondItem()
+    @Log()
     login(req: TypedBody<LoginDto>) {
         const { username, password } = req.body;
         return this.authService.login(username, password);

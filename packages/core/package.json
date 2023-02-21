@@ -23,6 +23,7 @@
         "./providers": "./dist/providers/index.js",
         "./services": "./dist/services/index.js",
         "./utils": "./dist/utils/index.js",
-        "./validators": "./dist/validators/index.js"
+        "./validators": "./dist/validators/index.js",
+        "./events": "./dist/events/index.js"
     }
 }

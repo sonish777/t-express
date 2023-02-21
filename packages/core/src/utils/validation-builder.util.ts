@@ -1,10 +1,4 @@
-import {
-    check,
-    checkSchema,
-    Meta,
-    Schema,
-    ValidationChain,
-} from 'express-validator';
+import { check, Meta, Schema, ValidationChain } from 'express-validator';
 import _ from 'lodash';
 import {
     CustomValidator,

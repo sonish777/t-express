@@ -10,6 +10,7 @@ import moment from 'moment';
 import { LoginDto, SetPasswordDto } from 'shared/dtos';
 import { BadRequestException, UnauthorizedException } from 'shared/exceptions';
 import { TokenService } from './token.service';
+import { AuthEventsEmitter } from 'shared/events';
 
 @Service()
 export class AuthService extends BaseService<ApiUserEntity> {
@@ -45,16 +46,24 @@ export class AuthService extends BaseService<ApiUserEntity> {
 
     @Sanitize
     @ToPlain
+    @AuthEventsEmitter('send-otp', (user: ApiUserEntity) => [
+        {
+            user_name: `${user.firstName} ${user.lastName}`,
+            otp_code: user.token,
+            to_email: user.email,
+        },
+    ])
     async register(
         @DTO
         createUserDto: CreateUserDto
     ) {
         const otp = await this.generateAndSendOTP();
-        return this.create({
+        const user = await this.create({
             ...createUserDto,
             token: otp,
             tokenExpiry: new Date(Date.now() + 10 * 60 * 1000),
         });
+        return user;
     }
 
     generateAndSendOTP(): Promise<string> {
@@ -100,7 +109,7 @@ export class AuthService extends BaseService<ApiUserEntity> {
     }
 
     @ToPlain
-    async getProfile(userId: number) {
+    getProfile(userId: number) {
         return this.findOrFail({
             id: userId,
         });

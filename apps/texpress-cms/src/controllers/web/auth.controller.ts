@@ -3,6 +3,7 @@ import passport from 'passport';
 import { BaseController, Controller, Route } from 'core/controllers';
 import { HTTPMethods } from 'core/utils';
 import { redirectIfLoggedIn } from 'shared/middlewares';
+import { Log } from '@cms/logger';
 
 @Controller('/auth')
 export class AuthController extends BaseController {
@@ -30,6 +31,7 @@ export class AuthController extends BaseController {
             }),
         ],
     })
+    @Log()
     login(_req: Request, res: Response) {
         return res.redirect('/home');
     }

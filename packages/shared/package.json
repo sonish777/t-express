@@ -22,6 +22,9 @@
         "./middlewares": "./dist/middlewares/index.js",
         "./providers": "./dist/providers/index.js",
         "./validators": "./dist/validators/index.js",
-        "./utils": "./dist/utils/index.js"
+        "./utils": "./dist/utils/index.js",
+        "./logger": "./dist/logger/index.js",
+        "./services": "./dist/services/index.js",
+        "./events": "./dist/events/index.js"
     }
 }

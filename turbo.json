@@ -11,6 +11,7 @@
         "lint": { "cache": true },
         "lint:fix": { "cache": true },
         "clean": { "cache": false },
-        "build:tsc": { "cache": false, "outputs": ["dist/**"] }
+        "build:tsc": { "cache": false, "outputs": ["dist/**"] },
+        "start": { "cache": false, "dependsOn": ["build"] }
     }
 }

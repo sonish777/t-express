@@ -1,6 +1,7 @@
 node_modules
 dist
 .env
+logs
 **/config/*.json
 !**/config/*.example.json
 
