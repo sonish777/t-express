@@ -19,12 +19,13 @@ import { TokenService } from './token.service';
 import { AuthEventsEmitter } from 'shared/events';
 import { HttpException } from 'core/exceptions';
 import { CommonConfigs } from '@api/configs';
+import { Cache } from 'shared/services';
 
 @Service()
 export class AuthService extends BaseService<ApiUserEntity> {
     @GetRepository(ApiUserEntity)
     readonly repository: Repository<ApiUserEntity>;
-    protected readonly resource: string = 'User';
+    protected resource: any = 'User';
 
     constructor(private readonly tokensService: TokenService) {
         super();
@@ -117,6 +118,7 @@ export class AuthService extends BaseService<ApiUserEntity> {
         return this.tokensService.signTokens(user);
     }
 
+    @Cache<AuthService, 'getProfile'>((userId) => `profile_${userId}`)
     @ToPlain
     getProfile(userId: number) {
         return this.findOrFail({

@@ -1,6 +1,5 @@
 import { MailConfig } from 'shared/configs';
 import nodemailer, { Transporter } from 'nodemailer';
-import config, { IConfig } from 'config';
 import ejs from 'ejs';
 import path from 'path';
 import { Logger as WinstonLogger } from 'winston';
@@ -8,8 +7,6 @@ import { Logger } from 'shared/logger';
 import Email from 'email-templates';
 import { EmailTemplateService } from '../email-template.service';
 import Container, { Service } from 'typedi';
-
-const mailConfig = config.get<IConfig>('mail');
 
 @Service()
 export class Mailer {

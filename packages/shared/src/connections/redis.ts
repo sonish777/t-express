@@ -10,6 +10,7 @@ class RedisConnection {
             url: `redis://${RedisConfig.Host}:${RedisConfig.Port}`,
             username: RedisConfig.Username,
             password: RedisConfig.Password,
+            legacyMode: true,
         });
         this.client
             .connect()
