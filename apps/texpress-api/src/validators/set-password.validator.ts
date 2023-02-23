@@ -1,5 +1,5 @@
 import { ValidationBuilder } from 'core/utils';
-import { ValidatorWithStaticProps } from 'core/validators';
+import { customize, ValidatorWithStaticProps } from 'core/validators';
 import { ValidationChain } from 'express-validator';
 
 export class SetPasswordValidator
@@ -26,3 +26,7 @@ export class SetPasswordValidator
         };
     }
 }
+
+const setPasswordValidatorCustomizer = customize(SetPasswordValidator);
+setPasswordValidatorCustomizer.removeRules(['password', 'confirmPassword']);
+export const ForgotPasswordValidator = setPasswordValidatorCustomizer.done();

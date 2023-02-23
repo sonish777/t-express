@@ -72,6 +72,11 @@ export class addApiUsersTable1676047777753 implements MigrationInterface {
                         isNullable: true,
                     },
                     {
+                        name: 'tokenVerified',
+                        type: 'boolean',
+                        default: false,
+                    },
+                    {
                         name: 'tokenExpiry',
                         type: 'timestamp',
                         isNullable: true,

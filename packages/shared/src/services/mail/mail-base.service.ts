@@ -25,12 +25,12 @@ export class Mailer {
     constructor(private readonly emailTemplateService: EmailTemplateService) {
         this.logger = Logger.configure();
         this._transport = nodemailer.createTransport({
-            host: mailConfig.get('host'),
-            port: mailConfig.get('port'),
-            secure: mailConfig.get('secure'),
+            host: MailConfig.host,
+            port: MailConfig.port,
+            secure: MailConfig.secure,
             auth: {
-                user: mailConfig.get('username'),
-                pass: mailConfig.get('password'),
+                user: MailConfig.username,
+                pass: MailConfig.password,
             },
             logger: true,
             debug: process.env.NODE_ENV !== 'production',
@@ -87,8 +87,8 @@ export class Mailer {
                         text: this._subject,
                     },
                 })
-                .then((result) => {
-                    this.logger.info('Mail sent', result);
+                .then(() => {
+                    this.logger.info('Mail sent');
                 })
                 .catch((error) => {
                     this.logger.error('Mail: Error sending SMTP mail', error);

@@ -4,7 +4,6 @@ import { BaseService } from 'core/services';
 import { ApiUserEntity } from 'shared/entities';
 import { Repository } from 'typeorm';
 import jwt, { JsonWebTokenError, SignOptions } from 'jsonwebtoken';
-import config, { IConfig } from 'config';
 import { Inject, Service } from 'typedi';
 import {
     BadRequestException,
@@ -12,8 +11,7 @@ import {
     NotFoundException,
 } from 'shared/exceptions';
 import { AuthService } from './auth.service';
-
-const jwtConfig = config.get<IConfig>('jwt');
+import { CommonConfigs } from '@api/configs';
 
 interface IVerifiedToken {
     _id: string;
@@ -36,21 +34,17 @@ export class TokenService extends BaseService<TokenEntity> {
 
     async signTokens(user: ApiUserEntity): Promise<ITokens> {
         const payload = { _id: user._id };
-        const accessToken = jwt.sign(
-            payload,
-            jwtConfig.get<string>('access:secret'),
-            {
-                expiresIn: jwtConfig.get('access:expiresIn'),
-            }
-        );
+        const accessToken = jwt.sign(payload, CommonConfigs.Jwt.AccessSecret, {
+            expiresIn: CommonConfigs.Jwt.AccessExpiresIn,
+        });
         const token = await this.create({
             userId: user.id,
         });
         const refreshToken = jwt.sign(
             payload,
-            jwtConfig.get<string>('refresh:secret'),
+            CommonConfigs.Jwt.RefreshSecret,
             {
-                expiresIn: jwtConfig.get('refresh:expiresIn'),
+                expiresIn: CommonConfigs.Jwt.RefreshExpiresIn,
                 jwtid: String(token.id),
                 subject: user._id,
             }
@@ -89,7 +83,7 @@ export class TokenService extends BaseService<TokenEntity> {
         }
         const accessToken = jwt.sign(
             { _id: user._id },
-            jwtConfig.get('access:secret'),
+            CommonConfigs.Jwt.AccessSecret,
             signOptions
         );
         return { accessToken };
@@ -121,7 +115,7 @@ export class TokenService extends BaseService<TokenEntity> {
         try {
             const decodedPayload = jwt.verify(
                 token,
-                jwtConfig.get('refresh:secret')
+                CommonConfigs.Jwt.RefreshSecret
             );
             return <IVerifiedToken>decodedPayload;
         } catch (error) {

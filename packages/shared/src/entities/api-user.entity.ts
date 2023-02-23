@@ -51,6 +51,9 @@ export class ApiUserEntity extends BaseEntity {
     token: string;
 
     @Column()
+    tokenVerified: boolean;
+
+    @Column()
     @Exclude({ toPlainOnly: true })
     tokenExpiry: Date;
 

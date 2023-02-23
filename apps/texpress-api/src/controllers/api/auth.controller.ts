@@ -22,6 +22,7 @@ import {
     RefreshTokenValidator,
     SetPasswordValidator,
     VerifyOTPValidator,
+    ForgotPasswordValidator,
 } from '@api/validators';
 import { LoginDto, SetPasswordDto } from 'shared/dtos';
 import { PaginationOptions, PaginationResponse } from 'core/interfaces';
@@ -99,7 +100,11 @@ export class ApiAuthController extends APIBaseController {
         return this.authService.getAccessTokenFromRefreshToken(req.body);
     }
 
-    @Route({ method: HTTPMethods.Post, path: '/forgot-password' })
+    @Route({
+        method: HTTPMethods.Post,
+        path: '/forgot-password',
+        validators: [ForgotPasswordValidator],
+    })
     @RespondOK('Check your email to reset your password')
     forgotPassword(req: TypedBody<Pick<LoginDto, 'username'>>) {
         return this.authService.forgotPassword(req.body);

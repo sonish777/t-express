@@ -11,3 +11,19 @@ export const generateOTP = (): Promise<string> => {
         });
     });
 };
+
+export const dateDiffInMinutes = (
+    firstDate: Date,
+    secondDate: Date
+): number => {
+    const diff = firstDate.getTime() - secondDate.getTime();
+    return diff / (60 * 1000);
+};
+
+export const isJSON = (jsonString: string): boolean => {
+    try {
+        return JSON.parse(jsonString) && !!jsonString;
+    } catch (error) {
+        return false;
+    }
+};

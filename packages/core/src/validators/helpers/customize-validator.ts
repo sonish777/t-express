@@ -7,7 +7,7 @@ export const customize = (validator: Validator) => {
     };
     return {
         removeRules(keys: (keyof Validator['rules'])[]) {
-            Object.keys(keys).forEach((key) => {
+            keys.forEach((key) => {
                 delete newRules[key];
             });
         },

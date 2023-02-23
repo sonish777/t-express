@@ -12,7 +12,7 @@ import {
     StaticServeProviderOptions,
 } from 'shared/providers';
 import { PassportProvider } from '@api/providers';
-import { ApiExceptionHandler } from '@api/exceptions/handlers';
+import { ApiExceptionHandler } from '@api/exceptions';
 
 function bootstrap() {
     const server = new Server(controllers);

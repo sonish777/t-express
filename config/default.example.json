@@ -15,5 +15,16 @@
     "jwt": {
         "secret": "t3X:pR3Ss",
         "expirationTime": 900
+    },
+    "otp": {
+        "nextOtpWaitTime": 600000
+    },
+    "mail": {
+        "host": "",
+        "port": 587,
+        "username": "",
+        "password": "",
+        "secure": false,
+        "from": "admin@texpress.com"
     }
 }

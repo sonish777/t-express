@@ -3,14 +3,22 @@ import { Repository } from 'typeorm';
 import { GetRepository } from 'core/entities';
 import { BaseService } from 'core/services';
 import { ApiUserEntity } from 'shared/entities';
-import { UserStatusEnum, generateOTP } from 'shared/utils';
+import { UserStatusEnum, generateOTP, dateDiffInMinutes } from 'shared/utils';
 import { CreateUserDto, RefreshTokenDto, VerifyOTPDto } from '@api/dtos';
-import { DTO, Sanitize, ToPlain, validatePassword } from 'core/utils';
+import {
+    DTO,
+    HttpStatus,
+    Sanitize,
+    ToPlain,
+    validatePassword,
+} from 'core/utils';
 import moment from 'moment';
 import { LoginDto, SetPasswordDto } from 'shared/dtos';
 import { BadRequestException, UnauthorizedException } from 'shared/exceptions';
 import { TokenService } from './token.service';
 import { AuthEventsEmitter } from 'shared/events';
+import { HttpException } from 'core/exceptions';
+import { CommonConfigs } from '@api/configs';
 
 @Service()
 export class AuthService extends BaseService<ApiUserEntity> {
@@ -44,7 +52,6 @@ export class AuthService extends BaseService<ApiUserEntity> {
         return this.tokensService.signTokens(user);
     }
 
-    @Sanitize
     @ToPlain
     @AuthEventsEmitter('send-otp', (user: ApiUserEntity) => [
         {
@@ -53,6 +60,7 @@ export class AuthService extends BaseService<ApiUserEntity> {
             to_email: user.email,
         },
     ])
+    @Sanitize
     async register(
         @DTO
         createUserDto: CreateUserDto
@@ -61,7 +69,9 @@ export class AuthService extends BaseService<ApiUserEntity> {
         const user = await this.create({
             ...createUserDto,
             token: otp,
-            tokenExpiry: new Date(Date.now() + 10 * 60 * 1000),
+            tokenExpiry: new Date(
+                Date.now() + CommonConfigs.Otp.NextOtpWaitTime
+            ),
         });
         return user;
     }
@@ -70,7 +80,6 @@ export class AuthService extends BaseService<ApiUserEntity> {
         if (process.env.NODE_ENV === 'development') {
             return Promise.resolve('000000');
         }
-        // TODO: Send OTP to email/phone.
         return generateOTP();
     }
 
@@ -86,24 +95,24 @@ export class AuthService extends BaseService<ApiUserEntity> {
         }
         user.token = '';
         user.tokenExpiry = new Date();
-        user.status = UserStatusEnum.OTPVerified;
+        if (user.status === UserStatusEnum.Inactive) {
+            user.status = UserStatusEnum.OTPVerified;
+        }
+        user.tokenVerified = true;
         return this.repository.save(user);
     }
 
     @Sanitize
     async setPassword(@DTO setPasswordDto: SetPasswordDto) {
         const user = await this.findUserByUsername(setPasswordDto.username);
-        if (
-            [UserStatusEnum.OTPVerified, UserStatusEnum.Active].indexOf(
-                <UserStatusEnum>user.status
-            ) === -1
-        ) {
+        if (user.tokenVerified === false) {
             throw new BadRequestException(
                 'Resend and verify OTP to set your password.'
             );
         }
         user.password = setPasswordDto.password;
         user.status = UserStatusEnum.Active;
+        user.tokenVerified = false;
         await this.repository.save(user);
         return this.tokensService.signTokens(user);
     }
@@ -123,10 +132,30 @@ export class AuthService extends BaseService<ApiUserEntity> {
         return this.tokensService.refresh(refreshTokenDto.refreshToken);
     }
 
+    @ToPlain
+    @AuthEventsEmitter('send-otp', (user: ApiUserEntity) => [
+        {
+            user_name: `${user.firstName} ${user.lastName}`,
+            otp_code: user.token,
+            to_email: user.email,
+        },
+    ])
     async forgotPassword(forgotPasswordDto: Pick<LoginDto, 'username'>) {
         const user = await this.findUserByUsername(forgotPasswordDto.username);
+        let timeSinceLastOtp = dateDiffInMinutes(user.tokenExpiry, new Date());
+        timeSinceLastOtp = Math.trunc(timeSinceLastOtp) + 1;
+        if (timeSinceLastOtp > 0) {
+            throw new HttpException(
+                HttpStatus.TOO_MANY_REQUESTS,
+                `Please wait ${timeSinceLastOtp} minutes before you try again.`,
+                'TokenAlreadyAcquired',
+                true
+            );
+        }
         user.token = await this.generateAndSendOTP();
-        user.tokenExpiry = new Date(Date.now() + 10 * 60 * 1000);
+        user.tokenExpiry = new Date(
+            Date.now() + CommonConfigs.Otp.NextOtpWaitTime
+        );
         return this.repository.save(user);
     }
 }
