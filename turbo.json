@@ -8,6 +8,8 @@
             "dependsOn": ["^build"],
             "outputs": ["dist/**"]
         },
+        "watch:js": { "cache": false },
+        "build:js": { "cache": true },
         "lint": { "cache": true },
         "lint:fix": { "cache": true },
         "clean": { "cache": false },

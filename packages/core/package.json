@@ -2,6 +2,7 @@
     "name": "core",
     "version": "0.0.1",
     "main": "./dist/server.js",
+    "private": true,
     "scripts": {
         "clean": "rimraf dist .turbo",
         "build:tsc": "npx tsc",
