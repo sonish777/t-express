@@ -1,12 +1,12 @@
 <div class="card card-body border-0 shadow mb-4">
     <h2 class="h5 mb-4">Create a new user</h2>
-    <form method="post" action="/users/<%= get(locals.data?.id) %>?_method=PUT">
+    <form method="post" action="/users/<%= get(locals.data.user?.id) %>?_method=PUT">
         <div class="row">
             <div class="col-md-6 mb-3">
                 <%- include('../common/input-field', { 
                     label: 'First Name', 
                     name: 'firstName', 
-                    value: getEditFormData(locals.data, "firstName", locals.inputData) ?? "", 
+                    value: getEditFormData(locals.data.user, "firstName", locals.inputData) ?? "", 
                     placeholder: "Enter your first name",
                     errorMessage: getErrorMessage(locals.mappedErrors, 'firstName')
                 }) %>
@@ -16,7 +16,7 @@
                     label: 'Last Name', 
                     name: 'lastName', 
                     placeholder: "Also your last name",
-                    value: getEditFormData(locals.data, "lastName", locals.inputData) ?? "", 
+                    value: getEditFormData(locals.data.user, "lastName", locals.inputData) ?? "", 
                     errorMessage: getErrorMessage(locals.mappedErrors, 'firstName')
                 }) %>
             </div>
@@ -36,7 +36,7 @@
                     </span>
                     <input 
                         id="birthday" type="text" placeholder="yyyy/mm/dd" required 
-                        value="<%= formatDate(getEditFormData(locals.data, "dob", locals.inputData) ?? "") %>"
+                        value="<%= formatDate(getEditFormData(locals.data.user, "dob", locals.inputData) ?? "") %>"
                         class="form-control <%= getErrorMessage(locals.mappedErrors, 'dob') ? "is-invalid": "" %> datepicker" 
                         name="dob"
                         autocomplete="off"/>
@@ -49,10 +49,10 @@
                     <option>Gender</option>
                     <option 
                         value="female" 
-                        <%= getEditFormData(locals.data, "gender", locals.inputData) === 'female' ? 'selected': ''%> >Female</option>
+                        <%= getEditFormData(locals.data.user, "gender", locals.inputData) === 'female' ? 'selected': ''%> >Female</option>
                     <option 
                         value="male" 
-                        <%= getEditFormData(locals.data, "gender", locals.inputData) === 'male' ? 'selected': '' %> >Male</option>
+                        <%= getEditFormData(locals.data.user, "gender", locals.inputData) === 'male' ? 'selected': '' %> >Male</option>
                 </select>
                 <%- include('../common/invalid-feedback', {errorMessage: getErrorMessage(locals.mappedErrors, 'gender')}) %>
             </div>
@@ -63,7 +63,7 @@
                     label: 'Email', 
                     name: 'email', 
                     type: 'email',
-                    value: getEditFormData(locals.data, "email", locals.inputData) ?? "", 
+                    value: getEditFormData(locals.data.user, "email", locals.inputData) ?? "", 
                     placeholder: "name@company.com",
                     errorMessage: getErrorMessage(locals.mappedErrors, 'email')
                 }) %>
@@ -73,7 +73,7 @@
                     label: 'Mobile number', 
                     name: 'mobileNumber',  
                     type: 'number',
-                    value: getEditFormData(locals.data, "mobileNumber", locals.inputData) ?? "", 
+                    value: getEditFormData(locals.data.user, "mobileNumber", locals.inputData) ?? "", 
                     placeholder: "Mobile number",
                     errorMessage: getErrorMessage(locals.mappedErrors, 'mobileNumber'),
                 }) %>
@@ -81,14 +81,15 @@
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
-                <%- include('../common/input-field', { 
-                    label: 'Password', 
-                    name: 'password', 
-                    type: 'password',
-                    value: getEditFormData(locals.data, "password", locals.inputData) ?? "", 
-                    placeholder: "name@company.com",
-                    errorMessage: getErrorMessage(locals.mappedErrors, 'password')
-                }) %>
+                <label for="role">Role</label>
+                <select class="form-select mb-0 <%= getErrorMessage(locals.mappedErrors, 'role') ? "is-invalid": "" %>" id="role" name="roleId" required>
+                    <option value="">Select one</option>
+                    <% data.roles.map(role => { %>
+                        <option value="<%= role._id %>"
+                            <%= getEditFormData(locals.data.user, "roleId", locals.inputData) === `${role._id}` ? 'selected': '' %>
+                            ><%= role.name %></option>
+                    <% }) %>
+                </select>
             </div>
         </div>
         <div class="mt-3">

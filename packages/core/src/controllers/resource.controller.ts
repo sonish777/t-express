@@ -8,12 +8,14 @@ import { Request, Response } from 'express';
 import { BaseController } from './base.controller';
 import { ProtectedRoute } from './decorators';
 import { TypedQuery } from './interfaces/typed-query.interface';
+import { TypedBody } from './interfaces';
 
 export function ResourceControllerFactory<
     Model extends BaseEntity,
     Service extends BaseService<Model>
 >(options: {
     resource: string;
+    findRelations: string[];
     validators?: {
         create?: Validator[];
         update?: Validator[];
@@ -36,9 +38,12 @@ export function ResourceControllerFactory<
         })
         async index(req: TypedQuery<CommonSearchQuery>, res: Response) {
             this.page = 'index';
-            const data = await this.service.paginate({
-                ...req.query,
-            });
+            const data = await this.service.paginate(
+                {
+                    ...req.query,
+                },
+                options.findRelations
+            );
             return this.render(res, data);
         }
 
@@ -59,7 +64,7 @@ export function ResourceControllerFactory<
         async add(req: Request, res: Response) {
             await this.service.create(req.body);
             req.flash(
-                'message',
+                'message:toast',
                 `${_.capitalize(options.resource)} created successfully`
             );
             return res.redirect('back');
@@ -88,12 +93,12 @@ export function ResourceControllerFactory<
             path: '/:id',
             validators: [...(options.validators?.update ?? [])],
         })
-        async update(req: Request, res: Response) {
+        async update(req: TypedBody<any>, res: Response) {
             const body = req.body;
             const id = req.params.id;
             await this.service.update(Number(id), body);
             req.flash(
-                'message',
+                'message:toast',
                 `${_.capitalize(options.resource)} updated successfully`
             );
             return res.redirect('back');
@@ -107,7 +112,7 @@ export function ResourceControllerFactory<
             const id = req.params.id;
             await this.service.delete(Number(id));
             req.flash(
-                'message',
+                'message:toast',
                 `${_.capitalize(options.resource)} deleted successfully`
             );
             return res.redirect('back');

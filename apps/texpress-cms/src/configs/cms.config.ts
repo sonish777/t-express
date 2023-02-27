@@ -81,6 +81,12 @@ export const CMSModulesConfig: CMSModuleConfig = {
                 route: '/users/:id',
                 method: HTTPMethods.Delete,
             },
+            {
+                name: 'Change user status',
+                value: 'users:edit',
+                route: '/users/:id/toggle-status',
+                method: HTTPMethods.Put,
+            },
         ],
     },
     roles: {

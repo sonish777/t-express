@@ -12,7 +12,7 @@ export const customize = (validator: Validator) => {
             });
         },
         makeOptional(keys: (keyof Validator['rules'])[]) {
-            Object.keys(keys).forEach((key) => {
+            keys.forEach((key) => {
                 if (newRules[key]) {
                     newRules[key].builder.setOptional({
                         nullable: true,

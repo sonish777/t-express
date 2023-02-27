@@ -84,13 +84,18 @@ export abstract class BaseService<K extends BaseEntity> {
     }
 
     async paginate(
-        query: CommonSearchQuery = {}
+        query: CommonSearchQuery = {},
+        relations: string[] = []
     ): Promise<PaginationResponse<K>> {
         const page = Number(query.page) || 1;
         const take = Number(query.take) || 5;
         const skip = (page - 1) * take;
         const queryBuilder = await this.repository.createQueryBuilder('table');
-        queryBuilder.skip(skip).take(take);
+        queryBuilder.offset(skip).limit(take);
+        queryBuilder.orderBy('"table"."createdAt"', 'ASC');
+        relations.forEach((r) =>
+            queryBuilder.leftJoinAndSelect(`table.${r}`, r)
+        );
         this.filterQuery(query, queryBuilder);
         const [data, count] = await queryBuilder.getManyAndCount();
         const paginatedResponse = {

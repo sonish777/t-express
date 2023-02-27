@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import express, { Express, Handler, Request } from 'express';
+import express, { Express, Handler } from 'express';
 import { Container } from 'typedi';
 import { ValidationChain } from 'express-validator';
 import { ControllerMetadataKeys } from './utils';
@@ -15,14 +15,6 @@ dotenv.config({ path: __dirname + '../../../.env' });
 
 export class Server {
     private readonly _app: Express;
-
-    private _locals: Record<string, Handler>[] = [
-        { errors: (req: Request) => req.flash('errors') },
-        { error: (req: Request) => req.flash('error') },
-        { message: (req: Request) => req.flash('message') },
-        { url: (req: Request) => req.url },
-        { query: (req: Request) => req.query },
-    ];
 
     constructor(private readonly controllers: { [key: string]: Class }) {
         this._app = express();
@@ -121,7 +113,7 @@ export class Server {
 
     private configureLocals(locals: Record<string, Handler>[] = []) {
         this._app.use((...handlerArgs) => {
-            this._locals.concat(locals ?? []).forEach((local) => {
+            locals.forEach((local) => {
                 handlerArgs[1].locals[Object.keys(local)[0]] = Object.values(
                     local
                 )[0](...handlerArgs);

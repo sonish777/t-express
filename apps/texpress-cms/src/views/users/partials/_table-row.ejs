@@ -10,14 +10,22 @@
     <td><span class="fw-bold"><%= exists(user?.dob) ? formatDate(user.dob): 'N/A' %></span></td>
     <td><span class="fw-bold"><%= get(user?.mobileNumber, "N/A") %></span></td>
     <td><span class="fw-bold"><%= get(user?.email, "N/A") %></span></td>
-    <td><span class="fw-bold text-<%= get(user?.status) === "active" ? "success": "danger" %>"><%= get(user?.status?.toUpperCase()) %></span></td>
+    <td>
+        <% if(hasPermission(loggedInUser, 'users:edit') && get(user?.role?.[0]?.slug) !== 'super-admin') { %>
+            <form action="/users/<%= get(user?.id) %>/toggle-status?_method=PUT" method="post">
+                <input type="hidden" name="status" value="<%= get(user?.status) === 'active' ? 'inactive' : 'active' %>">
+                <button type="submit" class="btn btn-link badge bg-<%= get(user?.status) === "active" ? "success": "danger" %>"><%= get(user?.status?.toUpperCase()) %></button></td>
+            </form>
+        <% } else { %>
+            <span class="badge bg-<%= get(user?.status) === "active" ? "success": "danger" %>"><%= get(user?.status?.toUpperCase()) %></span></td>
+        <% } %>
     <td>
         <div class="btn-group">
             <div class=" py-0">
                 <% if(hasPermission(loggedInUser, 'users:edit')) { %>
                     <a class="dropdown-item" href="/users/<%= get(user?.id) %>"><span class="fas fa-edit me-2"></span>Edit</a>
                 <% } %>
-                <% if(hasPermission(loggedInUser, 'users:delete')) { %>
+                <% if(hasPermission(loggedInUser, 'users:delete') && get(user?.role?.[0]?.slug) !== 'super-admin') { %>
                     <form action="/users/<%= get(user?.id) %>?_method=DELETE" method="post">
                         <button type="submit" class="dropdown-item text-danger rounded-bottom" href="#"><span class="fas fa-trash-alt me-2"></span>Remove</button>
                     </form>

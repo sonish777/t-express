@@ -32,7 +32,7 @@ export class PassportProvider
                 {
                     _id: _id,
                 },
-                ['userRole', 'userRole.role', 'userRole.role.permissions']
+                ['role', 'role.permissions']
             );
             if (!userExists) {
                 return done(new UnauthorizedException());

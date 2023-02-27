@@ -1,8 +1,8 @@
-import { Column, Entity, BeforeInsert, OneToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, BeforeInsert, JoinTable, ManyToMany } from 'typeorm';
 import { genSalt, hash } from 'bcrypt';
 import { BaseEntity, SetRepository } from 'core/entities';
-import { UserRoleEntity } from './user-role.entity';
 import { postgresDataSource } from '../connections';
+import { RoleEntity } from './role.entity';
 
 @Entity({
     name: 'users',
@@ -47,10 +47,17 @@ export class UserEntity extends BaseEntity {
         this.password = hashedPassword;
     }
 
-    @OneToOne(() => UserRoleEntity)
-    @JoinColumn({
-        name: 'id',
-        referencedColumnName: 'userId',
+    @ManyToMany(() => RoleEntity)
+    @JoinTable({
+        name: 'user_roles',
+        joinColumn: {
+            name: 'userId',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'roleId',
+            referencedColumnName: 'id',
+        },
     })
-    userRole: UserRoleEntity;
+    role: RoleEntity[];
 }

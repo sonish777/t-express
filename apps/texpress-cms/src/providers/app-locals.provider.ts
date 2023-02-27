@@ -72,8 +72,8 @@ export class AppLocalsProvider
             if (action === 'dashboard:view') {
                 return true;
             }
-            if (user.userRole?.role?.permissions) {
-                return user.userRole.role.permissions.some(
+            if (user.role?.[0]?.permissions) {
+                return user.role[0].permissions.some(
                     (permission) => permission.action === action
                 );
             }

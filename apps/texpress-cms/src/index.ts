@@ -52,7 +52,7 @@ function bootstrap() {
                               'firstName',
                               'lastName',
                               'email',
-                              'userRole',
+                              'role',
                           ])
                         : null,
             },
@@ -60,6 +60,12 @@ function bootstrap() {
             { inputData: (req) => req.flash('inputData') },
             { mappedErrors: (req) => req.flash('mappedErrors') },
             { errorToast: (req) => req.flash('error:toast') },
+            { errors: (req) => req.flash('errors') },
+            { error: (req) => req.flash('error') },
+            { message: (req) => req.flash('message') },
+            { messageToast: (req) => req.flash('message:toast') },
+            { url: (req) => req.url },
+            { query: (req) => req.query },
         ],
         exceptionHandlers: [
             new UnauthorizedExceptionHandler(),

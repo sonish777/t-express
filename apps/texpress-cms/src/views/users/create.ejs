@@ -81,6 +81,17 @@
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
+                <label for="role">Role</label>
+                <select class="form-select mb-0 <%= getErrorMessage(locals.mappedErrors, 'role') ? "is-invalid": "" %>" id="role" name="roleId" required>
+                    <option value="">Select one</option>
+                    <% data.roles.map(role => { %>
+                        <option value="<%= role._id %>"
+                            <%= getUserInput(locals.inputData, "roleId") === `${role._id}` ? 'selected': '' %>
+                            ><%= role.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
                 <%- include('../common/input-field', { 
                     label: 'Password', 
                     name: 'password', 

@@ -83,7 +83,7 @@ export class ValidationBuilder {
     static IsDate(options: ValidationOptions = {}) {
         this._validators
             .custom((value: string) => {
-                return moment(value).isValid();
+                return moment(new Date(value)).isValid();
             })
             .withMessage(
                 options.message ??
@@ -92,11 +92,6 @@ export class ValidationBuilder {
                     })
             );
         return this;
-    }
-
-    static CheckSchema(schema: Schema) {
-        // this._validators.push(...checkSchema(schema));
-        // return this;
     }
 
     private static checkLength(
