@@ -1,10 +1,15 @@
 import { Service } from 'typedi';
-import { Repository } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
 import { GetRepository } from 'core/entities';
 import { BaseService } from 'core/services';
 import { ApiUserEntity } from 'shared/entities';
 import { UserStatusEnum, generateOTP, dateDiffInMinutes } from 'shared/utils';
-import { CreateUserDto, RefreshTokenDto, VerifyOTPDto } from '@api/dtos';
+import {
+    CreateUserDto,
+    RefreshTokenDto,
+    VerifyOTPDto,
+    SocialLoginDto,
+} from '@api/dtos';
 import {
     DTO,
     HttpStatus,
@@ -14,9 +19,15 @@ import {
 } from 'core/utils';
 import moment from 'moment';
 import { LoginDto, SetPasswordDto } from 'shared/dtos';
-import { BadRequestException, UnauthorizedException } from 'shared/exceptions';
+import {
+    BadRequestException,
+    ForbiddenException,
+    UnauthorizedException,
+} from 'shared/exceptions';
 import { TokenService } from './token.service';
 import { AuthEventsEmitter } from 'shared/events';
+import { SocialLoginService } from './social.login.service';
+import { SocialLoginInterface } from '@api/types';
 import { HttpException } from 'core/exceptions';
 import { CommonConfigs } from '@api/configs';
 import { Cache } from 'shared/services';
@@ -27,7 +38,10 @@ export class AuthService extends BaseService<ApiUserEntity> {
     readonly repository: Repository<ApiUserEntity>;
     protected resource: any = 'User';
 
-    constructor(private readonly tokensService: TokenService) {
+    constructor(
+        private readonly tokensService: TokenService,
+        private readonly socialLoginService: SocialLoginService
+    ) {
         super();
     }
 
@@ -159,5 +173,43 @@ export class AuthService extends BaseService<ApiUserEntity> {
             Date.now() + CommonConfigs.Otp.NextOtpWaitTime
         );
         return this.repository.save(user);
+    }
+
+    async socialLogin(SocialLoginDto: SocialLoginDto) {
+        const socialDetails = await this.socialLoginService.socialLogin(
+            SocialLoginDto
+        );
+        return this.loginUserBySocialDetails(socialDetails);
+    }
+
+    async loginUserBySocialDetails(
+        socialDetails: DeepPartial<SocialLoginInterface>
+    ) {
+        try {
+            const whereCondition: FindOptionsWhere<ApiUserEntity>[] = [
+                { socialToken: socialDetails.socialToken },
+                { email: socialDetails.email?.toLowerCase() },
+            ];
+            let user = await this.findOne(whereCondition);
+            if (user && user.status === UserStatusEnum.Inactive) {
+                throw new ForbiddenException(
+                    'Your account is in in-active state.'
+                );
+            }
+            if (!user) {
+                const newUser: DeepPartial<ApiUserEntity> = {
+                    email: socialDetails.email?.toLowerCase() ?? '',
+                    socialType: socialDetails.socialType,
+                    socialToken: socialDetails.socialToken,
+                    firstName: socialDetails.firstName ?? '',
+                    lastName: socialDetails.lastName ?? '',
+                    status: UserStatusEnum.Active,
+                };
+                user = await this.create(newUser);
+            }
+            return this.tokensService.signTokens(user);
+        } catch (error: any) {
+            throw new BadRequestException(error.message);
+        }
     }
 }

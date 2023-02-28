@@ -1,8 +1,7 @@
 import { ClassTransformOptions, plainToClass } from 'class-transformer';
 import { BaseEntity } from 'core/entities';
 import { HttpException } from 'core/exceptions';
-import { Class, CommonSearchQuery } from 'core/interfaces';
-import { PaginationResponse } from 'core/interfaces';
+import { Class, CommonSearchQuery, PaginationResponse } from 'core/interfaces';
 import { NotFoundException } from 'shared/exceptions';
 import {
     Repository,
@@ -90,13 +89,13 @@ export abstract class BaseService<K extends BaseEntity> {
         const page = Number(query.page) || 1;
         const take = Number(query.take) || 5;
         const skip = (page - 1) * take;
-        const queryBuilder = await this.repository.createQueryBuilder('table');
+        const queryBuilder = this.repository.createQueryBuilder('table');
         queryBuilder.offset(skip).limit(take);
         queryBuilder.orderBy('"table"."createdAt"', 'ASC');
         relations.forEach((r) =>
             queryBuilder.leftJoinAndSelect(`table.${r}`, r)
         );
-        this.filterQuery(query, queryBuilder);
+        this.filterQuery(queryBuilder, query);
         const [data, count] = await queryBuilder.getManyAndCount();
         const paginatedResponse = {
             page,
@@ -110,8 +109,8 @@ export abstract class BaseService<K extends BaseEntity> {
     }
 
     private filterQuery(
-        filter: Pick<CommonSearchQuery, 'active' | 'keywords'> = {},
-        qb: SelectQueryBuilder<K>
+        qb: SelectQueryBuilder<K>,
+        filter: Pick<CommonSearchQuery, 'active' | 'keywords'> = {}
     ) {
         if (filter.keywords && this.filterColumns.length > 0) {
             for (const column of this.filterColumns) {

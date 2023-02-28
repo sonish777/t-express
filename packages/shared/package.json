@@ -26,6 +26,7 @@
         "./utils": "./dist/utils/index.js",
         "./logger": "./dist/logger/index.js",
         "./services": "./dist/services/index.js",
-        "./events": "./dist/events/index.js"
+        "./events": "./dist/events/index.js",
+        "./constants": "./dist/constants/index.js"
     }
 }

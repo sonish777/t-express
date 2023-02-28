@@ -72,6 +72,16 @@ export class addApiUsersTable1676047777753 implements MigrationInterface {
                         isNullable: true,
                     },
                     {
+                        name: 'socialType',
+                        type: 'varchar',
+                        isNullable: true,
+                    },
+                    {
+                        name: 'socialToken',
+                        type: 'varchar',
+                        isNullable: true,
+                    },
+                    {
                         name: 'tokenVerified',
                         type: 'boolean',
                         default: false,

@@ -8,7 +8,7 @@ import moment from 'moment';
 @Entity({ name: 'api_users' })
 @SetRepository(postgresDataSource)
 export class ApiUserEntity extends BaseEntity {
-    @Column()
+    @Column({ type: 'uuid', default: () => 'uuid_generate_v4()' })
     _id: string;
 
     @Column()
@@ -49,6 +49,12 @@ export class ApiUserEntity extends BaseEntity {
     @Column()
     @Exclude({ toPlainOnly: true })
     token: string;
+
+    @Column()
+    socialType: string;
+
+    @Column()
+    socialToken: string;
 
     @Column()
     tokenVerified: boolean;

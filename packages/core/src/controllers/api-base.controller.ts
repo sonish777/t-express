@@ -1,6 +1,8 @@
 import { PaginationResponse } from 'core/interfaces';
 import { HttpStatus } from 'core/utils';
 import { Response } from 'express';
+import { ApiResponseFormat } from './api-format';
+import { APIResponse } from './interfaces';
 
 export abstract class APIBaseController {
     protected abstract title: string;
@@ -10,15 +12,19 @@ export abstract class APIBaseController {
         if (!message) {
             return res.sendStatus(HttpStatus.OK);
         }
-        return res.status(200).send(message);
+        return res
+            .status(200)
+            .send(ApiResponseFormat.responseFormat({ data: message }));
     }
 
     public created<PayloadType>(
-        res: Response<{ data: PayloadType }>,
+        res: Response<APIResponse<PayloadType>>,
         payload?: PayloadType
     ) {
         if (payload) {
-            return res.status(HttpStatus.CREATED).json({ data: payload });
+            return res
+                .status(HttpStatus.CREATED)
+                .send(ApiResponseFormat.responseFormat({ data: payload }));
         }
         return res.sendStatus(HttpStatus.CREATED);
     }
@@ -28,22 +34,23 @@ export abstract class APIBaseController {
     }
 
     public send<PayloadType>(
-        res: Response<{ data: PayloadType }>,
+        res: Response<APIResponse<PayloadType>>,
         payload: PayloadType
     ) {
-        return res.status(HttpStatus.OK).json({ data: payload });
+        return res
+            .status(HttpStatus.OK)
+            .send(ApiResponseFormat.responseFormat({ data: payload }));
     }
 
     public paginate<K>(
-        res: Response<{
-            data: K[];
-            pagination: Omit<PaginationResponse<K>, 'data'>;
-        }>,
+        res: Response<APIResponse<K[]>>,
         payload: PaginationResponse<K>
     ) {
         const { data, ...paginationMetaData } = payload;
         return res
             .status(HttpStatus.OK)
-            .json({ data, pagination: paginationMetaData });
+            .send(
+                ApiResponseFormat.responseFormat({ data }, paginationMetaData)
+            );
     }
 }

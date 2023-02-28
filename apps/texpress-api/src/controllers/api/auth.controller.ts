@@ -17,12 +17,18 @@ import {
 import { AuthService } from '@api/services';
 import { Request } from 'express';
 import { CreateApiUserValidator } from 'shared/validators';
-import { CreateUserDto, RefreshTokenDto, VerifyOTPDto } from '@api/dtos';
+import {
+    CreateUserDto,
+    RefreshTokenDto,
+    VerifyOTPDto,
+    SocialLoginDto,
+} from '@api/dtos';
 import {
     RefreshTokenValidator,
     SetPasswordValidator,
     VerifyOTPValidator,
     ForgotPasswordValidator,
+    SocialLoginValidator,
 } from '@api/validators';
 import { LoginDto, SetPasswordDto } from 'shared/dtos';
 import { PaginationOptions, PaginationResponse } from 'core/interfaces';
@@ -121,5 +127,15 @@ export class ApiAuthController extends APIBaseController {
         req: TypedQuery<PaginationOptions>
     ): Promise<PaginationResponse<ApiUserEntity>> {
         return this.authService.paginate(req.query);
+    }
+
+    @Route({
+        method: HTTPMethods.Post,
+        path: '/social-login',
+        validators: [SocialLoginValidator],
+    })
+    @RespondItem()
+    socailLogin(req: TypedBody<SocialLoginDto>) {
+        return this.authService.socialLogin(req.body);
     }
 }

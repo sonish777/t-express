@@ -120,4 +120,23 @@ export class ValidationBuilder {
             );
         return this;
     }
+
+    static IsEnum(
+        enumType: Record<string, string>,
+        options: ValidationOptions = {}
+    ) {
+        this._validators
+            .custom(
+                (value: string) =>
+                    Object.values(enumType).indexOf(value.toLowerCase()) !== -1
+            )
+            .withMessage(
+                options.message ??
+                    getMessage(ValidationMessages.shouldContain, {
+                        field: options.fieldDisplayName ?? this._field,
+                        options: Object.values(enumType).join(','),
+                    })
+            );
+        return this;
+    }
 }

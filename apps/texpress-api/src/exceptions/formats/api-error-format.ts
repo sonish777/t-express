@@ -6,6 +6,7 @@ import {
 } from '@api/exceptions/interfaces';
 import { UnprocessableEntityException } from 'shared/exceptions';
 import { ValidationError } from 'express-validator';
+import { ApiResponseFormat } from 'core/controllers';
 import _ from 'lodash';
 
 export class ApiErrorFormatter {
@@ -23,7 +24,7 @@ export class ApiErrorFormatter {
         if (process.env.NODE_ENV !== 'development') {
             delete errorPayload.stack;
         }
-        return errorPayload;
+        return ApiResponseFormat.responseFormat({ error: errorPayload });
     }
 
     private static formatSingle(error: HttpException): APIErrorPayload {
@@ -63,7 +64,7 @@ export class ApiErrorFormatter {
             name: error.name,
             message: error.message,
             statusCode: error.statusCode,
-            errors,
+            detail: errors,
         };
     }
 }

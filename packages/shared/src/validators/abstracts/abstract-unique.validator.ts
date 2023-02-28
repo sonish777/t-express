@@ -29,6 +29,6 @@ export abstract class AbstractUniqueValidator<K extends BaseEntity>
         ) {
             return true;
         }
-        throw `${path} already taken`;
+        throw new Error(`${path} already taken`);
     }
 }

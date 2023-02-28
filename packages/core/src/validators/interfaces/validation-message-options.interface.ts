@@ -3,4 +3,5 @@ export type ValidationMessageOptions = Partial<{
     value: string;
     min: number;
     max: number;
+    options: string;
 }>;
