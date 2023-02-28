@@ -17,6 +17,11 @@ export class CreateRoleValidator
                 .MinCharacters(3, { fieldDisplayName: 'Role slug' })
                 .Custom(UniqueSlugValidator)
                 .build(),
+            permissions: ValidationBuilder.ForField('permissions')
+                .Required({
+                    message: 'At least one permission must be selected',
+                })
+                .build(),
         };
     }
 }

@@ -6,6 +6,7 @@ import { CreateRole } from 'shared/dtos';
 import { Inject, Service } from 'typedi';
 import { DeepPartial, Repository } from 'typeorm';
 import { PermissionService } from './permission.service';
+import { DTO, Sanitize } from 'core/utils';
 
 @Service()
 export class RoleService extends BaseService<RoleEntity> {
@@ -18,7 +19,8 @@ export class RoleService extends BaseService<RoleEntity> {
         super();
     }
 
-    async createRoleWithPermissions(payload: CreateRole) {
+    @Sanitize
+    async createRoleWithPermissions(@DTO payload: CreateRole) {
         const { name, slug, permissions } = payload;
         const role = await this.create({ name, slug });
         const rolePermissions = await this.permissionService.getPermissionInIds(

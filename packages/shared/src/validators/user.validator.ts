@@ -45,7 +45,7 @@ export class CreateUserValidator
 }
 
 const updateUserValidatorCustomizer = customize(CreateUserValidator);
-updateUserValidatorCustomizer.makeOptional(['password']);
+updateUserValidatorCustomizer.removeRules(['password']);
 export const UpdateUserValidator = updateUserValidatorCustomizer.done();
 
 const createApiUserValidatorCustomizer = customize(CreateUserValidator);
@@ -59,3 +59,22 @@ createApiUserValidatorCustomizer.replace(
         .build()
 );
 export const CreateApiUserValidator = createApiUserValidatorCustomizer.done();
+
+const forgotPasswordValidatorCustomizer = customize(CreateUserValidator);
+forgotPasswordValidatorCustomizer.removeRules([
+    'firstName',
+    'lastName',
+    'gender',
+    'dob',
+    'password',
+    'mobileNumber',
+]);
+forgotPasswordValidatorCustomizer.replace(
+    'email',
+    ValidationBuilder.ForField('email')
+        .Required({ fieldDisplayName: 'Email' })
+        .IsEmail({ fieldDisplayName: 'Email' })
+        .build()
+);
+export const CMSForgotPasswordValidator =
+    forgotPasswordValidatorCustomizer.done();

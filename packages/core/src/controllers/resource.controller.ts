@@ -15,7 +15,7 @@ export function ResourceControllerFactory<
     Service extends BaseService<Model>
 >(options: {
     resource: string;
-    findRelations: string[];
+    findRelations?: string[];
     validators?: {
         create?: Validator[];
         update?: Validator[];

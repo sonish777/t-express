@@ -30,18 +30,26 @@
                 }) %>
             </div>
         </div>
-        <% exists(locals.data?.data) && locals.data.data.forEach(permission => { %>
-            <div class="mb-3">
-                <span class="h6 font-weight-bold"><%= capitalize(permission.module) %></span>
-            </div>
-            <% permission.permissions.forEach(p => { %>
-                <%- include('./partials/_permission-switch.ejs', {
-                        name: p.name, 
-                        id: p.id,
-                        options: [getUserInput(locals.inputData, 'permissions')?.indexOf(String(p.id)) >= 0 ? 'checked': '']
-                    }) %>
+        <div class="row">
+            <label><b>Permissions</b></label>
+            <%- include('../common/invalid-feedback.ejs', {
+                errorMessage: getErrorMessage(locals.mappedErrors, 'permissions')
+            }) %>
+            <div class="col">
+            <% exists(locals.data?.data) && locals.data.data.forEach(permission => { %>
+                <div class="mb-3">
+                    <span class="h6 font-weight-bold"><%= capitalize(permission.module) %></span>
+                </div>
+                <% permission.permissions.forEach(p => { %>
+                    <%- include('./partials/_permission-switch.ejs', {
+                            name: p.name, 
+                            id: p.id,
+                            options: [getUserInput(locals.inputData, 'permissions')?.indexOf(String(p.id)) >= 0 ? 'checked': '']
+                        }) %>
+                <% }) %>
             <% }) %>
-        <% }) %>
+            </div>
+        </div>
         <div class="mt-3">
             <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save all</button>
         </div>

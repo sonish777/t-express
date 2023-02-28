@@ -1,1 +1,1 @@
-<div class="invalid-feedback"><%= get(locals.errorMessage) %></div>
+<div class="invalid-feedback <%= get(locals.errorMessage) ? "d-block": "" %>"><%= get(locals.errorMessage) %></div>

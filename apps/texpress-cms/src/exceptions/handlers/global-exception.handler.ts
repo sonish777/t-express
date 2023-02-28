@@ -27,7 +27,7 @@ export class GlobalExceptionHandler extends ExceptionHandler {
                     );
             }
         }
-        req.flash('error', error.message);
+        req.flash('error:toast', error.message);
         return res.redirect('back');
     }
 }

@@ -1,5 +1,5 @@
 <div class="card card-body border-0 shadow mb-4">
-    <h2 class="h5 mb-4">Create a new role</h2>
+    <h2 class="h5 mb-4">Edit role</h2>
     <form method="post" action="/roles/<%= get(locals.data?.role?.id) %>?_method=PUT">
         <div class="row">
             <div class="col-md-6 mb-3">
@@ -30,24 +30,32 @@
                 }) %>
             </div>
         </div>
-        <% exists(locals.data?.permissions) && locals.data.permissions.forEach(permission => { %>
-            <div class="mb-3">
-                <span class="h6 font-weight-bold"><%= capitalize(permission.module) %></span>
+        <div class="row">
+            <div class="col">
+                <label><b>Permissions</b></label>
+                <%- include('../common/invalid-feedback.ejs', {
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'permissions')
+                }) %>
+                <% exists(locals.data?.permissions) && locals.data.permissions.forEach(permission => { %>
+                    <div class="mb-3">
+                        <span class="h6 font-weight-bold"><%= capitalize(permission.module) %></span>
+                    </div>
+                    <% permission.permissions.forEach(p => { %>
+                        <%- include('./partials/_permission-switch.ejs', {
+                                name: p.name, 
+                                id: p.id,
+                                options: [
+                                    getEditFormData(locals.data?.role, "permissions", locals.inputData)
+                                    ?.map(p => Number(p))
+                                    .indexOf((p.id)) >= 0 
+                                        ? 'checked'
+                                        : ''
+                                ]
+                            }) %>
+                    <% }) %>
+                <% }) %>
             </div>
-            <% permission.permissions.forEach(p => { %>
-                <%- include('./partials/_permission-switch.ejs', {
-                        name: p.name, 
-                        id: p.id,
-                        options: [
-                            getEditFormData(locals.data?.role, "permissions", locals.inputData)
-                            ?.map(p => Number(p))
-                            .indexOf((p.id)) >= 0 
-                                ? 'checked'
-                                : ''
-                        ]
-                    }) %>
-            <% }) %>
-        <% }) %>
+        </div>
         <div class="mt-3">
             <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save all</button>
         </div>

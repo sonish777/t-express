@@ -12,6 +12,10 @@ export const generateOTP = (): Promise<string> => {
     });
 };
 
+export const generateToken = (size = 64) => {
+    return crypto.randomBytes(size).toString('hex').slice(0, size);
+};
+
 export const dateDiffInMinutes = (
     firstDate: Date,
     secondDate: Date
