@@ -14,6 +14,6 @@ export interface APIValidationErrorPayload {
     name: string;
     message: string;
     statusCode: number;
-    errors: ValidationErrorsArray[];
+    detail: ValidationErrorsArray[];
     stack?: string;
 }

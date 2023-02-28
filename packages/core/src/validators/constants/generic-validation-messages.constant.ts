@@ -5,4 +5,5 @@ export const ValidationMessages = {
     max: '%field% cannot exceed %max% characters',
     date: '%field% is not a valid date',
     confirmPassword: 'Passwords do not match',
+    shouldContain: '%field% should contain either of %options%',
 } as const;

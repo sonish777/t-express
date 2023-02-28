@@ -9,7 +9,7 @@ import { RoleEntity } from './role.entity';
 })
 @SetRepository(postgresDataSource)
 export class UserEntity extends BaseEntity {
-    @Column()
+    @Column({ type: 'uuid', default: () => 'uuid_generate_v4()' })
     _id: string;
 
     @Column()

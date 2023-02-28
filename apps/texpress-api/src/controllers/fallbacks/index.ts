@@ -1,7 +1,6 @@
 import { Controller, Route } from 'core/controllers';
 import { HttpException } from 'core/exceptions';
-import { HTTPMethods } from 'core/utils';
-import { HttpStatus } from 'core/utils';
+import { HTTPMethods, HttpStatus } from 'core/utils';
 import { NextFunction, Request, Response } from 'express';
 
 @Controller('*', { fallback: true })

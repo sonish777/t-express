@@ -1,16 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
-import { ApiController, TypedBody } from 'core/controllers';
-import { HTTPMethods } from 'core/utils';
+import {
+    ApiController,
+    TypedBody,
+    APIBaseController,
+    APIProtectedRoute,
+    TypedQuery,
+} from 'core/controllers';
+import { HTTPMethods, HttpStatus } from 'core/utils';
 import { ApiUserService } from '@api/services';
-import { APIBaseController } from 'core/controllers';
 import { ApiUserEntity } from 'shared/entities';
-import { TypedQuery } from 'core/controllers';
 import { CommonSearchQuery } from 'core/interfaces';
-import { HttpException } from 'core/exceptions';
-import { HttpStatus } from 'core/utils';
+import { HttpException, CatchAsync } from 'core/exceptions';
 import { CreateUser } from 'shared/dtos';
-import { CatchAsync } from 'core/exceptions';
-import { APIProtectedRoute } from 'core/controllers';
 import { CreateUserValidator } from 'shared/validators';
 
 @ApiController('/users')

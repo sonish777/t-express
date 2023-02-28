@@ -1,6 +1,5 @@
 import { ValidationBuilder } from 'core/utils';
-import { ValidatorWithStaticProps } from 'core/validators';
-import { customize } from 'core/validators';
+import { ValidatorWithStaticProps, customize } from 'core/validators';
 import { ValidationChain } from 'express-validator';
 import { UniqueUserEmailValidator } from './customs';
 import { GenderValidator } from './customs/gender.validator';

@@ -6,7 +6,7 @@ import { postgresDataSource } from '../connections';
 @Entity({ name: 'roles' })
 @SetRepository(postgresDataSource)
 export class RoleEntity extends BaseEntity {
-    @Column()
+    @Column({ type: 'uuid', default: () => 'uuid_generate_v4()' })
     _id: string;
 
     @Column()

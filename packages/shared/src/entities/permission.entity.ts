@@ -5,7 +5,7 @@ import { Column, Entity } from 'typeorm';
 @Entity({ name: 'permissions' })
 @SetRepository(postgresDataSource)
 export class PermissionEntity extends BaseEntity {
-    @Column()
+    @Column({ type: 'uuid', default: () => 'uuid_generate_v4()' })
     _id: string;
 
     @Column()

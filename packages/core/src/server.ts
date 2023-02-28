@@ -47,7 +47,7 @@ export class Server {
     private registerRoutes(routePrefixes: RoutePrefixes = {}) {
         Object.values(this.controllers).forEach((controllerClass) => {
             const controllerInstance: { [handlerName: string]: Handler } =
-                Container.get<any>(controllerClass) as any;
+                Container.get<any>(controllerClass);
             const expressRouter = express.Router();
             const basePath = Reflect.getMetadata(
                 ControllerMetadataKeys.BASE_PATH,
