@@ -1,3 +1,4 @@
+import { Breadcrumb } from 'core/interfaces';
 import { Response } from 'express';
 import path from 'path';
 
@@ -7,6 +8,7 @@ export abstract class BaseController {
     abstract _viewPath: string;
     abstract _module: string;
     protected page = 'index';
+    protected breadcrumbs: Breadcrumb[] = [];
 
     get title() {
         return this._title;
@@ -28,11 +30,18 @@ export abstract class BaseController {
         return this._baseView;
     }
 
+    setBreadcrumbs(breadcrumbs: Breadcrumb[]) {
+        this.breadcrumbs = breadcrumbs;
+    }
+
     render(res: Response, data: Object = {}) {
+        const breadcrumbs = [...this.breadcrumbs];
+        this.setBreadcrumbs([]);
         return res.render(this._baseView, {
             title: this._title,
             page: path.join(this._viewPath, this.page),
             module: this._module,
+            breadcrumbs,
             data,
         });
     }

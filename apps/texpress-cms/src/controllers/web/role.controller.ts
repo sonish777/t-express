@@ -3,7 +3,7 @@ import { Inject } from 'typedi';
 import { Controller, ProtectedRoute, TypedBody } from 'core/controllers';
 import { ResourceControllerFactory } from 'core/controllers';
 import { HTTPMethods } from 'core/utils';
-import { RoleService } from '@cms/services/role.service';
+import { RoleService } from '@cms/services';
 import { CanAccess } from 'core/controllers';
 import { CatchAsync } from 'core/exceptions';
 import { RoleEntity } from 'shared/entities';
@@ -33,6 +33,10 @@ export class RoleController extends ResourceControllerFactory<
     @CatchAsync
     async create(_req: Request, res: Response) {
         this.page = 'create';
+        this.setBreadcrumbs([
+            ...this.indexBreadcrumbs,
+            { name: 'Create', url: '/roles/create' },
+        ]);
         const data = await this.service.getModulePermissions();
         return this.render(res, { data });
     }
@@ -54,8 +58,12 @@ export class RoleController extends ResourceControllerFactory<
     })
     @CatchAsync
     async edit(req: Request, res: Response) {
-        this.page = 'edit';
         const id = Number(req.params.id);
+        this.page = 'edit';
+        this.setBreadcrumbs([
+            ...this.indexBreadcrumbs,
+            { name: 'Edit', url: `/roles/${id}` },
+        ]);
         const permissions = await this.service.getModulePermissions();
         const role = await this.service.findOne({ id }, ['permissions']);
         this.render(res, {

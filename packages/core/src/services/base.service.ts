@@ -52,12 +52,7 @@ export abstract class BaseService<K extends BaseEntity> {
             },
         });
         if (!entity) {
-            throw new HttpException(
-                400,
-                'User not found',
-                'NotFoundException',
-                true
-            );
+            throw new NotFoundException(`${this.resource} not found`);
         }
         return this.repository.save({
             ...entity,
@@ -72,12 +67,7 @@ export abstract class BaseService<K extends BaseEntity> {
             },
         });
         if (!entity) {
-            throw new HttpException(
-                400,
-                'User not found',
-                'NotFoundException',
-                true
-            );
+            throw new NotFoundException(`${this.resource} not found`);
         }
         return this.repository.remove(entity);
     }

@@ -12,6 +12,7 @@ import { DTO, Sanitize } from 'core/utils';
 export class RoleService extends BaseService<RoleEntity> {
     @GetRepository(RoleEntity)
     protected readonly repository: Repository<RoleEntity>;
+    protected filterColumns: string[] = ['name'];
 
     constructor(
         @Inject() private readonly permissionService: PermissionService

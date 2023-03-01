@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { BaseEntity } from 'core/entities';
-import { CommonSearchQuery } from 'core/interfaces';
+import { Breadcrumb, CommonSearchQuery } from 'core/interfaces';
 import { BaseService } from 'core/services';
 import { HTTPMethods } from 'core/utils';
 import { Validator } from 'core/validators';
@@ -9,6 +9,7 @@ import { BaseController } from './base.controller';
 import { ProtectedRoute } from './decorators';
 import { TypedQuery } from './interfaces/typed-query.interface';
 import { TypedBody } from './interfaces';
+import { CatchAsync } from 'core/exceptions';
 
 export function ResourceControllerFactory<
     Model extends BaseEntity,
@@ -27,6 +28,10 @@ export function ResourceControllerFactory<
         public readonly _module: string = options.resource;
         public abstract _title: string;
         public abstract _viewPath: string;
+        public indexBreadcrumbs: Breadcrumb[] = [
+            { name: _.capitalize(this._module), url: `/${this._module}` },
+        ];
+        public breadcrumbs: Breadcrumb[] = [];
 
         constructor(public readonly service: Service) {
             super();
@@ -36,14 +41,19 @@ export function ResourceControllerFactory<
             method: HTTPMethods.Get,
             path: '/',
         })
+        @CatchAsync
         async index(req: TypedQuery<CommonSearchQuery>, res: Response) {
             this.page = 'index';
+            this.setBreadcrumbs(this.indexBreadcrumbs);
             const data = await this.service.paginate(
                 {
                     ...req.query,
                 },
                 options.findRelations
             );
+            if (req.query.keywords) {
+                req.flash('inputData', req.query.keywords);
+            }
             return this.render(res, data);
         }
 
@@ -51,8 +61,13 @@ export function ResourceControllerFactory<
             method: HTTPMethods.Get,
             path: '/create',
         })
+        @CatchAsync
         create(_req: Request, res: Response) {
             this.page = 'create';
+            this.setBreadcrumbs([
+                ...this.indexBreadcrumbs,
+                { name: 'Create', url: '#' },
+            ]);
             return this.render(res);
         }
 
@@ -61,6 +76,7 @@ export function ResourceControllerFactory<
             path: '/',
             validators: [...(options.validators?.create ?? [])],
         })
+        @CatchAsync
         async add(req: Request, res: Response) {
             await this.service.create(req.body);
             req.flash(
@@ -74,9 +90,14 @@ export function ResourceControllerFactory<
             method: HTTPMethods.Get,
             path: '/:id',
         })
+        @CatchAsync
         async edit(req: Request, res: Response) {
-            this.page = 'edit';
             const id = req.params.id;
+            this.page = 'edit';
+            this.setBreadcrumbs([
+                ...this.indexBreadcrumbs,
+                { name: 'Edit', url: '#' },
+            ]);
             const user = await this.service.findOne({ id: <any>Number(id) });
             if (!user) {
                 req.flash(
@@ -93,6 +114,7 @@ export function ResourceControllerFactory<
             path: '/:id',
             validators: [...(options.validators?.update ?? [])],
         })
+        @CatchAsync
         async update(req: TypedBody<any>, res: Response) {
             const body = req.body;
             const id = req.params.id;
@@ -108,6 +130,7 @@ export function ResourceControllerFactory<
             method: HTTPMethods.Delete,
             path: '/:id',
         })
+        @CatchAsync
         async delete(req: Request, res: Response) {
             const id = req.params.id;
             await this.service.delete(Number(id));

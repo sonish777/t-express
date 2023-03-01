@@ -36,6 +36,10 @@ export class UserController extends ResourceControllerFactory<
 
     async create(_req: Request, res: Response) {
         this.page = 'create';
+        this.setBreadcrumbs([
+            ...this.indexBreadcrumbs,
+            { name: 'Create', url: '/users/create' },
+        ]);
         const roles = await this.service.getRolesForDropdown();
         return this.render(res, { roles });
     }
@@ -46,10 +50,13 @@ export class UserController extends ResourceControllerFactory<
         return res.redirect('back');
     }
 
-    @CatchAsync
     async edit(req: Request, res: Response) {
-        this.page = 'edit';
         const id = req.params.id;
+        this.page = 'edit';
+        this.setBreadcrumbs([
+            ...this.indexBreadcrumbs,
+            { name: 'Edit', url: `/users/${id}` },
+        ]);
         const user = await this.service.findOne({ id: Number(id) }, ['role']);
         if (!user) {
             req.flash('error', 'User not found');
@@ -62,7 +69,6 @@ export class UserController extends ResourceControllerFactory<
         });
     }
 
-    @CatchAsync
     async update(req: TypedBody<UpdateUserDto>, res: Response): Promise<void> {
         const id = req.params.id;
         await this.service.updateUser(Number(id), req.body);
@@ -70,7 +76,6 @@ export class UserController extends ResourceControllerFactory<
         return res.redirect('back');
     }
 
-    @CatchAsync
     @ProtectedRoute({ method: HTTPMethods.Put, path: '/:id/toggle-status' })
     async toggleStatus(req: TypedBody<{ status: string }>, res: Response) {
         const id = req.params.id;
