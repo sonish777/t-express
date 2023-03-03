@@ -45,5 +45,12 @@
         "attempts": 5,
         "windowDuration": 10,
         "blockDuration": 10
+    },
+    "rabbitmq": {
+        "url": "amqp://localhost"
+    },
+    "queue:exchanges": {
+        "cms": "cms",
+        "api": "api"
     }
 }
