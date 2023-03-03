@@ -17,7 +17,8 @@
             "core/*": ["../core/src/*"],
             "shared/*": ["../shared/src/*"],
             "@cms/*": ["../../apps/texpress-cms/src/*"],
-            "@api/*": ["../../apps/texpress-api/src/*"]
+            "@api/*": ["../../apps/texpress-api/src/*"],
+            "rabbitmq/*": ["../rabbitmq/src/*"]
         },
         "typeRoots": ["../types", "../../node_modules/@types"]
     },

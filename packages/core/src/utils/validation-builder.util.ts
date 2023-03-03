@@ -1,4 +1,10 @@
-import { check, Meta, Schema, ValidationChain } from 'express-validator';
+import {
+    check,
+    Meta,
+    Schema,
+    ValidationChain,
+    CustomValidator as ExpressCustomValidator,
+} from 'express-validator';
 import _ from 'lodash';
 import {
     CustomValidator,
@@ -45,6 +51,11 @@ export class ValidationBuilder {
                     field: options.fieldDisplayName ?? this._field,
                 })
         );
+        return this;
+    }
+
+    static If(condition: ValidationChain | ExpressCustomValidator) {
+        this._validators.if(condition);
         return this;
     }
 

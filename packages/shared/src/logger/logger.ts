@@ -17,8 +17,8 @@ export class Logger {
         if (process.env.NODE_ENV !== 'production') {
             transports.push(
                 new winston.transports.Console({
-                    handleExceptions: true,
-                    handleRejections: true,
+                    // handleExceptions: true,
+                    // handleRejections: true,
                     format: format.combine(
                         ...winstonLoggerFormats,
                         format.prettyPrint({

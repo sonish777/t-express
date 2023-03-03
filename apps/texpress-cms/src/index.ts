@@ -25,9 +25,14 @@ import {
     StaticServeProvider,
     StaticServeProviderOptions,
 } from 'shared/providers';
+import config, { IConfig } from 'config';
+import { InjectPublisher, Publisher } from 'rabbitmq';
 
-function bootstrap() {
+const exchangesConfig = config.get<IConfig>('queue:exchanges');
+
+async function bootstrap(publisher: Publisher) {
     const server = new Server(controllers);
+    publisher.registerQueues(exchangesConfig.get('cms'), ['activity_log']);
     const middlewares: Handler[] = [methodOverride('_method')];
     server.startup(Number(ServerConfig.PORT), {
         middlewares: [...middlewares],
@@ -76,4 +81,4 @@ function bootstrap() {
     });
 }
 
-bootstrap();
+InjectPublisher(bootstrap)();

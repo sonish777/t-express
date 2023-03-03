@@ -92,12 +92,24 @@
                 </select>
             </div>
             <div class="col-md-6 mb-3">
-                <%- include('../common/input-field', { 
-                    label: 'Password', 
-                    name: 'password', 
-                    type: 'password',
-                    value: getUserInput(locals.inputData, "password") ?? "", 
-                    placeholder: "Password",
+                <label for="password">Password</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="send-activation-link" 
+                        name="sendActivationLink" value="on"
+                        <%= getUserInput(locals.inputData, 'sendActivationLink') ? 'checked': '' %>>
+                    <label class="form-check-label" for="send-activation-link">Send Activation Link</label>
+                </div>
+                <span>Or set a new password below</span>
+                <li role="separator" class="dropdown-divider border-gray-300"></li>
+                <input
+                    type="password"
+                    class="form-control <%= getErrorMessage(locals.mappedErrors, 'password') ? "is-invalid": "" %>"
+                    id="password"
+                    name="password"
+                    value="<%= getUserInput(locals.inputData, "password") ?? "" %>"
+                    placeholder="Password"
+                />
+                <%- include('../common/invalid-feedback', {
                     errorMessage: getErrorMessage(locals.mappedErrors, 'password')
                 }) %>
             </div>
@@ -107,3 +119,21 @@
         </div>
     </form>
 </div>
+<script>
+    function togglePasswordField(e) {
+        const passwordEl = $('#password');
+        const checked = e.target.checked;
+            if(checked) {
+                passwordEl.addClass('d-none').attr('disabled', true);
+            } else {
+                passwordEl.removeClass('d-none').removeAttr('disabled');
+            }
+    }
+    const sendLinkEl = $('#send-activation-link');
+    if(sendLinkEl) {
+        sendLinkEl.change(togglePasswordField);
+        if(sendLinkEl.attr('checked') === 'checked') {
+            sendLinkEl.change()
+        }
+    }
+</script>

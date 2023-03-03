@@ -9,4 +9,5 @@ export class CreateUserDto {
     @Expose() mobileNumber: string;
     @Expose() roleId: string;
     @Expose() password: string;
+    @Expose() sendActivationLink: string;
 }

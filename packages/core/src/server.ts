@@ -16,7 +16,7 @@ dotenv.config({ path: __dirname + '../../../.env' });
 export class Server {
     private readonly _app: Express;
 
-    constructor(private readonly controllers: { [key: string]: Class }) {
+    constructor(private readonly controllers?: { [key: string]: Class }) {
         this._app = express();
     }
 
@@ -45,6 +45,9 @@ export class Server {
     }
 
     private registerRoutes(routePrefixes: RoutePrefixes = {}) {
+        if (!this.controllers) {
+            return;
+        }
         Object.values(this.controllers).forEach((controllerClass) => {
             const controllerInstance: { [handlerName: string]: Handler } =
                 Container.get<any>(controllerClass);

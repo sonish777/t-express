@@ -34,6 +34,7 @@ export class UserController extends ResourceControllerFactory<
         super(service);
     }
 
+    @CatchAsync
     async create(_req: Request, res: Response) {
         this.page = 'create';
         this.setBreadcrumbs([
@@ -44,12 +45,14 @@ export class UserController extends ResourceControllerFactory<
         return this.render(res, { roles });
     }
 
+    @CatchAsync
     async add(req: TypedBody<CreateUserDto>, res: Response) {
         await this.service.createUser(req.body);
         req.flash('message:toast', 'User created successfully');
         return res.redirect('back');
     }
 
+    @CatchAsync
     async edit(req: Request, res: Response) {
         const id = req.params.id;
         this.page = 'edit';
@@ -69,6 +72,7 @@ export class UserController extends ResourceControllerFactory<
         });
     }
 
+    @CatchAsync
     async update(req: TypedBody<UpdateUserDto>, res: Response): Promise<void> {
         const id = req.params.id;
         await this.service.updateUser(Number(id), req.body);
@@ -77,6 +81,7 @@ export class UserController extends ResourceControllerFactory<
     }
 
     @ProtectedRoute({ method: HTTPMethods.Put, path: '/:id/toggle-status' })
+    @CatchAsync
     async toggleStatus(req: TypedBody<{ status: string }>, res: Response) {
         const id = req.params.id;
         await this.service.update(Number(id), req.body);

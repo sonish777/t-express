@@ -7,7 +7,7 @@ export function EventEmitterDecoratorFactory<
 >(
     Event: Class,
     event: EventName,
-    mapper: (returnedValue: any) => EventTypes[EventName]
+    mapper: (returnedValue: any) => EventTypes[EventName] | false
 ): MethodDecorator {
     return (_target, _prop, descriptor: PropertyDescriptor) => {
         const originalMethod = descriptor.value;
@@ -15,7 +15,9 @@ export function EventEmitterDecoratorFactory<
             const result = await originalMethod.apply(this, args);
             const valueToEmit = mapper(result);
             const emitter = Container.get(Event);
-            emitter.emit(event, ...valueToEmit);
+            if (valueToEmit !== false) {
+                emitter.emit(event, ...valueToEmit);
+            }
             return result;
         };
     };

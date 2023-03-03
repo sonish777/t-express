@@ -1,6 +1,6 @@
 import { ValidationBuilder } from 'core/utils';
 import { ValidatorWithStaticProps, customize } from 'core/validators';
-import { ValidationChain } from 'express-validator';
+import { Meta, ValidationChain } from 'express-validator';
 import { UniqueUserEmailValidator } from './customs';
 import { GenderValidator } from './customs/gender.validator';
 import { UniqueApiUserEmailValidator } from './customs/unique-email.validator';
@@ -34,6 +34,10 @@ export class CreateUserValidator
                 .IsDate({ fieldDisplayName: 'Date of birth' })
                 .build(),
             password: ValidationBuilder.ForField('password')
+                .If(
+                    (_value: string, { req }: Meta) =>
+                        req.body.sendActivationLink !== 'on'
+                )
                 .MinCharacters(8, { fieldDisplayName: 'password' })
                 .MaxCharacters(20, { fieldDisplayName: 'password' })
                 .build(),

@@ -7,6 +7,9 @@ import { RoleService } from './role.service';
 import { CreateUserDto, UpdateUserDto } from '@cms/dtos';
 import { BadRequestException } from 'shared/exceptions';
 import { DTO, Sanitize } from 'core/utils';
+import { AuthEventsEmitter } from 'shared/events';
+import { generateToken } from 'shared/utils';
+import { ServerConfig } from '@cms/configs';
 
 @Service()
 export class UserService extends BaseService<UserEntity> {
@@ -23,18 +26,47 @@ export class UserService extends BaseService<UserEntity> {
     }
 
     @Sanitize
+    @AuthEventsEmitter(
+        'cms-forgot-password',
+        (user: UserEntity & { resetPasswordUrl?: string }) =>
+            user.resetPasswordUrl
+                ? [
+                      {
+                          to_email: user.email,
+                          reset_password_link: user.resetPasswordUrl,
+                          user_name: `${user.firstName ?? ''} ${
+                              user.lastName ?? ''
+                          }`,
+                      },
+                  ]
+                : false
+    )
     async createUser(@DTO createUserDto: CreateUserDto) {
-        const { roleId, ...rest } = createUserDto;
+        const { roleId, sendActivationLink, ...rest } = createUserDto;
         const roleEntity = await this.roleService.findOne({
             _id: roleId,
         });
         if (!roleEntity) {
             throw new BadRequestException('Invalid role');
         }
-        return this.create({
+        if (sendActivationLink !== 'on') {
+            return this.create({
+                ...rest,
+                role: [roleEntity],
+            });
+        }
+        const token = generateToken();
+        const tokenExpiry = new Date(Date.now() + 600000);
+        const user = await this.create({
             ...rest,
             role: [roleEntity],
+            token,
+            tokenExpiry,
         });
+        return {
+            ...user,
+            resetPasswordUrl: `${ServerConfig.URL}/auth/reset-password?token=${token}`,
+        };
     }
 
     @Sanitize

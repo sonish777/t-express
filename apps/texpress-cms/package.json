@@ -20,7 +20,8 @@
     },
     "dependencies": {
         "core": "*",
-        "shared": "*"
+        "shared": "*",
+        "rabbitmq": "*"
     },
     "devDependencies": {
         "tsconfig": "*"

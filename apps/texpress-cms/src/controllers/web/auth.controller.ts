@@ -17,6 +17,8 @@ import {
 import { AuthService } from '@cms/services';
 import { CatchAsync } from 'core/exceptions';
 import { ResetPasswordDto } from '@cms/dtos';
+import { Publisher } from 'rabbitmq';
+import { QueueConfig } from 'shared/configs';
 
 @Controller('/auth')
 export class AuthController extends BaseController {
@@ -25,7 +27,10 @@ export class AuthController extends BaseController {
     _viewPath = 'auth';
     _module = 'auth';
 
-    constructor(private readonly authService: AuthService) {
+    constructor(
+        private readonly authService: AuthService,
+        private readonly publisher: Publisher
+    ) {
         super();
     }
 
@@ -34,8 +39,18 @@ export class AuthController extends BaseController {
         method: HTTPMethods.Get,
         middlewares: [redirectIfLoggedIn()],
     })
-    loginView(_req: Request, res: Response) {
+    @CatchAsync
+    async loginView(_req: Request, res: Response) {
         this.page = 'login';
+        await this.publisher.publish(
+            QueueConfig.Cms.Exchange,
+            QueueConfig.Cms.ActivityLogQueue,
+            {
+                route: '/login',
+                method: 'GET',
+                message: 'Login view route accessed',
+            }
+        );
         this.render(res);
     }
 

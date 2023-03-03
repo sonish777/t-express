@@ -55,12 +55,12 @@ export class createUsersTable1674332768986 implements MigrationInterface {
                     {
                         name: 'password',
                         type: 'varchar',
-                        isNullable: false,
+                        isNullable: true,
                     },
                     {
                         name: 'salt',
                         type: 'varchar',
-                        isNullable: false,
+                        isNullable: true,
                     },
                     {
                         name: 'status',
