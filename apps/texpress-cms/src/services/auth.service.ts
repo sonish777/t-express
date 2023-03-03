@@ -5,7 +5,7 @@ import { BaseService } from 'core/services';
 import { UserEntity } from 'shared/entities';
 import { BadRequestException, NotFoundException } from 'shared/exceptions';
 import { AuthEventsEmitter } from 'shared/events';
-import { dateDiffInMinutes, generateOTP, generateToken } from 'shared/utils';
+import { dateDiffInMinutes, generateToken } from 'shared/utils';
 import { ServerConfig } from '@cms/configs';
 import { HttpException } from 'core/exceptions';
 import { DTO, HttpStatus, Sanitize } from 'core/utils';
