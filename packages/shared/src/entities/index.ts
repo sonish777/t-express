@@ -4,3 +4,4 @@ export * from './user-role.entity';
 export * from './permission.entity';
 export * from './api-user.entity';
 export * from './email-template.entity';
+export * from './admin-activity-log.entity';

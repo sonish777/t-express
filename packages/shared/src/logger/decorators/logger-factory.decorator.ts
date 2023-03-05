@@ -6,7 +6,12 @@ import { Logger } from 'winston';
 export function LogDecoratorFactory(
     logger: Logger,
     title = '',
-    message = ''
+    message = '',
+    options: {
+        rethrowError: boolean;
+    } = {
+        rethrowError: true,
+    }
 ): MethodDecorator {
     return (target, prop, descriptor: PropertyDescriptor) => {
         const originalMethod = descriptor.value;
@@ -41,7 +46,9 @@ export function LogDecoratorFactory(
                     stack: error.stack,
                     ...metaData,
                 });
-                throw error;
+                if (options.rethrowError === true) {
+                    throw error;
+                }
             }
         };
         return descriptor;

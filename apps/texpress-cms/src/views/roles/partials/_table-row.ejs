@@ -11,12 +11,17 @@
         <div class="btn-group">
             <div class=" py-0">
                 <% if(hasPermission(loggedInUser, 'roles:edit')) { %>
-                    <a class="dropdown-item" href="/roles/<%= get(role?.id) %>"><span class="fas fa-edit me-2"></span>Edit</a>
+                    <a class="btn btn-sm btn-primary" href="/roles/<%= get(role?.id) %>">Edit</a>
                 <% } %>
                 <% if(hasPermission(loggedInUser, 'roles:delete')) { %>
-                    <form action="/roles/<%= get(role?.id) %>?_method=DELETE" method="post">
-                        <button type="submit" class="dropdown-item text-danger rounded-bottom" href="#"><span class="fas fa-trash-alt me-2"></span>Remove</button>
-                    </form>
+                    <%- include('../../common/delete-modal', {
+                        modalId: `deleteRole_${get(role?.id)}`,
+                        title: 'Delete Role',
+                        body: 'Are you sure you want to delete this role?',
+                        deleteActionUrl: `/roles/${role?.id}`,
+                        buttonText: 'Yes'
+                    }) %>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteRole_<%= get(role?.id) %>">Delete</button>
                 <% } %>
             </div>
         </div>

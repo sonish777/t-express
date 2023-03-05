@@ -9,6 +9,7 @@ import { CatchAsync } from 'core/exceptions';
 import { RoleEntity } from 'shared/entities';
 import { CreateRoleValidator } from 'shared/validators';
 import { CreateRole } from 'shared/dtos';
+import { Publisher } from 'rabbitmq';
 
 @Controller('/roles')
 @CanAccess
@@ -22,8 +23,11 @@ export class RoleController extends ResourceControllerFactory<
     public _title = 'Roles';
     public _viewPath = 'roles';
 
-    constructor(@Inject() readonly service: RoleService) {
-        super(service);
+    constructor(
+        public readonly service: RoleService,
+        public readonly publisher: Publisher
+    ) {
+        super(service, publisher);
     }
 
     @ProtectedRoute({

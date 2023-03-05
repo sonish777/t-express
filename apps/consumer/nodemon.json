@@ -1,5 +1,4 @@
 {
     "exec": "ts-node ./dist/index.js",
-    "watch": [".", "../../packages"],
-    "ignore": ["./public/**/*.js", "./resources/js/**/*.js"]
+    "watch": [".", "../../packages"]
 }

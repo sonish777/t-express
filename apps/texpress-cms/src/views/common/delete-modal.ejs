@@ -1,0 +1,21 @@
+<div class="modal fade" id="<%= get(locals.modalId) %>" tabindex="-1" role="dialog" aria-labelledby="<%= get(locals.modalId) %>" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="h6 modal-title"><%- exists(locals.title) ? locals.title: 'Delete' %></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><%- exists(locals.body) ? locals.body: 'Are you sure you want to delete?' %></p>
+            </div>
+            <div class="modal-footer d-flex">
+                <form action="<%= get(locals.deleteActionUrl) %>?_method=DELETE" method="post">
+                    <button type="submit" class="btn btn-warning" >
+                        <%= exists(locals.buttonText) ? locals.buttonText: 'Remove' %>
+                    </button>
+                </form>
+                <button type="button" class="btn btn-primary w-auto" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

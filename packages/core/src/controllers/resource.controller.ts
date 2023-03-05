@@ -10,6 +10,9 @@ import { ProtectedRoute } from './decorators';
 import { TypedQuery } from './interfaces/typed-query.interface';
 import { TypedBody } from './interfaces';
 import { CatchAsync } from 'core/exceptions';
+import { Publisher } from 'rabbitmq';
+import { AdminActivityLogEntity } from 'shared/entities';
+import { QueueConfig } from 'shared/configs';
 
 export function ResourceControllerFactory<
     Model extends BaseEntity,
@@ -33,7 +36,10 @@ export function ResourceControllerFactory<
         ];
         public breadcrumbs: Breadcrumb[] = [];
 
-        constructor(public readonly service: Service) {
+        constructor(
+            public readonly service: Service,
+            public readonly publisher: Publisher
+        ) {
             super();
         }
 
@@ -79,6 +85,17 @@ export function ResourceControllerFactory<
         @CatchAsync
         async add(req: Request, res: Response) {
             await this.service.create(req.body);
+            this.publisher.publish<Partial<AdminActivityLogEntity>>(
+                QueueConfig.Cms.Exchange,
+                QueueConfig.Cms.ActivityLogQueue,
+                {
+                    module: _.capitalize(this._module),
+                    action: 'Create',
+                    description: `Created a new ${this._module}`,
+                    userId: req.user!.id,
+                    activityTimestamp: new Date(),
+                }
+            );
             req.flash(
                 'message:toast',
                 `${_.capitalize(options.resource)} created successfully`
@@ -118,7 +135,18 @@ export function ResourceControllerFactory<
         async update(req: TypedBody<any>, res: Response) {
             const body = req.body;
             const id = req.params.id;
-            await this.service.update(Number(id), body);
+            const updated = await this.service.update(Number(id), body);
+            this.publisher.publish<Partial<AdminActivityLogEntity>>(
+                QueueConfig.Cms.Exchange,
+                QueueConfig.Cms.ActivityLogQueue,
+                {
+                    module: _.capitalize(this._module),
+                    action: 'Update',
+                    description: `Updated the details of ${this._module} @id:${updated.id}`,
+                    userId: req.user!.id,
+                    activityTimestamp: new Date(),
+                }
+            );
             req.flash(
                 'message:toast',
                 `${_.capitalize(options.resource)} updated successfully`
@@ -134,6 +162,17 @@ export function ResourceControllerFactory<
         async delete(req: Request, res: Response) {
             const id = req.params.id;
             await this.service.delete(Number(id));
+            this.publisher.publish<Partial<AdminActivityLogEntity>>(
+                QueueConfig.Cms.Exchange,
+                QueueConfig.Cms.ActivityLogQueue,
+                {
+                    module: _.capitalize(this._module),
+                    action: 'Delete',
+                    description: `Deleted a ${this._module} @id:${id}`,
+                    userId: req.user!.id,
+                    activityTimestamp: new Date(),
+                }
+            );
             req.flash(
                 'message:toast',
                 `${_.capitalize(options.resource)} deleted successfully`

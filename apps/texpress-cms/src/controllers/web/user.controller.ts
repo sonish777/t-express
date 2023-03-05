@@ -1,4 +1,3 @@
-import { Inject } from 'typedi';
 import { UserService } from '@cms/services';
 import {
     Controller,
@@ -7,12 +6,14 @@ import {
     TypedBody,
 } from 'core/controllers';
 import { ResourceControllerFactory } from 'core/controllers';
-import { UserEntity } from 'shared/entities';
+import { AdminActivityLogEntity, UserEntity } from 'shared/entities';
 import { CreateUserValidator, UpdateUserValidator } from 'shared/validators';
 import { HTTPMethods } from 'core/utils';
 import { Request, Response } from 'express';
 import { CreateUserDto, UpdateUserDto } from '@cms/dtos';
 import { CatchAsync } from 'core/exceptions';
+import { Publisher } from 'rabbitmq';
+import { QueueConfig } from 'shared/configs';
 
 @Controller('/users')
 @CanAccess
@@ -30,8 +31,11 @@ export class UserController extends ResourceControllerFactory<
     _title = 'Users';
     _viewPath = 'users';
 
-    constructor(@Inject() readonly service: UserService) {
-        super(service);
+    constructor(
+        public readonly service: UserService,
+        public readonly publisher: Publisher
+    ) {
+        super(service, publisher);
     }
 
     @CatchAsync
@@ -48,6 +52,17 @@ export class UserController extends ResourceControllerFactory<
     @CatchAsync
     async add(req: TypedBody<CreateUserDto>, res: Response) {
         await this.service.createUser(req.body);
+        this.publisher.publish<Partial<AdminActivityLogEntity>>(
+            QueueConfig.Cms.Exchange,
+            QueueConfig.Cms.ActivityLogQueue,
+            {
+                module: 'Admins',
+                action: 'Create',
+                description: 'Created a new admin user',
+                userId: req.user!.id,
+                activityTimestamp: new Date(),
+            }
+        );
         req.flash('message:toast', 'User created successfully');
         return res.redirect('back');
     }
@@ -75,7 +90,18 @@ export class UserController extends ResourceControllerFactory<
     @CatchAsync
     async update(req: TypedBody<UpdateUserDto>, res: Response): Promise<void> {
         const id = req.params.id;
-        await this.service.updateUser(Number(id), req.body);
+        const updatedUser = await this.service.updateUser(Number(id), req.body);
+        this.publisher.publish<Partial<AdminActivityLogEntity>>(
+            QueueConfig.Cms.Exchange,
+            QueueConfig.Cms.ActivityLogQueue,
+            {
+                module: 'Admins',
+                action: 'Update',
+                description: `Updated the details of admin @ ${updatedUser.email}`,
+                userId: req.user!.id,
+                activityTimestamp: new Date(),
+            }
+        );
         req.flash('message:toast', 'User details updated successfully');
         return res.redirect('back');
     }
@@ -84,7 +110,18 @@ export class UserController extends ResourceControllerFactory<
     @CatchAsync
     async toggleStatus(req: TypedBody<{ status: string }>, res: Response) {
         const id = req.params.id;
-        await this.service.update(Number(id), req.body);
+        const updatedUser = await this.service.update(Number(id), req.body);
+        this.publisher.publish<Partial<AdminActivityLogEntity>>(
+            QueueConfig.Cms.Exchange,
+            QueueConfig.Cms.ActivityLogQueue,
+            {
+                module: 'Admins',
+                action: 'Toggle Admin Status',
+                description: `Change account status to ${req.body.status} of admin @ ${updatedUser.email}`,
+                userId: req.user!.id,
+                activityTimestamp: new Date(),
+            }
+        );
         req.flash('message:toast', 'User status updated successfully');
         return res.redirect('back');
     }

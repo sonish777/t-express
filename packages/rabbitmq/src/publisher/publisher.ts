@@ -43,7 +43,11 @@ export class Publisher {
         }
     }
 
-    async publish(exchange: string, routingKey: string, message: any) {
+    async publish<K extends string | object>(
+        exchange: string,
+        routingKey: string,
+        message: K
+    ) {
         if (this.client instanceof Promise) {
             this.client = await this.client;
         }

@@ -6,15 +6,18 @@ import {
     IStrategyOptionsWithRequest,
 } from 'passport-local';
 import { AuthService } from '@cms/services';
-import { UserEntity } from 'shared/entities';
+import { AdminActivityLogEntity, UserEntity } from 'shared/entities';
 import { UnauthorizedException } from 'shared/exceptions';
 import { validatePassword } from 'core/utils';
 import { ProviderStaticMethod } from 'core/providers';
+import { Publisher } from 'rabbitmq';
+import { QueueConfig } from 'shared/configs';
 
 export class PassportProvider
     implements ProviderStaticMethod<typeof PassportProvider>
 {
     private static readonly _authService = Container.get(AuthService);
+    private static readonly _publisher = Container.get(Publisher);
 
     public static register(app: Express) {
         app.use(passport.initialize());
@@ -62,8 +65,18 @@ export class PassportProvider
                 req.flash('loginError', 'Invalid email or password provided');
                 return done(null, false);
             }
+            PassportProvider._publisher.publish<
+                Partial<AdminActivityLogEntity>
+            >(QueueConfig.Cms.Exchange, QueueConfig.Cms.ActivityLogQueue, {
+                module: 'Auth',
+                action: 'Login',
+                description: 'User logged into the system',
+                userId: user.id,
+                activityTimestamp: new Date(),
+            });
             return done(null, user);
-        } catch (error) {
+        } catch (error: any) {
+            req.flash('loginError', error.message);
             return done(null, false);
         }
     }

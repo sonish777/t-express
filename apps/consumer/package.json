@@ -2,6 +2,7 @@
     "name": "consumer",
     "version": "1.0.0",
     "scripts": {
+        "start": "node dist/index.js",
         "clean": "rimraf dist .turbo",
         "build:tsc": "npx tsc",
         "build:dev": "babel src --root-mode upward --out-dir dist --extensions \".ts,.tsx\" --source-maps inline --watch --copy-files",
