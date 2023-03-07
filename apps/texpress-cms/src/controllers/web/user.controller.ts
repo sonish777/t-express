@@ -13,7 +13,7 @@ import { Request, Response } from 'express';
 import { CreateUserDto, UpdateUserDto } from '@cms/dtos';
 import { CatchAsync } from 'core/exceptions';
 import { Publisher } from 'rabbitmq';
-import { QueueConfig } from 'shared/configs';
+import { MulterUpload, QueueConfig } from 'shared/configs';
 
 @Controller('/users')
 @CanAccess
@@ -50,6 +50,7 @@ export class UserController extends ResourceControllerFactory<
     }
 
     @CatchAsync
+    @MulterUpload([{ name: 'avatar', maxCount: 1 }])
     async add(req: TypedBody<CreateUserDto>, res: Response) {
         await this.service.createUser(req.body);
         this.publisher.publish<Partial<AdminActivityLogEntity>>(

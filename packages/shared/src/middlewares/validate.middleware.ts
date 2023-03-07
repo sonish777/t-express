@@ -1,14 +1,25 @@
-import { Handler } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
+import { ValidationError } from 'express-validator/src/base';
 import { UnprocessableEntityException } from '../exceptions';
 
-export const validate: Handler = (req, _res, next) => {
+export const validate = (req: Request, _res: Response, next?: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        let error: UnprocessableEntityException<
+            ValidationError[] | Record<string, ValidationError>
+        >;
         if (req.headers.accept === 'application/json') {
-            return next(new UnprocessableEntityException(errors.array()));
+            error = new UnprocessableEntityException(errors.array());
+        } else {
+            error = new UnprocessableEntityException(errors.mapped());
         }
-        return next(new UnprocessableEntityException(errors.mapped()));
+        if (!next) {
+            throw error;
+        }
+        return next(error);
     }
-    next();
+    if (next) {
+        next();
+    }
 };

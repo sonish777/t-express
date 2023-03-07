@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import express, { Express, Handler } from 'express';
+import express, { Express, Handler, RequestHandler } from 'express';
 import { Container } from 'typedi';
 import { ValidationChain } from 'express-validator';
-import { ControllerMetadataKeys } from './utils';
+import { ControllerMetadataKeys, MultipartMetadataKeys } from './utils';
 import { Class, StartupOptions } from './interfaces';
 import { Provider, ProviderWithOptions } from './providers';
 import { RoutePrefixes, Router } from './controllers';
@@ -10,6 +10,7 @@ import { ExceptionHandler } from './exceptions/handlers';
 import { validate, canAccess } from 'shared/middlewares';
 import { CommonProvider } from 'shared/providers';
 import dotenv from 'dotenv';
+import { uploader } from 'shared/configs';
 
 dotenv.config({ path: __dirname + '../../../.env' });
 
@@ -74,11 +75,17 @@ export class Server {
                 ControllerMetadataKeys.CHECK_PERMISSIONS,
                 controllerClass
             );
+            const multipartMap =
+                Reflect.getMetadata(
+                    MultipartMetadataKeys.MULTIPART_FIELDS,
+                    controllerClass
+                ) || {};
             if (checkPermissions) {
                 permissionGuard.push(canAccess());
             }
             routers.forEach((router) => {
                 const validationChains: ValidationChain[] = [];
+                let uploadsHandler: RequestHandler | undefined;
                 if (router.validators && router.validators.length > 0) {
                     router.validators.forEach((v) => {
                         validationChains.push(
@@ -86,12 +93,20 @@ export class Server {
                         );
                     });
                 }
+                if (multipartMap[router.handlerName]) {
+                    const fields = multipartMap[router.handlerName];
+                    uploadsHandler = uploader.fields(fields);
+                }
                 expressRouter[router.method](
                     router.path,
                     ...permissionGuard,
                     [...(router.middlewares || [])],
+                    uploadsHandler ?? [],
                     validationChains.length > 0
-                        ? [...validationChains, validate]
+                        ? [
+                              ...validationChains,
+                              ...(uploadsHandler ? [] : [validate]),
+                          ]
                         : [],
                     controllerInstance[router.handlerName].bind(
                         controllerInstance

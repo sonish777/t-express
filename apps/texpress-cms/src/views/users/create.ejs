@@ -1,6 +1,6 @@
 <div class="card card-body border-0 shadow mb-4">
     <h2 class="h5 mb-4">Create a new user</h2>
-    <form method="post" action="/users">
+    <form method="post" action="/users" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-6 mb-3">
                 <%- include('../common/input-field', { 
@@ -111,6 +111,14 @@
                 />
                 <%- include('../common/invalid-feedback', {
                     errorMessage: getErrorMessage(locals.mappedErrors, 'password')
+                }) %>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <input type="file" name="avatar" id="" />
+                <%- include('../common/invalid-feedback', {
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'avatar')
                 }) %>
             </div>
         </div>

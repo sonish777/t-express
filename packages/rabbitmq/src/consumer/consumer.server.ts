@@ -1,5 +1,6 @@
 import { StartupOptions } from 'core/interfaces';
 import { Server } from 'core/server';
+import { ConsumersMetadataKeys } from 'core/utils';
 import { Consumer } from './consumer.base';
 
 export class ConsumerServer extends Server {
@@ -18,7 +19,10 @@ export class ConsumerServer extends Server {
         Object.values(this.consumers).forEach(async (consumer) => {
             const consumerInstance = await new consumer();
             const consumers =
-                Reflect.getMetadata('CONSUMERS', consumerInstance) || [];
+                Reflect.getMetadata(
+                    ConsumersMetadataKeys.CONSUMERS,
+                    consumerInstance
+                ) || [];
             consumerInstance.queues.push(...consumers);
             await consumerInstance.configure.bind(consumerInstance)();
         });

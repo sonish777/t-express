@@ -12,7 +12,10 @@ export const CatchAsync: MethodDecorator = function (
         next: NextFunction
     ) {
         if (routeHandler) {
-            routeHandler.bind(this)(req, res, next).catch(next);
+            const response = routeHandler.bind(this)(req, res, next);
+            if (response instanceof Promise) {
+                response.catch(next);
+            }
         }
     };
     return descriptor;

@@ -9,3 +9,11 @@ export enum ControllerMetadataKeys {
 export enum DTOMetadataKey {
     DTO_PARAMETER_INDICES = 'dto_parameter_indices',
 }
+
+export enum ConsumersMetadataKeys {
+    CONSUMERS = 'consumers',
+}
+
+export enum MultipartMetadataKeys {
+    MULTIPART_FIELDS = 'multipart_fields',
+}
