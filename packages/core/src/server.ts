@@ -10,7 +10,7 @@ import { ExceptionHandler } from './exceptions/handlers';
 import { validate, canAccess } from 'shared/middlewares';
 import { CommonProvider } from 'shared/providers';
 import dotenv from 'dotenv';
-import { uploader } from 'shared/configs';
+import { MultipartConfigs, MultipartFields, uploader } from 'shared/configs';
 
 dotenv.config({ path: __dirname + '../../../.env' });
 
@@ -75,14 +75,19 @@ export class Server {
                 ControllerMetadataKeys.CHECK_PERMISSIONS,
                 controllerClass
             );
-            const multipartMap =
+            if (checkPermissions) {
+                permissionGuard.push(canAccess());
+            }
+            const multipartMap: MultipartFields =
                 Reflect.getMetadata(
                     MultipartMetadataKeys.MULTIPART_FIELDS,
                     controllerClass
                 ) || {};
-            if (checkPermissions) {
-                permissionGuard.push(canAccess());
-            }
+            const multipartConfigMap: MultipartConfigs =
+                Reflect.getMetadata(
+                    MultipartMetadataKeys.MULTIPART_CONFIGS,
+                    controllerClass
+                ) || {};
             routers.forEach((router) => {
                 const validationChains: ValidationChain[] = [];
                 let uploadsHandler: RequestHandler | undefined;
@@ -95,7 +100,8 @@ export class Server {
                 }
                 if (multipartMap[router.handlerName]) {
                     const fields = multipartMap[router.handlerName];
-                    uploadsHandler = uploader.fields(fields);
+                    const config = multipartConfigMap[router.handlerName];
+                    uploadsHandler = uploader(config).fields(fields);
                 }
                 expressRouter[router.method](
                     router.path,

@@ -8,8 +8,10 @@ import { CreateUserDto, UpdateUserDto } from '@cms/dtos';
 import { BadRequestException } from 'shared/exceptions';
 import { DTO, Sanitize } from 'core/utils';
 import { AuthEventsEmitter } from 'shared/events';
-import { generateToken } from 'shared/utils';
+import { extractMulterFileNames, generateToken } from 'shared/utils';
 import { ServerConfig } from '@cms/configs';
+import { Publisher } from 'rabbitmq';
+import { QueueConfig } from 'shared/configs';
 
 @Service()
 export class UserService extends BaseService<UserEntity> {
@@ -17,7 +19,10 @@ export class UserService extends BaseService<UserEntity> {
     protected readonly repository: Repository<UserEntity>;
     protected readonly filterColumns = ['firstName', 'lastName'];
 
-    constructor(private readonly roleService: RoleService) {
+    constructor(
+        private readonly roleService: RoleService,
+        private readonly publisher: Publisher
+    ) {
         super();
     }
 
@@ -41,7 +46,16 @@ export class UserService extends BaseService<UserEntity> {
                   ]
                 : false
     )
-    async createUser(@DTO createUserDto: CreateUserDto) {
+    async createUser(
+        @DTO createUserDto: CreateUserDto,
+        uploadedFiles:
+            | Record<string, Express.Multer.File[]>
+            | Express.Multer.File[] = {}
+    ) {
+        const uploads = extractMulterFileNames<UserEntity>(
+            ['avatar'],
+            uploadedFiles
+        );
         const { roleId, sendActivationLink, ...rest } = createUserDto;
         const roleEntity = await this.roleService.findOne({
             _id: roleId,
@@ -49,10 +63,22 @@ export class UserService extends BaseService<UserEntity> {
         if (!roleEntity) {
             throw new BadRequestException('Invalid role');
         }
+        if (Object.keys(uploads).length > 0) {
+            this.publisher.publish(
+                QueueConfig.Cms.Exchange,
+                QueueConfig.Shared.GenerateThumbnailQueue,
+                {
+                    uploadedFiles,
+                    uploadThumbnailMap: [['avatar', 'thumbnail']],
+                    module: 'admins',
+                }
+            );
+        }
         if (sendActivationLink !== 'on') {
             return this.create({
                 ...rest,
                 role: [roleEntity],
+                ...uploads,
             });
         }
         const token = generateToken();
@@ -62,6 +88,7 @@ export class UserService extends BaseService<UserEntity> {
             role: [roleEntity],
             token,
             tokenExpiry,
+            ...uploads,
         });
         return {
             ...user,

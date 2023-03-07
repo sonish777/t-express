@@ -53,6 +53,12 @@ export class UserEntity extends BaseEntity {
     @Column()
     tokenExpiry: Date;
 
+    @Column()
+    avatar: string;
+
+    @Column()
+    thumbnail: string;
+
     currentPassword: string;
 
     @AfterLoad()

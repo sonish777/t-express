@@ -92,6 +92,16 @@ export class addApiUsersTable1676047777753 implements MigrationInterface {
                         isNullable: true,
                     },
                     {
+                        name: 'avatar',
+                        type: 'varchar',
+                        isNullable: true,
+                    },
+                    {
+                        name: 'thumbnail',
+                        type: 'varchar',
+                        isNullable: true,
+                    },
+                    {
                         name: 'createdAt',
                         type: 'timestamp',
                         default: 'now()',

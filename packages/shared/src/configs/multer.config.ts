@@ -1,56 +1,83 @@
 import { MultipartMetadataKeys } from 'core/utils';
 import { Request, Response, NextFunction } from 'express';
-import multer, { diskStorage, Field, FileFilterCallback } from 'multer';
+import multer, {
+    diskStorage,
+    Field,
+    FileFilterCallback,
+    Options,
+} from 'multer';
 import { Observable } from 'rxjs';
 import { UnprocessableEntityException } from 'shared/exceptions';
 import { v4 } from 'uuid';
 import fs from 'fs';
 import { validate } from 'shared/middlewares';
 
-const multerDiskStorage = (destination: string, filename = '') =>
-    diskStorage({
-        destination(req, file, callback) {
+export const multerDiskStorage = (destination: string, filename = '') => {
+    if (!fs.existsSync(destination)) {
+        fs.mkdirSync(destination);
+    }
+    return diskStorage({
+        destination(_req, _file, callback) {
             callback(null, destination);
         },
-        filename(req, file, callback) {
+        filename(_req, file, callback) {
             const extension = file.mimetype.split('/').pop();
             callback(null, filename || `${v4()}_${Date.now()}.${extension}`);
         },
     });
+};
 
-const fileFilter =
+export const multerFileFilter =
     (acceptableMimes: string[] = []) =>
     (req: Request, file: Express.Multer.File, callback: FileFilterCallback) => {
-        // if (acceptableMimes.length === 0) {
-        if (file.mimetype.startsWith('image')) {
-            callback(null, true);
+        if (acceptableMimes.length === 0) {
+            if (file.mimetype.startsWith('image')) {
+                callback(null, true);
+            } else {
+                callback(
+                    new UnprocessableEntityException({
+                        [file.fieldname]: {
+                            location: 'files',
+                            param: file.fieldname,
+                            msg: 'Invalid file type provided',
+                        },
+                    })
+                );
+            }
         } else {
-            // Record<string, ValidationError>
-            callback(
-                new UnprocessableEntityException({
-                    [file.fieldname]: {
-                        location: 'files',
-                        param: file.fieldname,
-                        msg: 'Invalid file type',
-                    },
-                })
-            );
+            if (acceptableMimes.indexOf(file.mimetype) >= 0) {
+                callback(null, true);
+            } else {
+                callback(
+                    new UnprocessableEntityException({
+                        [file.fieldname]: {
+                            location: 'files',
+                            param: file.fieldname,
+                            msg: 'Invalid file type provided',
+                        },
+                    })
+                );
+            }
         }
-        // }
     };
 
-export const uploader = multer({
-    storage: multerDiskStorage('public/uploads'),
-    fileFilter: fileFilter(),
-});
+export const uploader = (multerOptions: Options) => multer(multerOptions);
 
 export interface MultipartFields {
     [key: string]: Field[];
 }
 
-export function MulterUpload(fields: Field[]): MethodDecorator {
+export interface MultipartConfigs {
+    [key: string]: Options;
+}
+
+export function MulterUpload(
+    fields: Field[],
+    multerOptions: Options
+): MethodDecorator {
     return (target, prop, descriptor: PropertyDescriptor) => {
         const controllerClass = target.constructor;
+        /* Register multipart fields name */
         const multipartFieldsMap: MultipartFields =
             Reflect.getMetadata(
                 MultipartMetadataKeys.MULTIPART_FIELDS,
@@ -60,6 +87,18 @@ export function MulterUpload(fields: Field[]): MethodDecorator {
         Reflect.defineMetadata(
             MultipartMetadataKeys.MULTIPART_FIELDS,
             multipartFieldsMap,
+            controllerClass
+        );
+        /* Register multipart configuration */
+        const multipartConfigsMap: MultipartConfigs =
+            Reflect.getMetadata(
+                MultipartMetadataKeys.MULTIPART_CONFIGS,
+                controllerClass
+            ) || {};
+        multipartConfigsMap[String(prop)] = multerOptions;
+        Reflect.defineMetadata(
+            MultipartMetadataKeys.MULTIPART_CONFIGS,
+            multipartConfigsMap,
             controllerClass
         );
 

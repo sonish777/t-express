@@ -13,7 +13,12 @@ import { Request, Response } from 'express';
 import { CreateUserDto, UpdateUserDto } from '@cms/dtos';
 import { CatchAsync } from 'core/exceptions';
 import { Publisher } from 'rabbitmq';
-import { MulterUpload, QueueConfig } from 'shared/configs';
+import {
+    multerDiskStorage,
+    multerFileFilter,
+    MulterUpload,
+    QueueConfig,
+} from 'shared/configs';
 
 @Controller('/users')
 @CanAccess
@@ -50,9 +55,15 @@ export class UserController extends ResourceControllerFactory<
     }
 
     @CatchAsync
-    @MulterUpload([{ name: 'avatar', maxCount: 1 }])
+    @MulterUpload([{ name: 'avatar', maxCount: 1 }], {
+        storage: multerDiskStorage('public/uploads/admins'),
+        fileFilter: multerFileFilter(['image/jpg', 'image/jpeg', 'image/png']),
+        limits: {
+            fileSize: 1000000,
+        },
+    })
     async add(req: TypedBody<CreateUserDto>, res: Response) {
-        await this.service.createUser(req.body);
+        await this.service.createUser(req.body, req.files);
         this.publisher.publish<Partial<AdminActivityLogEntity>>(
             QueueConfig.Cms.Exchange,
             QueueConfig.Cms.ActivityLogQueue,

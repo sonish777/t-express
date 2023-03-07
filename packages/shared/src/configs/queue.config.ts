@@ -9,4 +9,7 @@ export const QueueConfig = {
     Api: {
         Exchange: exchangeConfig.get<string>('api'),
     },
+    Shared: {
+        GenerateThumbnailQueue: 'generate_thumbnail',
+    },
 } as const;

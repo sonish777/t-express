@@ -32,7 +32,10 @@ const exchangesConfig = config.get<IConfig>('queue:exchanges');
 
 async function bootstrap(publisher: Publisher) {
     const server = new Server(controllers);
-    publisher.registerQueues(exchangesConfig.get('cms'), ['activity_log']);
+    publisher.registerQueues(exchangesConfig.get('cms'), [
+        'activity_log',
+        'generate_thumbnail',
+    ]);
     const middlewares: Handler[] = [methodOverride('_method')];
     server.startup(Number(ServerConfig.PORT), {
         middlewares: [...middlewares],

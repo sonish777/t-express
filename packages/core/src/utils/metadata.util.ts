@@ -16,4 +16,5 @@ export enum ConsumersMetadataKeys {
 
 export enum MultipartMetadataKeys {
     MULTIPART_FIELDS = 'multipart_fields',
+    MULTIPART_CONFIGS = 'multipart_configs',
 }

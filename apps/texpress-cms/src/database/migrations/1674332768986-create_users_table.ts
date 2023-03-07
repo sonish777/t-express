@@ -68,9 +68,29 @@ export class createUsersTable1674332768986 implements MigrationInterface {
                         default: `'inactive'`,
                     },
                     {
+                        name: 'token',
+                        type: 'varchar',
+                        isNullable: true,
+                    },
+                    {
+                        name: 'tokenExpiry',
+                        type: 'timestamp',
+                        isNullable: true,
+                    },
+                    {
                         name: 'createdAt',
                         type: 'timestamp',
                         default: 'now()',
+                    },
+                    {
+                        name: 'avatar',
+                        type: 'varchar',
+                        isNullable: true,
+                    },
+                    {
+                        name: 'thumbnail',
+                        type: 'varchar',
+                        isNullable: true,
                     },
                     {
                         name: 'updatedAt',

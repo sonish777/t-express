@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { Express } from 'express';
 
 export const generateOTP = (): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -30,4 +31,27 @@ export const isJSON = (jsonString: string): boolean => {
     } catch (error) {
         return false;
     }
+};
+
+export const extractMulterFileNames = <Entity>(
+    fileColumns: (keyof Entity)[] = [],
+    files: Record<string, Express.Multer.File[]> | Express.Multer.File[]
+): Partial<Entity> => {
+    const uploadRecord: Partial<Entity> = {};
+    if (!Array.isArray(files)) {
+        Object.keys(files).forEach((key) => {
+            if (fileColumns.indexOf(<keyof Entity>key) >= 0) {
+                const column = <keyof Entity>key;
+                uploadRecord[column] = <any>files[key][0].filename;
+            }
+        });
+    } else {
+        files.forEach((file) => {
+            if (fileColumns.indexOf(<keyof Entity>file.fieldname) >= 0) {
+                const column = <keyof Entity>file.fieldname;
+                uploadRecord[column] = <any>file.filename;
+            }
+        });
+    }
+    return uploadRecord;
 };

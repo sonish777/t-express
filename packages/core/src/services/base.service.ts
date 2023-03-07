@@ -1,6 +1,5 @@
 import { ClassTransformOptions, plainToClass } from 'class-transformer';
 import { BaseEntity } from 'core/entities';
-import { HttpException } from 'core/exceptions';
 import { Class, CommonSearchQuery, PaginationResponse } from 'core/interfaces';
 import { NotFoundException } from 'shared/exceptions';
 import {
