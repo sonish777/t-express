@@ -61,6 +61,8 @@ async function bootstrap(publisher: Publisher) {
                               'lastName',
                               'email',
                               'role',
+                              'avatar',
+                              'thumbnail',
                           ])
                         : null,
             },
