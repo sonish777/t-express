@@ -2,9 +2,9 @@ import { Service } from 'typedi';
 import { Repository } from 'typeorm';
 import { GetRepository } from 'core/entities';
 import { BaseService } from 'core/services';
-import { UserEntity } from 'shared/entities';
+import { AdminActivityLogEntity, UserEntity } from 'shared/entities';
 import { RoleService } from './role.service';
-import { CreateUserDto, UpdateUserDto } from '@cms/dtos';
+import { CreateUserDto, ResetPasswordDto, UpdateUserDto } from '@cms/dtos';
 import { BadRequestException } from 'shared/exceptions';
 import { DTO, Sanitize } from 'core/utils';
 import { AuthEventsEmitter } from 'shared/events';
@@ -12,6 +12,7 @@ import { extractMulterFileNames, generateToken } from 'shared/utils';
 import { ServerConfig } from '@cms/configs';
 import { Publisher } from 'rabbitmq';
 import { QueueConfig } from 'shared/configs';
+import { ActivityLogEventEmitter } from '@cms/events';
 
 @Service()
 export class UserService extends BaseService<UserEntity> {
@@ -46,11 +47,18 @@ export class UserService extends BaseService<UserEntity> {
                   ]
                 : false
     )
+    @ActivityLogEventEmitter(
+        'log-event',
+        (returnedValue: UserEntity & { eventData: AdminActivityLogEntity }) => [
+            returnedValue.eventData,
+        ]
+    )
     async createUser(
         @DTO createUserDto: CreateUserDto,
         uploadedFiles:
             | Record<string, Express.Multer.File[]>
-            | Express.Multer.File[] = {}
+            | Express.Multer.File[] = {},
+        loggedInUserId: number
     ) {
         const uploads = extractMulterFileNames<UserEntity>(
             ['avatar'],
@@ -63,6 +71,18 @@ export class UserService extends BaseService<UserEntity> {
         if (!roleEntity) {
             throw new BadRequestException('Invalid role');
         }
+        const createUserPayload: Partial<UserEntity> = {
+            ...rest,
+            role: [roleEntity],
+            ...uploads,
+        };
+        if (sendActivationLink === 'on') {
+            const token = generateToken();
+            const tokenExpiry = new Date(Date.now() + 600000);
+            createUserPayload.token = token;
+            createUserPayload.tokenExpiry = tokenExpiry;
+        }
+        const user = await this.create(createUserPayload);
         if (Object.keys(uploads).length > 0) {
             this.publisher.publish(
                 QueueConfig.Cms.Exchange,
@@ -74,25 +94,47 @@ export class UserService extends BaseService<UserEntity> {
                 }
             );
         }
-        if (sendActivationLink !== 'on') {
-            return this.create({
-                ...rest,
-                role: [roleEntity],
-                ...uploads,
-            });
-        }
-        const token = generateToken();
-        const tokenExpiry = new Date(Date.now() + 600000);
-        const user = await this.create({
-            ...rest,
-            role: [roleEntity],
-            token,
-            tokenExpiry,
-            ...uploads,
-        });
         return {
             ...user,
-            resetPasswordUrl: `${ServerConfig.URL}/auth/reset-password?token=${token}`,
+            resetPasswordUrl: user.token
+                ? `${ServerConfig.URL}/auth/reset-password?token=${user.token}`
+                : null,
+            eventData: {
+                module: 'Admins',
+                action: 'Create',
+                description: 'Created a new admin user',
+                userId: loggedInUserId,
+                activityTimestamp: new Date(),
+            },
+        };
+    }
+
+    @Sanitize
+    @ActivityLogEventEmitter(
+        'log-event',
+        (returnedValue: UserEntity & { eventData: AdminActivityLogEntity }) => [
+            returnedValue.eventData,
+        ]
+    )
+    async changePassword(
+        _id: string,
+        @DTO changePasswordDto: ResetPasswordDto,
+        loggedInUserId: number
+    ) {
+        const user = await this.findOrFail({
+            _id,
+        });
+        user.password = changePasswordDto.password;
+        await this.repository.save(user);
+        return {
+            ...user,
+            eventData: {
+                module: 'Admins',
+                action: 'Change Password',
+                description: `Changed the password of admin @ ${user.email}`,
+                userId: loggedInUserId,
+                activityTimestamp: new Date(),
+            },
         };
     }
 

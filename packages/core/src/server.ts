@@ -11,6 +11,8 @@ import { validate, canAccess } from 'shared/middlewares';
 import { CommonProvider } from 'shared/providers';
 import dotenv from 'dotenv';
 import { MultipartConfigs, MultipartFields, uploader } from 'shared/configs';
+import multer from 'multer';
+import { UnprocessableEntityException } from 'shared/exceptions';
 
 dotenv.config({ path: __dirname + '../../../.env' });
 
@@ -101,7 +103,27 @@ export class Server {
                 if (multipartMap[router.handlerName]) {
                     const fields = multipartMap[router.handlerName];
                     const config = multipartConfigMap[router.handlerName];
-                    uploadsHandler = uploader(config).fields(fields);
+                    const multerUploadsHandler =
+                        uploader(config).fields(fields);
+                    if (multerUploadsHandler) {
+                        uploadsHandler = (req, res, next) => {
+                            multerUploadsHandler(req, res, function (err) {
+                                if (err instanceof multer.MulterError) {
+                                    const field = String(err.field);
+                                    next(
+                                        new UnprocessableEntityException({
+                                            [field]: {
+                                                location: 'files',
+                                                param: field,
+                                                msg: 'File size too large',
+                                            },
+                                        })
+                                    );
+                                }
+                                next();
+                            });
+                        };
+                    }
                 }
                 expressRouter[router.method](
                     router.path,

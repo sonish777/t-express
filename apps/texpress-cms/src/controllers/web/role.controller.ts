@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { Inject } from 'typedi';
 import { Controller, ProtectedRoute, TypedBody } from 'core/controllers';
 import { ResourceControllerFactory } from 'core/controllers';
 import { HTTPMethods } from 'core/utils';
@@ -53,6 +52,7 @@ export class RoleController extends ResourceControllerFactory<
     @CatchAsync
     async add(req: TypedBody<CreateRole>, res: Response) {
         await this.service.createRoleWithPermissions(req.body);
+        req.flash('message:toast', `Role created successfully`);
         return res.redirect('/roles');
     }
 

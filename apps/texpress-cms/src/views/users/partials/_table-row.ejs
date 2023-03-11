@@ -6,12 +6,11 @@
     <td>
         <span class="fw-bold"><%= get(user?.firstName) + ' ' + get(user?.lastName) %></span>
     </td>
-    <td><span class="fw-bold"><%= get(user?.gender, "N/A") %></span></td>
-    <td><span class="fw-bold"><%= exists(user?.dob) ? formatDate(user.dob): 'N/A' %></span></td>
     <td><span class="fw-bold"><%= get(user?.mobileNumber, "N/A") %></span></td>
     <td><span class="fw-bold"><%= get(user?.email, "N/A") %></span></td>
+    <td><span class="fw-bold badge bg-info"><%= get(user?.role?.[0]?.name, "N/A") %></span></td>
     <td>
-        <% if(hasPermission(loggedInUser, 'users:edit') && get(user?.role?.[0]?.slug) !== 'super-admin') { %>
+        <% if(hasPermission(loggedInUser, 'users:edit') && get(user?.email) !== loggedInUser.email) { %>
             <form action="/users/<%= get(user?.id) %>/toggle-status?_method=PUT" method="post">
                 <input type="hidden" name="status" value="<%= get(user?.status) === 'active' ? 'inactive' : 'active' %>">
                 <button type="submit" class="btn btn-link badge bg-<%= get(user?.status) === "active" ? "success": "danger" %>"><%= get(user?.status?.toUpperCase()) %></button></td>
@@ -24,6 +23,7 @@
             <div class=" py-0">
                 <% if(hasPermission(loggedInUser, 'users:edit')) { %>
                     <a class="btn btn-sm btn-primary rounded" href="/users/<%= get(user?.id) %>">Edit</a>
+                    <a class="btn btn-sm btn-secondary rounded" href="/users/<%= get(user?._id) %>/change-password">Change Password</a>
                 <% } %>
                 <% if(hasPermission(loggedInUser, 'users:delete') && get(user?.role?.[0]?.slug) !== 'super-admin') { %>
                     <%- include('../../common/delete-modal', {

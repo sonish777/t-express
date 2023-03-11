@@ -87,6 +87,18 @@ export const CMSModulesConfig: CMSModuleConfig = {
                 route: '/users/:id/toggle-status',
                 method: HTTPMethods.Put,
             },
+            {
+                name: 'Change own password',
+                value: '',
+                route: '/users/me/change-password',
+                method: HTTPMethods.Get,
+            },
+            {
+                name: 'Change password',
+                value: 'users:change_password',
+                route: '/users/:id/change-password',
+                method: HTTPMethods.Get,
+            },
         ],
     },
     roles: {
@@ -127,9 +139,30 @@ export const CMSModulesConfig: CMSModuleConfig = {
             },
             {
                 name: 'Delete role',
-                value: 'roles:view',
+                value: 'roles:delete',
                 method: HTTPMethods.Delete,
                 route: '/roles/:id',
+            },
+        ],
+    },
+    'api-users': {
+        name: 'Frontend Users',
+        default: 'api-users:view',
+        icon: `<i class="icofont-users-social"></i>`,
+        route: '/api-users',
+        hasSubmodules: false,
+        permissions: [
+            {
+                name: 'View frontend users',
+                route: '/api-users',
+                method: HTTPMethods.Get,
+                value: 'api-users:view',
+            },
+            {
+                name: 'Toggle user status',
+                route: '/api-users/:id/toggle-status',
+                method: HTTPMethods.Put,
+                value: 'api-users:edit',
             },
         ],
     },

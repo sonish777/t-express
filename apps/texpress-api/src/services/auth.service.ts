@@ -132,7 +132,7 @@ export class AuthService extends BaseService<ApiUserEntity> {
         return this.tokensService.signTokens(user);
     }
 
-    @Cache<AuthService, 'getProfile'>((userId) => `profile_${userId}`)
+    @Cache<AuthService, 'getProfile'>((userId) => `profile_${userId}`, 60)
     @ToPlain
     getProfile(userId: number) {
         return this.findOrFail({

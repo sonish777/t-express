@@ -1,0 +1,24 @@
+<!-- Item -->
+<tr>
+    <td>
+        <a href="#" class="fw-bold"><%= sn %></a>
+    </td>
+    <td>
+        <span class="fw-bold"><%= get(user?.firstName) + ' ' + get(user?.lastName) %></span>
+    </td>
+    <td><span class="fw-bold"><%= get(user?.gender, "N/A") %></span></td>
+    <td><span class="fw-bold"><%= exists(user?.dob) ? formatDate(user.dob): 'N/A' %></span></td>
+    <td><span class="fw-bold"><%= get(user?.mobileNumber, "N/A") %></span></td>
+    <td><span class="fw-bold"><%= get(user?.email, "N/A") %></span></td>
+    <td>
+        <% if(hasPermission(loggedInUser, 'api-users:edit') && get(user?.role?.[0]?.slug) !== 'super-admin') { %>
+            <form action="/api-users/<%= get(user?.id) %>/toggle-status?_method=PUT" method="post">
+                <input type="hidden" name="status" value="<%= get(user?.status) === 'active' ? 'inactive' : 'active' %>">
+                <button type="submit" class="btn btn-link badge bg-<%= get(user?.status) === "active" ? "success": "danger" %>"><%= get(user?.status?.toUpperCase()) %></button></td>
+            </form>
+        <% } else { %>
+            <span class="badge bg-<%= get(user?.status) === "active" ? "success": "danger" %>"><%= get(user?.status?.toUpperCase()) %></span></td>
+        <% } %>
+    <td>
+    </td>
+</tr>

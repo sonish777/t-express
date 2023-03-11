@@ -24,7 +24,7 @@
                             </svg>
                             My Profile
                         </a>
-                        <a class="dropdown-item d-flex align-items-center" href="#">
+                        <a class="dropdown-item d-flex align-items-center" href="/users/<%= get(locals.user?._id) %>/change-password">
                             <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     fill-rule="evenodd"
@@ -32,7 +32,7 @@
                                     clip-rule="evenodd"
                                 ></path>
                             </svg>
-                            Settings
+                            Change Password
                         </a>
                         <div role="separator" class="dropdown-divider my-1"></div>
                         <a class="dropdown-item d-flex align-items-center" href="/auth/logout">

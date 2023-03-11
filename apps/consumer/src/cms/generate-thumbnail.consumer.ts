@@ -26,7 +26,7 @@ export class ThumbnailGenerator extends Consumer {
         } = JSON.parse(message.content.toString());
 
         await Promise.all(
-            payload.uploadThumbnailMap.map((mapper) => {
+            payload.uploadThumbnailMap.map(async (mapper) => {
                 const [uploadColumn, thumbnailColumn] = mapper;
                 if (payload.uploadedFiles[uploadColumn]) {
                     const file = payload.uploadedFiles[uploadColumn][0];
@@ -50,12 +50,16 @@ export class ThumbnailGenerator extends Consumer {
                         .then((result) => console.log(result))
                         .catch(console.log);
 
-                    return this.userRepository.update(
-                        { avatar: file.filename },
-                        {
-                            [thumbnailColumn]: thumbnailName,
-                        }
-                    );
+                    const user = await this.userRepository.findOne({
+                        where: {
+                            avatar: file.filename,
+                        },
+                    });
+                    if (!user) {
+                        return Promise.resolve(null);
+                    }
+                    (<any>user)[thumbnailColumn] = thumbnailName;
+                    return this.userRepository.save(user);
                 }
             })
         );

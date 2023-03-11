@@ -16,7 +16,8 @@ export const canAccess =
             const method = req.method?.toLowerCase();
             const canAccess = user.role?.[0].permissions.some(
                 (permission) =>
-                    permission.route === url && permission.method === method
+                    !permission.action ||
+                    (permission.route === url && permission.method === method)
             );
             if (!canAccess) {
                 return next(new ForbiddenException());
@@ -25,7 +26,7 @@ export const canAccess =
         }
         /** For action based permission checking [action = "users:create"] */
         const canAccess = user.role?.[0].permissions.some(
-            (permission) => permission.action === action
+            (permission) => !permission.action || permission.action === action
         );
         if (!canAccess) {
             return next(new ForbiddenException());

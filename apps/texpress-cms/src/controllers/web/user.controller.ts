@@ -7,10 +7,14 @@ import {
 } from 'core/controllers';
 import { ResourceControllerFactory } from 'core/controllers';
 import { AdminActivityLogEntity, UserEntity } from 'shared/entities';
-import { CreateUserValidator, UpdateUserValidator } from 'shared/validators';
+import {
+    CreateUserValidator,
+    ResetPasswordValidator,
+    UpdateUserValidator,
+} from 'shared/validators';
 import { HTTPMethods } from 'core/utils';
 import { Request, Response } from 'express';
-import { CreateUserDto, UpdateUserDto } from '@cms/dtos';
+import { CreateUserDto, ResetPasswordDto, UpdateUserDto } from '@cms/dtos';
 import { CatchAsync } from 'core/exceptions';
 import { Publisher } from 'rabbitmq';
 import {
@@ -59,23 +63,42 @@ export class UserController extends ResourceControllerFactory<
         storage: multerDiskStorage('public/uploads/admins'),
         fileFilter: multerFileFilter(['image/jpg', 'image/jpeg', 'image/png']),
         limits: {
-            fileSize: 1000000,
+            fileSize: 2000000,
         },
     })
     async add(req: TypedBody<CreateUserDto>, res: Response) {
-        await this.service.createUser(req.body, req.files);
-        this.publisher.publish<Partial<AdminActivityLogEntity>>(
-            QueueConfig.Cms.Exchange,
-            QueueConfig.Cms.ActivityLogQueue,
-            {
-                module: 'Admins',
-                action: 'Create',
-                description: 'Created a new admin user',
-                userId: req.user!.id,
-                activityTimestamp: new Date(),
-            }
-        );
+        await this.service.createUser(req.body, req.files, req.user!.id);
         req.flash('message:toast', 'User created successfully');
+        return res.redirect('back');
+    }
+
+    @ProtectedRoute({ method: HTTPMethods.Get, path: '/:id/change-password' })
+    @CatchAsync
+    async changePasswordView(req: Request, res: Response) {
+        const _id = req.params.id;
+        const user = await this.service.findOrFail({
+            _id,
+        });
+        this.page = 'change-password';
+        this.setBreadcrumbs([
+            ...this.indexBreadcrumbs,
+            { name: 'Change Password', url: '#' },
+        ]);
+        return this.render(res, {
+            user,
+        });
+    }
+
+    @ProtectedRoute({
+        method: HTTPMethods.Post,
+        path: '/:id/change-password',
+        validators: [ResetPasswordValidator],
+    })
+    @CatchAsync
+    async changePassword(req: TypedBody<ResetPasswordDto>, res: Response) {
+        const _id = req.params.id;
+        await this.service.changePassword(_id, req.body, req.user!.id);
+        req.flash('message:toast', 'Password changed successfully');
         return res.redirect('back');
     }
 

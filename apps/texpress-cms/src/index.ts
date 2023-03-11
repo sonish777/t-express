@@ -57,6 +57,7 @@ async function bootstrap(publisher: Publisher) {
                 user: (req) =>
                     req.user
                         ? _.pick(req.user, [
+                              '_id',
                               'firstName',
                               'lastName',
                               'email',
