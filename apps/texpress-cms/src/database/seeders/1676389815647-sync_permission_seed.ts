@@ -7,29 +7,40 @@ export class syncPermissionSeed1676389815647 implements MigrationInterface {
         const permissionsRepository =
             queryRunner.manager.getRepository(PermissionEntity);
         const roleRepository = queryRunner.manager.getRepository(RoleEntity);
-        await permissionsRepository.query(
-            `TRUNCATE TABLE public.permissions RESTART IDENTITY CASCADE;`
-        );
         const permissions: DeepPartial<PermissionEntity>[] = [];
-        Object.values(CMSModulesConfig).forEach((module) => {
-            module.permissions?.forEach((permission) => {
-                permissions.push({
-                    module: module.name,
-                    name: permission.name,
-                    method: permission.method,
-                    action: permission.value,
-                    route: permission.route,
+        for (const module of Object.values(CMSModulesConfig)) {
+            for (const permission of module.permissions ?? []) {
+                const permissionExists = await permissionsRepository.findOne({
+                    where: {
+                        module: module.name,
+                        method: permission.method,
+                        action: permission.value,
+                        route: permission.route,
+                    },
                 });
-            });
-        });
+                if (!permissionExists) {
+                    permissions.push({
+                        module: module.name,
+                        name: permission.name,
+                        method: permission.method,
+                        action: permission.value,
+                        route: permission.route,
+                    });
+                }
+            }
+        }
         const syncedPermissions = await permissionsRepository.save(permissions);
         const superAdminRole = await roleRepository.findOne({
             where: { slug: 'super-admin' },
+            relations: ['permissions'],
         });
         if (!superAdminRole) {
             return;
         }
-        superAdminRole.permissions = syncedPermissions;
+        superAdminRole.permissions = [
+            ...(superAdminRole.permissions || []),
+            ...syncedPermissions,
+        ];
         await roleRepository.save(superAdminRole);
     }
 

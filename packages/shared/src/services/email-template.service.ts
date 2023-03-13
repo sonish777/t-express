@@ -9,6 +9,8 @@ export class EmailTemplateService extends BaseService<EmailTemplateEntity> {
     @GetRepository(EmailTemplateEntity)
     protected repository: Repository<EmailTemplateEntity>;
 
+    protected readonly filterColumns: string[] = ['subject', 'code'];
+
     findTemplateByCode(code: string) {
         return this.findOrFail({
             code,

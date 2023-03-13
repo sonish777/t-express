@@ -1,0 +1,31 @@
+<!-- Item -->
+<tr>
+    <td>
+        <a href="#" class="fw-bold"><%= sn %></a>
+    </td>
+    <td>
+        <span class="fw-bold"><%= get(template?.subject, "N/A") %></span>
+    </td>
+    <td><span class="fw-bold"><%= get(template?.code, "N/A") %></span></td>
+    <td>
+        <div class="btn-group">
+            <div class=" py-0">
+                <% if(hasPermission(loggedInUser, 'email-templates:edit')) { %>
+                    <a class="btn btn-sm btn-primary rounded" href="/email-templates/<%= get(template?.id) %>">Edit</a>
+                <% } %>
+                <% if(hasPermission(loggedInUser, 'email-templates:delete')) { %>
+                    <%- include('../../common/delete-modal', {
+                            modalId: `deleteTemplate_${get(template?.id)}`,
+                            title: 'Delete Email Template',
+                            body: 'Are you sure you want to delete this email template?',
+                            deleteActionUrl: `/email-templates/${template?.id}`,
+                            buttonText: 'Yes'
+                    }) %>
+                    <button class="btn btn-sm btn-danger rounded" data-bs-toggle="modal" data-bs-target="#deleteTemplate_<%= get(template?.id) %>">
+                        Delete
+                    </button>
+                <% } %>
+            </div>
+        </div>
+    </td>
+</tr>

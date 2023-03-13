@@ -43,7 +43,7 @@ export const CMSModulesConfig: CMSModuleConfig = {
         name: 'Users',
         route: '/users',
         default: 'users:view',
-        icon: `<i class="icofont-ui-user"></i>`,
+        icon: `<i class="icofont-user-suited"></i>`,
         permissions: [
             {
                 name: 'View users',
@@ -148,7 +148,7 @@ export const CMSModulesConfig: CMSModuleConfig = {
     'api-users': {
         name: 'Frontend Users',
         default: 'api-users:view',
-        icon: `<i class="icofont-users-social"></i>`,
+        icon: `<i class="icofont-users-alt-4"></i>`,
         route: '/api-users',
         hasSubmodules: false,
         permissions: [
@@ -163,6 +163,39 @@ export const CMSModulesConfig: CMSModuleConfig = {
                 route: '/api-users/:id/toggle-status',
                 method: HTTPMethods.Put,
                 value: 'api-users:toggle_status',
+            },
+        ],
+    },
+    'email-templates': {
+        name: 'Email Templates',
+        default: 'email-templates:view',
+        icon: '<i class="icofont-ui-email"></i>',
+        route: '/email-templates',
+        hasSubmodules: false,
+        permissions: [
+            {
+                name: 'View email templates',
+                route: '/email-templates',
+                method: HTTPMethods.Get,
+                value: 'email-templates:view',
+            },
+            {
+                name: 'Edit email template view',
+                route: '/email-templates/:id',
+                method: HTTPMethods.Get,
+                value: 'email-templates:edit',
+            },
+            {
+                name: 'Edit email template',
+                route: '/email-templates/:id',
+                method: HTTPMethods.Put,
+                value: 'email-templates:edit',
+            },
+            {
+                name: 'Delete email template',
+                route: '/email-templates/:id',
+                method: HTTPMethods.Delete,
+                value: 'email-templates:delete',
             },
         ],
     },

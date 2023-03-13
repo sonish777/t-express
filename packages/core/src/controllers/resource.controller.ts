@@ -115,15 +115,15 @@ export function ResourceControllerFactory<
                 ...this.indexBreadcrumbs,
                 { name: 'Edit', url: '#' },
             ]);
-            const user = await this.service.findOne({ id: <any>Number(id) });
-            if (!user) {
+            const data = await this.service.findOne({ id: <any>Number(id) });
+            if (!data) {
                 req.flash(
                     'error',
                     `${_.capitalize(options.resource)} not found`
                 );
                 return res.redirect('back');
             }
-            return this.render(res, user);
+            return this.render(res, data);
         }
 
         @ProtectedRoute({
