@@ -17,7 +17,6 @@ import {
 import { AuthService } from '@cms/services';
 import { CatchAsync } from 'core/exceptions';
 import { ResetPasswordDto } from '@cms/dtos';
-import { Publisher } from 'rabbitmq';
 
 @Controller('/auth')
 export class AuthController extends BaseController {
@@ -26,10 +25,7 @@ export class AuthController extends BaseController {
     _viewPath = 'auth';
     _module = 'auth';
 
-    constructor(
-        private readonly authService: AuthService,
-        private readonly publisher: Publisher
-    ) {
+    constructor(private readonly authService: AuthService) {
         super();
     }
 

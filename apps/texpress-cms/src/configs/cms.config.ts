@@ -83,7 +83,7 @@ export const CMSModulesConfig: CMSModuleConfig = {
             },
             {
                 name: 'Change user status',
-                value: 'users:edit',
+                value: 'users:toggle_status',
                 route: '/users/:id/toggle-status',
                 method: HTTPMethods.Put,
             },
@@ -162,7 +162,7 @@ export const CMSModulesConfig: CMSModuleConfig = {
                 name: 'Toggle user status',
                 route: '/api-users/:id/toggle-status',
                 method: HTTPMethods.Put,
-                value: 'api-users:edit',
+                value: 'api-users:toggle_status',
             },
         ],
     },

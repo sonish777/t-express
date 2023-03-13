@@ -41,11 +41,16 @@
                     <span class="h6 font-weight-bold"><%= capitalize(permission.module) %></span>
                 </div>
                 <% permission.permissions.forEach(p => { %>
-                    <%- include('./partials/_permission-switch.ejs', {
+                    <% if(p.action) { %>
+                        <%- include('./partials/_permission-switch.ejs', {
                             name: p.name, 
                             id: p.id,
+                            action: p.action,
+                            module: permission.module,
+                            method: p.method,
                             options: [getUserInput(locals.inputData, 'permissions')?.indexOf(String(p.id)) >= 0 ? 'checked': '']
                         }) %>
+                    <% } %>
                 <% }) %>
             <% }) %>
             </div>
@@ -58,7 +63,7 @@
 <script>
     const nameEl = document.querySelector('input[name="name"]');
     const slugEl =  document.querySelector('input[name="slug"]');
-    const slugDisplayEl =  document.querySelector('input[name="slug:display"]');
+    const slugDisplayEl = document.querySelector('input[name="slug:display"]');
     if(nameEl) {
         nameEl.addEventListener('keyup', function (e) {
             const nameValue = e.target.value;

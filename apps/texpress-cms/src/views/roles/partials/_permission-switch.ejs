@@ -1,11 +1,14 @@
 <div class="form-check form-switch">
     <input 
-        class="form-check-input" 
+        class="form-check-input auto-toggle" 
         type="checkbox" 
-        id="flexSwitchCheckChecked" 
+        id="switch_<%= id %>" 
         name="permissions"
         value="<%= id %>"
+        data-action="<%= action %>"
+        data-method="<%= method %>"
+        data-module="<%= module %>"
         <%= Array.isArray(locals.options) ? options.map(o => ` ${o} `): '' %>
     />
-    <label class="form-check-label" for="flexSwitchCheckChecked"><%= capitalize(name) %></label>
+    <label class="form-check-label" for="switch_<%= id %>"><%= capitalize(name) %></label>
 </div>

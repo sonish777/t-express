@@ -44,6 +44,9 @@
                         <%- include('./partials/_permission-switch.ejs', {
                                 name: p.name, 
                                 id: p.id,
+                                action: p.action,
+                                module: permission.module,
+                                method: p.method,
                                 options: [
                                     getEditFormData(locals.data?.role, "permissions", locals.inputData)
                                     ?.map(p => Number(p))
