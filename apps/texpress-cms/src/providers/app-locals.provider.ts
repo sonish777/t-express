@@ -4,11 +4,26 @@ import moment from 'moment';
 import _ from 'lodash';
 import { ProviderStaticMethod } from 'core/providers';
 import { UserEntity } from 'shared/entities';
+import Container from 'typedi';
+import { CMSConfigService } from '@cms/services';
 
 export class AppLocalsProvider
     implements ProviderStaticMethod<typeof AppLocalsProvider>
 {
+    private static cmsConfigService = Container.get(CMSConfigService);
+
     static register(app: Express) {
+        app.use(async (req, res, next) => {
+            const cmsConfigMap: Record<string, string> = {};
+            const cmsConfigs =
+                await AppLocalsProvider.cmsConfigService.findAll();
+            cmsConfigs.forEach((config) => {
+                cmsConfigMap[config.name] = config.value;
+            });
+            res.locals.cmsConfig = cmsConfigMap;
+            next();
+        });
+
         app.locals.log = (...args: any[]) => {
             console.log(...args);
         };

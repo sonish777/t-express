@@ -1,7 +1,8 @@
 <nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-lg-none">
-    <a class="navbar-brand me-lg-5" href="/static/backend/index.html">
-        <img class="navbar-brand-dark" src="/static/backend/assets/img/brand/light.svg" alt="Volt logo" />
-        <img class="navbar-brand-light" src="/static/backend/assets/img/brand/dark.svg" alt="Volt logo" />
+    <a class="navbar-brand me-lg-5 pe-none">
+        <span class="sidebar-icon">
+            <img src="/static/uploads/logo/<%= get(locals.cmsConfig?.Logo) || 'logo.png' %>" alt="Logo" />
+        </span>
     </a>
     <div class="d-flex align-items-center">
         <button
@@ -24,9 +25,8 @@
             <li class="nav-item">
                 <a href="#" class="nav-link d-flex align-items-center disabled">
                     <span class="sidebar-icon">
-                        <img src="/static/backend/assets/img/brand/light.svg" height="20" width="20" alt="Volt Logo" />
+                        <img src="/static/uploads/logo/<%= get(locals.cmsConfig?.Logo) || 'logo.png' %>" alt="Logo" />
                     </span>
-                    <span class="mt-1 ms-1 sidebar-text">TExpress</span>
                 </a>
             </li>
             <% Object.keys(locals.cmsModulesConfig).forEach(key => { %> 

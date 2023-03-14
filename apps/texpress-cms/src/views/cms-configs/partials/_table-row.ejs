@@ -1,0 +1,31 @@
+<!-- Item -->
+<form action="/cms-configs/<%= get(config?.id) %>?_method=PUT" method="post" enctype="multipart/form-data">
+    <tr>
+        <td class="align-middle">
+            <a href="#" class="fw-bold"><%= sn %></a>
+        </td>
+        <td class="align-middle">
+            <span class="fw-bold"><%= get(config?.name) %></span>
+        </td>
+        <td class="align-middle">
+            <input 
+                disabled
+                class="form-control"
+                name="value"
+                type="<%= get(config?.type) %>" 
+                value="<%= get(config?.value) %>"
+                id="<%= get(config?.name.split(" ").join("_")) %>">
+        </td>
+        <td class="align-middle">
+            <div class="btn-group">
+                <div class=" py-0">
+                    <% if(hasPermission(loggedInUser, 'cms-configs:edit')) { %>
+                        <button type="button" class="btn btn-sm btn-primary edit toggle-config-input" id="toggle-edit_<%= get(config?.name.split(" ").join("_")) %>" data-config="<%= get(config?.name.split(" ").join("_")) %>">Edit</button>
+                        <button type="submit" class="btn btn-sm btn-success done d-none" id="toggle-done_<%= get(config?.name.split(" ").join("_")) %>" data-config="<%= get(config?.name.split(" ").join("_")) %>">Done</button>
+                        <button type="button" class="btn btn-sm btn-danger cancel d-none" id="toggle-cancel_<%= get(config?.name.split(" ").join("_")) %>" data-config="<%= get(config?.name.split(" ").join("_")) %>">Cancel</button>
+                    <% } %>
+                </div>
+            </div>
+        </td>
+    </tr>
+</form>

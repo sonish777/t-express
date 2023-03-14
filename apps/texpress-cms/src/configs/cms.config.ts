@@ -199,4 +199,25 @@ export const CMSModulesConfig: CMSModuleConfig = {
             },
         ],
     },
+    'cms-configs': {
+        name: 'CMS Configurations',
+        default: 'cms-configs:view',
+        hasSubmodules: false,
+        icon: '<i class="icofont-ui-settings"></i>',
+        route: '/cms-configs',
+        permissions: [
+            {
+                name: 'View CMS Configurations',
+                method: HTTPMethods.Get,
+                route: '/cms-configs',
+                value: 'cms-configs:view',
+            },
+            {
+                name: 'Edit CMS Configurations',
+                method: HTTPMethods.Put,
+                route: '/cms-configs/:id',
+                value: 'cms-configs:edit',
+            },
+        ],
+    },
 };
