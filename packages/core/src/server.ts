@@ -184,7 +184,7 @@ export class Server {
         this.configureLocals(options.locals);
         this.registerRoutes(options.routePrefixes);
         this.registerErrorHandlers(options.exceptionHandlers);
-        this._app.listen(port, () => {
+        return this._app.listen(port, () => {
             console.log('Server listening on port ' + port);
         });
     }
