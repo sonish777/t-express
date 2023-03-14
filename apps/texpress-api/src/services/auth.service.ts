@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { GetRepository } from 'core/entities';
 import { BaseService } from 'core/services';
 import { ApiUserEntity } from 'shared/entities';
@@ -92,7 +92,7 @@ export class AuthService extends BaseService<ApiUserEntity> {
     }
 
     generateAndSendOTP(): Promise<string> {
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV !== 'production') {
             return Promise.resolve('000000');
         }
         return generateOTP();
@@ -183,7 +183,7 @@ export class AuthService extends BaseService<ApiUserEntity> {
     }
 
     async loginUserBySocialDetails(
-        socialDetails: DeepPartial<SocialLoginInterface>
+        socialDetails: Partial<SocialLoginInterface>
     ) {
         try {
             const whereCondition: FindOptionsWhere<ApiUserEntity>[] = [
@@ -197,7 +197,7 @@ export class AuthService extends BaseService<ApiUserEntity> {
                 );
             }
             if (!user) {
-                const newUser: DeepPartial<ApiUserEntity> = {
+                const newUser: Partial<ApiUserEntity> = {
                     email: socialDetails.email?.toLowerCase() ?? '',
                     socialType: socialDetails.socialType,
                     socialToken: socialDetails.socialToken,
