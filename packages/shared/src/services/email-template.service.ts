@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 export class EmailTemplateService extends BaseService<EmailTemplateEntity> {
     @GetRepository(EmailTemplateEntity)
     protected repository: Repository<EmailTemplateEntity>;
+    protected readonly resource: string = 'Email Template';
 
     protected readonly filterColumns: string[] = ['subject', 'code'];
 

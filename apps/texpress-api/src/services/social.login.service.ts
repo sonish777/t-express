@@ -6,8 +6,6 @@ import { SocialLoginEnum, SocialLoginInterface } from '@api/types';
 import { BadRequestException } from 'shared/exceptions';
 import JwksClient from 'jwks-rsa';
 import jwt from 'jsonwebtoken';
-import { DeepPartial } from 'typeorm';
-
 @Service()
 export class SocialLoginService {
     async socialLogin(SocialLoginDto: SocialLoginDto) {
@@ -27,7 +25,7 @@ export class SocialLoginService {
 
     async fetchUserFacebookData(
         socialLoginDto: SocialLoginDto
-    ): Promise<DeepPartial<SocialLoginInterface>> {
+    ): Promise<Partial<SocialLoginInterface>> {
         try {
             const response = await axios({
                 url: SocialLoginConfig.FACEBOOK_FETCH_PROFILE_URL,
@@ -55,7 +53,7 @@ export class SocialLoginService {
 
     async fetchUserGoogleData(
         socialLoginDto: SocialLoginDto
-    ): Promise<DeepPartial<SocialLoginInterface>> {
+    ): Promise<Partial<SocialLoginInterface>> {
         try {
             const response = await axios({
                 url:
@@ -81,7 +79,7 @@ export class SocialLoginService {
 
     async fetchUserAppleData(
         socialLoginDto: SocialLoginDto
-    ): Promise<DeepPartial<SocialLoginInterface>> {
+    ): Promise<Partial<SocialLoginInterface>> {
         try {
             const jwtHeader = JSON.parse(
                 new Buffer(

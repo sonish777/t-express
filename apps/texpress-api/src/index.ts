@@ -14,10 +14,10 @@ import {
 import { PassportProvider } from '@api/providers';
 import { ApiExceptionHandler } from '@api/exceptions';
 
-function bootstrap() {
+export function bootstrap() {
     const server = new Server(controllers);
     const middlewares: Handler[] = [methodOverride('_method')];
-    server.startup(Number(ServerConfig.PORT), {
+    return server.startup(Number(ServerConfig.PORT), {
         middlewares: [...middlewares],
         middlewareProviders: [
             CORSProvider,
@@ -31,4 +31,6 @@ function bootstrap() {
     });
 }
 
-bootstrap();
+if (process.env.NODE_ENV !== 'test') {
+    bootstrap();
+}
