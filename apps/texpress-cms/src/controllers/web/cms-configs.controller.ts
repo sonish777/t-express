@@ -6,6 +6,7 @@ import {
     ResourceControllerFactory,
     TypedBody,
 } from 'core/controllers';
+import { Breadcrumb } from 'core/interfaces';
 import { Response } from 'express';
 import path from 'path';
 import { Publisher } from 'rabbitmq';
@@ -19,8 +20,11 @@ export class CMSConfigController extends ResourceControllerFactory<
 >({
     resource: 'cms-configs',
 }) {
-    _title = 'CMS Configuration';
+    _title = 'CMS Configurations';
     _viewPath = 'cms-configs';
+    public indexBreadcrumbs: Breadcrumb[] = [
+        { name: this._title, url: '/cms-configs' },
+    ];
 
     constructor(
         public readonly service: CMSConfigService,
