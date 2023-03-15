@@ -8,21 +8,30 @@
             <span class="fw-bold"><%= get(config?.name) %></span>
         </td>
         <td class="align-middle">
-            <input 
-                disabled
-                class="form-control"
-                name="value"
-                type="<%= get(config?.type) %>" 
-                value="<%= get(config?.value) %>"
-                id="<%= get(config?.name.split(" ").join("_")) %>">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-md-4">
+                    <% if (get(config?.slug) === 'logo') { %>
+                        <img src="/static/uploads/logo/<%= get(config?.value) || 'logo.png' %>" alt="Logo" />
+                    <% } %>
+                </div>
+                <div class="col-md-<%= get(config?.slug) === 'logo' ? '8': '12' %>">
+                    <input 
+                        disabled
+                        class="form-control"
+                        name="value"
+                        type="<%= get(config?.type) %>" 
+                        value="<%= get(config?.value) %>"
+                        id="<%= get(config?.slug) %>" />
+                </div>
+            </div>
         </td>
-        <td class="align-middle">
+        <td class="align-middle" style="min-width: 190px;">
             <div class="btn-group">
                 <div class=" py-0">
                     <% if(hasPermission(loggedInUser, 'cms-configs:edit')) { %>
-                        <button type="button" class="btn btn-sm btn-primary edit toggle-config-input" id="toggle-edit_<%= get(config?.name.split(" ").join("_")) %>" data-config="<%= get(config?.name.split(" ").join("_")) %>">Edit</button>
-                        <button type="submit" class="btn btn-sm btn-success done d-none" id="toggle-done_<%= get(config?.name.split(" ").join("_")) %>" data-config="<%= get(config?.name.split(" ").join("_")) %>">Done</button>
-                        <button type="button" class="btn btn-sm btn-danger cancel d-none" id="toggle-cancel_<%= get(config?.name.split(" ").join("_")) %>" data-config="<%= get(config?.name.split(" ").join("_")) %>">Cancel</button>
+                        <button type="button" class="btn btn-sm btn-primary edit toggle-config-input" id="toggle-edit_<%= get(config?.slug) %>" data-config="<%= get(config?.slug) %>">Edit</button>
+                        <button type="submit" class="btn btn-sm btn-success done d-none" id="toggle-done_<%= get(config?.slug) %>" data-config="<%= get(config?.slug) %>">Done</button>
+                        <button type="button" class="btn btn-sm btn-danger cancel d-none" id="toggle-cancel_<%= get(config?.slug) %>" data-config="<%= get(config?.slug) %>">Cancel</button>
                     <% } %>
                 </div>
             </div>
