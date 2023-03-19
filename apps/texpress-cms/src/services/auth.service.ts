@@ -10,10 +10,16 @@ import { ServerConfig } from '@cms/configs';
 import { HttpException } from 'core/exceptions';
 import { DTO, HttpStatus, Sanitize } from 'core/utils';
 import { ResetPasswordDto } from '@cms/dtos';
+import { TwoFAService } from 'shared/services';
+
 @Service()
 export class AuthService extends BaseService<UserEntity> {
     @GetRepository(UserEntity)
     readonly repository: Repository<UserEntity>;
+
+    constructor(private readonly twoFAService: TwoFAService) {
+        super();
+    }
 
     async findUserForLogin(username: string) {
         return this.repository.findOne({
@@ -85,5 +91,45 @@ export class AuthService extends BaseService<UserEntity> {
         user.token = '';
         user.tokenExpiry = new Date();
         return this.repository.save(user);
+    }
+
+    @AuthEventsEmitter(
+        'setup-2fa',
+        (returnedValue: { user: UserEntity; qrCodeData?: string }) =>
+            returnedValue.qrCodeData
+                ? [
+                      {
+                          qr_code_data: returnedValue.qrCodeData,
+                          to_email: returnedValue.user.email,
+                          user_name: `${returnedValue.user.firstName ?? ''} ${
+                              returnedValue.user.lastName ?? ''
+                          }`,
+                      },
+                  ]
+                : false
+    )
+    async generate2FASecretAndQRCode(user: Partial<UserEntity>) {
+        const twoSecret = await this.twoFAService.generate2FASecretAndQRCode(
+            user.id!
+        );
+        return {
+            user,
+            ...twoSecret,
+        };
+    }
+
+    async verifyTwoFaToken(user: Partial<UserEntity>, token: string) {
+        const { isValid, base32SecretKey } =
+            await this.twoFAService.verifyTwoFaToken(
+                user.id!,
+                token,
+                user.twoFASecret
+            );
+        if (isValid && !user.twoFASecret) {
+            await this.update(Number(user.id), {
+                twoFASecret: base32SecretKey,
+            });
+        }
+        return isValid;
     }
 }

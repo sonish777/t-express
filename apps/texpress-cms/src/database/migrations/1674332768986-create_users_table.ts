@@ -93,6 +93,16 @@ export class createUsersTable1674332768986 implements MigrationInterface {
                         isNullable: true,
                     },
                     {
+                        name: 'twoFAEnabled',
+                        type: 'boolean',
+                        default: false,
+                    },
+                    {
+                        name: 'twoFASecret',
+                        type: 'varchar',
+                        isNullable: true,
+                    },
+                    {
                         name: 'updatedAt',
                         type: 'timestamp',
                         default: 'now()',

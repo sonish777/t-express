@@ -1,4 +1,6 @@
-import { auth } from 'shared/middlewares';
+import { TwoFAMetadataKeys } from 'core/utils';
+import { auth, ensure2FA } from 'shared/middlewares';
+import {} from 'shared/utils';
 import { RouteOptions } from '../interfaces';
 import { Route } from './route.decorator';
 
@@ -8,10 +10,21 @@ export function ProtectedRoute({
     middlewares = [],
     validators = [],
 }: RouteOptions): MethodDecorator {
-    return Route({
-        method,
-        path,
-        middlewares: [auth, ...middlewares],
-        validators: [...validators],
-    });
+    return (target, prop, descriptor) => {
+        const skip2FA = Reflect.getMetadata(
+            TwoFAMetadataKeys.SKIP_TWO_FA,
+            target,
+            prop
+        );
+        return Route({
+            method,
+            path,
+            middlewares: [
+                auth,
+                ...(skip2FA ? [] : [ensure2FA]),
+                ...middlewares,
+            ],
+            validators: [...validators],
+        })(target, prop, descriptor);
+    };
 }

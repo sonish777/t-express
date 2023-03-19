@@ -62,7 +62,7 @@ export class PassportProvider
                 username
             );
             if (!user || !(await validatePassword(password, user.password))) {
-                req.flash('loginError', 'Invalid email or password provided');
+                req.flash('error:toast', 'Invalid email or password provided');
                 return done(null, false);
             }
             PassportProvider._publisher.publish<
@@ -76,7 +76,7 @@ export class PassportProvider
             });
             return done(null, user);
         } catch (error: any) {
-            req.flash('loginError', error.message);
+            req.flash('error:toast', error.message);
             return done(null, false);
         }
     }

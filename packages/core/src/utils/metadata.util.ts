@@ -18,3 +18,7 @@ export enum MultipartMetadataKeys {
     MULTIPART_FIELDS = 'multipart_fields',
     MULTIPART_CONFIGS = 'multipart_configs',
 }
+
+export enum TwoFAMetadataKeys {
+    SKIP_TWO_FA = 'SKIP_TWO_FA',
+}

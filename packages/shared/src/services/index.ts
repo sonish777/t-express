@@ -3,3 +3,4 @@ export * from './email-template.service';
 export * from './cache';
 export * from './rate-limiter';
 export * from './user.service';
+export * from './two-fa';

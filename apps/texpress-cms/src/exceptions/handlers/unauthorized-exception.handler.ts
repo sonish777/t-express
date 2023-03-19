@@ -13,7 +13,7 @@ export class UnauthorizedExceptionHandler extends ExceptionHandler {
         if (error.statusCode !== HttpStatus.UNAUTHORIZED) {
             return next(error);
         }
-        req.flash('loginError', error.message);
+        req.flash('error:toast', error.message);
         return res.redirect('/auth/login');
     }
 }

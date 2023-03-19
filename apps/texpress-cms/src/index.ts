@@ -52,7 +52,6 @@ async function bootstrap(publisher: Publisher) {
             AppLocalsProvider,
         ],
         locals: [
-            { loginError: (req) => req.flash('loginError') },
             {
                 user: (req) =>
                     req.user

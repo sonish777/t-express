@@ -7,6 +7,7 @@ import { Logger } from 'shared/logger';
 import Email from 'email-templates';
 import { EmailTemplateService } from '../email-template.service';
 import Container, { Service } from 'typedi';
+import { Attachment } from 'nodemailer/lib/mailer';
 
 @Service()
 export class Mailer {
@@ -16,6 +17,7 @@ export class Mailer {
     private _template: string;
     private _subject: string;
     private _transport: Transporter;
+    private _attachments: Attachment[];
     private logger: WinstonLogger;
     private static _instance: Mailer;
 
@@ -51,6 +53,11 @@ export class Mailer {
         return this;
     }
 
+    public attachments(value: Attachment[]) {
+        this._attachments = value;
+        return this;
+    }
+
     public async parseTemplate(code: string, data: Record<string, string>) {
         const emailTemplate =
             await this.emailTemplateService.findTemplateByCode(code);
@@ -82,6 +89,11 @@ export class Mailer {
                         subject: this._subject,
                         html: this._template,
                         text: this._subject,
+                        ...(this._attachments.length > 0
+                            ? {
+                                  attachments: this._attachments,
+                              }
+                            : {}),
                     },
                 })
                 .then(() => {
@@ -98,6 +110,11 @@ export class Mailer {
                 subject: this._subject,
                 html: this._template,
                 text: this._subject,
+                ...(this._attachments.length > 0
+                    ? {
+                          attachments: this._attachments,
+                      }
+                    : {}),
             })
             .then((result) => {
                 this.logger.info('Mail sent', result);

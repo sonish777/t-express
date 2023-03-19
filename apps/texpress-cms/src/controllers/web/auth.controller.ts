@@ -3,6 +3,7 @@ import passport from 'passport';
 import {
     BaseController,
     Controller,
+    ProtectedRoute,
     Route,
     TypedBody,
     TypedQuery,
@@ -17,6 +18,7 @@ import {
 import { AuthService } from '@cms/services';
 import { CatchAsync } from 'core/exceptions';
 import { ResetPasswordDto } from '@cms/dtos';
+import { SkipTwoFA } from 'shared/services';
 
 @Controller('/auth')
 export class AuthController extends BaseController {
@@ -100,8 +102,49 @@ export class AuthController extends BaseController {
         ],
     })
     @Log()
-    login(_req: Request, res: Response) {
+    async login(req: Request, res: Response) {
+        if (req.user!.twoFAEnabled) {
+            if (!req.user!.twoFASecret) {
+                // 2FA is enabled but not setup yet.
+                await this.authService.generate2FASecretAndQRCode(req.user!);
+            }
+            return res.redirect('/auth/twofa');
+        }
         return res.redirect('/home');
+    }
+
+    @Route({ method: HTTPMethods.Post, path: '/twofa/verify' })
+    @CatchAsync
+    async verifyTwoFA(req: TypedBody<{ token: string }>, res: Response) {
+        try {
+            const token = req.body.token;
+            const isValid = await this.authService.verifyTwoFaToken(
+                req.user!,
+                token
+            );
+            if (!isValid) {
+                req.flash('error:toast', 'Invalid token');
+                return res.redirect('back');
+            }
+            req.session.twoFAVerified = true;
+            return res.redirect('/home');
+        } catch (error) {
+            req.logOut(console.log);
+            throw error;
+        }
+    }
+
+    @ProtectedRoute({
+        method: HTTPMethods.Get,
+        path: '/twofa',
+    })
+    @SkipTwoFA
+    @CatchAsync
+    async twoFA(req: Request, res: Response) {
+        this.page = 'twofa';
+        return this.render(res, {
+            twoFASetupCompleted: !!req.user!.twoFASecret,
+        });
     }
 
     @Route({

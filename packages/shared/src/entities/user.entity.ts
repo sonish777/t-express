@@ -59,6 +59,14 @@ export class UserEntity extends BaseEntity {
     @Column()
     thumbnail: string;
 
+    @Column()
+    twoFAEnabled: boolean;
+
+    @Column()
+    twoFASecret: string;
+
+    twoFAVerified: boolean;
+
     currentPassword: string;
 
     @AfterLoad()
