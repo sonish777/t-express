@@ -75,4 +75,15 @@ export class RoleController extends ResourceControllerFactory<
             permissions,
         });
     }
+
+    @ProtectedRoute({
+        path: '/sync-permissions',
+        method: HTTPMethods.Post,
+    })
+    @CatchAsync
+    async syncPermissions(req: Request, res: Response) {
+        await this.service.syncPermissionsAndUpdateRole();
+        req.flash('message:toast', 'Permissions synced successfully');
+        return res.redirect('back');
+    }
 }

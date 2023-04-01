@@ -89,7 +89,7 @@ export class Mailer {
                         subject: this._subject,
                         html: this._template,
                         text: this._subject,
-                        ...(this._attachments.length > 0
+                        ...(this._attachments?.length > 0
                             ? {
                                   attachments: this._attachments,
                               }

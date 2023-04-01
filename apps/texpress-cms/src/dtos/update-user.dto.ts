@@ -8,4 +8,5 @@ export class UpdateUserDto {
     @Expose() email: string;
     @Expose() mobileNumber: string;
     @Expose() roleId: string;
+    @Expose() twoFAEnabled: string;
 }

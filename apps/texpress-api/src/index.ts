@@ -11,13 +11,18 @@ import {
     StaticServeProvider,
     StaticServeProviderOptions,
 } from 'shared/providers';
-import { PassportProvider } from '@api/providers';
+import {
+    PassportProvider,
+    SwaggerDocProvider,
+    SwaggerDocProviderProps,
+} from '@api/providers';
 import { ApiExceptionHandler } from '@api/exceptions';
 
 export function bootstrap() {
     const server = new Server(controllers);
     const middlewares: Handler[] = [methodOverride('_method')];
     return server.startup(Number(ServerConfig.PORT), {
+        name: 'API Server',
         middlewares: [...middlewares],
         middlewareProviders: [
             CORSProvider,
@@ -26,6 +31,12 @@ export function bootstrap() {
                 prefix: 'static',
             }),
             PassportProvider,
+            provideMiddleware<SwaggerDocProviderProps>(SwaggerDocProvider, {
+                title: 'Texpress API Documentation',
+                apiPaths: [__dirname + '/controllers/**/*.ts'],
+                servers: [{ url: `${ServerConfig.URL}/api/v1` }],
+                controllers,
+            }),
         ],
         exceptionHandlers: [new ApiExceptionHandler()],
     });

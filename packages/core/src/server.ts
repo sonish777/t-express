@@ -185,7 +185,9 @@ export class Server {
         this.registerRoutes(options.routePrefixes);
         this.registerErrorHandlers(options.exceptionHandlers);
         return this._app.listen(port, () => {
-            console.log('Server listening on port ' + port);
+            console.log(
+                `${options.name || 'Server'} listening on port ${port}`
+            );
         });
     }
 }

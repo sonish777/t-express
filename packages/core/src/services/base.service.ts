@@ -39,6 +39,10 @@ export abstract class BaseService<K extends BaseEntity> {
         });
     }
 
+    save(payload: DeepPartial<K>): Promise<K> {
+        return this.repository.save(payload);
+    }
+
     create(payload: DeepPartial<K>): Promise<K> {
         const newEntity = this.repository.create(payload);
         return this.repository.save(newEntity);

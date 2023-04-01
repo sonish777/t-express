@@ -33,7 +33,7 @@ export const CMSModulesConfig: CMSModuleConfig = {
         permissions: [
             {
                 name: 'View dashboard',
-                value: 'dashboard:view',
+                value: '' /* Empty for no checking */,
                 route: '/home',
                 method: HTTPMethods.Get,
             },
@@ -88,12 +88,6 @@ export const CMSModulesConfig: CMSModuleConfig = {
                 method: HTTPMethods.Put,
             },
             {
-                name: 'Change own password',
-                value: '',
-                route: '/users/me/change-password',
-                method: HTTPMethods.Get,
-            },
-            {
                 name: 'Change password',
                 value: 'users:change_password',
                 route: '/users/:id/change-password',
@@ -142,6 +136,12 @@ export const CMSModulesConfig: CMSModuleConfig = {
                 value: 'roles:delete',
                 method: HTTPMethods.Delete,
                 route: '/roles/:id',
+            },
+            {
+                name: 'Sync Permissions',
+                value: 'roles:sync_permissions',
+                method: HTTPMethods.Post,
+                route: '/roles/sync-permissions',
             },
         ],
     },
@@ -217,6 +217,32 @@ export const CMSModulesConfig: CMSModuleConfig = {
                 method: HTTPMethods.Put,
                 route: '/cms-configs/:id',
                 value: 'cms-configs:edit',
+            },
+        ],
+    },
+    permissions: {
+        name: 'Permissions',
+        default: 'permissions:view',
+        icon: '<i class="icofont-list"></i>',
+        route: '/permissions',
+        permissions: [
+            {
+                name: 'View Permissions',
+                method: HTTPMethods.Get,
+                route: '/permissions',
+                value: 'permissions:view',
+            },
+            {
+                name: 'View Permissions',
+                method: HTTPMethods.Put,
+                route: '/permissions/:id',
+                value: 'permissions:edit',
+            },
+            {
+                name: 'View Permissions',
+                method: HTTPMethods.Delete,
+                route: '/permissions/:id',
+                value: 'permissions:delete',
             },
         ],
     },

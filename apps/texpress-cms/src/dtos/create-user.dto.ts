@@ -11,4 +11,5 @@ export class CreateUserDto {
     @Expose() password: string;
     @Expose() status: string;
     @Expose() sendActivationLink: string;
+    @Expose() twoFAEnabled: string;
 }

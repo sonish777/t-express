@@ -11,9 +11,9 @@ export const OrmConfig: DataSourceOptions = {
     entities: [
         __dirname + '/../entities/*.entity{.ts,.js}',
         __dirname +
-            '/../../../../apps/texpress-api/*/entities/*.entity{.ts,.js}',
+            '/../../../../apps/texpress-api/dist/entities/*.entity{.ts,.js}',
         __dirname +
-            '/../../../../apps/texpress-cms/*/entities/*.entity{.ts,.js}',
+            '/../../../../apps/texpress-cms/dist/entities/*.entity{.ts,.js}',
     ],
     synchronize: false,
 };

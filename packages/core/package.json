@@ -25,6 +25,7 @@
         "./services": "./dist/services/index.js",
         "./utils": "./dist/utils/index.js",
         "./validators": "./dist/validators/index.js",
-        "./events": "./dist/events/index.js"
+        "./events": "./dist/events/index.js",
+        "./swagger": "./dist/swagger/index.js"
     }
 }

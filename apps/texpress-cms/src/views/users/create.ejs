@@ -17,7 +17,7 @@
                     name: 'lastName', 
                     placeholder: "Also your last name",
                     value: getUserInput(locals.inputData, "lastName") ?? "", 
-                    errorMessage: getErrorMessage(locals.mappedErrors, 'firstName')
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'lastName')
                 }) %>
             </div>
         </div>
@@ -91,31 +91,47 @@
                     <% }) %>
                 </select>
             </div>
-            <div class="col-md-6 mb-3">
-                <!-- <label for="status">Status</label> -->
-                <fieldset>
-                    <legend class="h6">Status</legend>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="status" id="radioActive" value="active" 
-                            <%= getUserInput(locals.inputData, "status") === 'active' ? 'checked': '' %>
-                        >
-                        <label class="form-check-label" for="radioActive">
-                        Active
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="status" id="radioInactive" value="inactive"
-                            <%= getUserInput(locals.inputData, "status") === 'inactive' ? 'checked': '' %>
-                        >
-                        <label class="form-check-label" for="radioInactive">
-                        Inactive
-                        </label>
-                    </div>
-                </fieldset>
-                </select>
+            <div class="col-md-6">
+                <div>
+                    <label for="avatar">Avatar</label>
+                </div>
+                <input class="form-control" type="file" name="avatar" id="avatar" />
+                <%- include('../common/invalid-feedback', {
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'avatar')
+                }) %>
             </div>
         </div>
         <div class="row">
+            <div class="col-md-6 mb-3">
+                <div>
+                    <fieldset>
+                        <legend class="h6">Status</legend>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="radioActive" value="active" 
+                                <%= getUserInput(locals.inputData, "status") === 'active' ? 'checked': '' %>
+                            >
+                            <label class="form-check-label" for="radioActive">
+                            Active
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="radioInactive" value="inactive"
+                                <%= getUserInput(locals.inputData, "status") === 'inactive' ? 'checked': '' %>
+                            >
+                            <label class="form-check-label" for="radioInactive">
+                            Inactive
+                            </label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="mt-3">
+                    <div class="form-check form-switch">
+                        <label class="form-check-label" for="twoFAEnabled">Enable Two Factor Authentication</label>
+                        <input class="form-check-input" type="checkbox" name="twoFAEnabled" value="on" id="twoFAEnabled"
+                            <%= getUserInput(locals.inputData, 'twoFAEnabled') ? 'checked': '' %>>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-6 mb-3">
                 <label for="password">Password</label>
                 <div class="form-check form-switch">
@@ -136,15 +152,6 @@
                 />
                 <%- include('../common/invalid-feedback', {
                     errorMessage: getErrorMessage(locals.mappedErrors, 'password')
-                }) %>
-            </div>
-            <div class="col-md-6">
-                <div>
-                    <label for="avatar">Avatar</label>
-                </div>
-                <input class="form-control" type="file" name="avatar" id="avatar" />
-                <%- include('../common/invalid-feedback', {
-                    errorMessage: getErrorMessage(locals.mappedErrors, 'avatar')
                 }) %>
             </div>
         </div>

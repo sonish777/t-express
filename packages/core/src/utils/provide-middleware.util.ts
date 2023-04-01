@@ -7,7 +7,7 @@ import { Provider, ProviderWithOptions } from 'core/providers';
  * @template K
  * @param {Middleware} providerClass
  * @param {K} options
- * @returns {MiddlewareProvider<K>}
+ * @returns {ProviderWithOptions<K>}
  */
 export function provideMiddleware<K>(
     providerClass: Provider,

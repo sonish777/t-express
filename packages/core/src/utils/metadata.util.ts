@@ -20,5 +20,12 @@ export enum MultipartMetadataKeys {
 }
 
 export enum TwoFAMetadataKeys {
-    SKIP_TWO_FA = 'SKIP_TWO_FA',
+    SKIP_TWO_FA = 'skip_two_fa',
+}
+
+export enum SwaggerMetadataKeys {
+    SCHEMA_DEFINITION = 'schema_definition',
+    SCHEMA_PROPERTIES = 'schema_properties',
+    API_METADATA = 'api_metadata',
+    API_TAG = 'api_tag',
 }

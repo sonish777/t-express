@@ -80,7 +80,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6">
                 <label for="role">Role</label>
                 <select class="form-select mb-0 <%= getErrorMessage(locals.mappedErrors, 'role') ? "is-invalid": "" %>" id="role" name="roleId" required>
                     <option value="">Select one</option>
@@ -90,6 +90,13 @@
                             ><%= role.name %></option>
                     <% }) %>
                 </select>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+                <div class="form-check form-switch">
+                    <label class="form-check-label" for="twoFAEnabled">Enable Two Factor Authentication</label>
+                    <input class="form-check-input" type="checkbox" name="twoFAEnabled" value="on" id="twoFAEnabled"
+                        <%= getEditFormData(locals.data.user, 'twoFAEnabled', locals.inputData) ? 'checked': '' %>>
+                </div>
             </div>
         </div>
         <div class="mt-3">

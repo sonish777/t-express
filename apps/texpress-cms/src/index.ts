@@ -38,6 +38,7 @@ async function bootstrap(publisher: Publisher) {
     ]);
     const middlewares: Handler[] = [methodOverride('_method')];
     server.startup(Number(ServerConfig.PORT), {
+        name: 'CMS Server',
         middlewares: [...middlewares],
         middlewareProviders: [
             CORSProvider,

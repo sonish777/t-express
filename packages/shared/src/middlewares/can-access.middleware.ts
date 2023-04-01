@@ -16,7 +16,7 @@ export const canAccess =
             const method = req.method?.toLowerCase();
             const canAccess = user.role?.[0].permissions.some(
                 (permission) =>
-                    !permission.action ||
+                    (permission.route === url && !permission.action) ||
                     (permission.route === url && permission.method === method)
             );
             if (!canAccess) {

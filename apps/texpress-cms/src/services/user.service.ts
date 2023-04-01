@@ -73,6 +73,7 @@ export class UserService extends BaseService<UserEntity> {
         }
         const createUserPayload: Partial<UserEntity> = {
             ...rest,
+            twoFAEnabled: rest.twoFAEnabled === 'on',
             role: [roleEntity],
             ...uploads,
         };
@@ -149,6 +150,10 @@ export class UserService extends BaseService<UserEntity> {
         if (!role) {
             throw new BadRequestException('Invalid role');
         }
-        return this.update(id, { ...payload, role: [role] });
+        return this.update(id, {
+            ...payload,
+            twoFAEnabled: payload.twoFAEnabled === 'on',
+            role: [role],
+        });
     }
 }

@@ -1,9 +1,10 @@
 import { Schema, SchemaProperty } from 'core/swagger';
 
 @Schema()
-export class RefreshTokenDto {
+export class ForgotPasswordDto {
     @SchemaProperty({
         type: 'string',
+        required: true,
     })
-    refreshToken: string;
+    username: string;
 }

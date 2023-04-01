@@ -5,16 +5,18 @@ import {
     APIBaseController,
     APIProtectedRoute,
     TypedQuery,
+    Route,
 } from 'core/controllers';
 import { HTTPMethods, HttpStatus } from 'core/utils';
 import { ApiUserService } from '@api/services';
 import { ApiUserEntity } from 'shared/entities';
-import { CommonSearchQuery } from 'core/interfaces';
 import { HttpException, CatchAsync } from 'core/exceptions';
-import { CreateUser } from 'shared/dtos';
+import { CommonSearchQueryDto, CreateUser } from 'shared/dtos';
 import { CreateUserValidator } from 'shared/validators';
+import { ApiMetadata, ApiParameter, ApiTag } from 'core/swagger';
 
 @ApiController('/users')
+@ApiTag('Users')
 export class ApiUserController extends APIBaseController {
     protected title = 'Users';
     protected module = 'users';
@@ -23,9 +25,11 @@ export class ApiUserController extends APIBaseController {
         super();
     }
 
-    @APIProtectedRoute({ method: HTTPMethods.Get, path: '/' })
+    @Route({ method: HTTPMethods.Get, path: '/' })
+    @ApiMetadata({ description: 'Get all users' })
+    @ApiParameter({ in: 'query', schema: CommonSearchQueryDto })
     @CatchAsync
-    async findAll(req: TypedQuery<CommonSearchQuery>, res: Response) {
+    async findAll(req: TypedQuery<CommonSearchQueryDto>, res: Response) {
         const data = await this.service.paginate({
             ...req.query,
         });
@@ -33,6 +37,13 @@ export class ApiUserController extends APIBaseController {
     }
 
     @APIProtectedRoute({ method: HTTPMethods.Get, path: '/:id' })
+    @ApiMetadata({
+        description: 'Get detail of user by id',
+    })
+    @ApiParameter({
+        in: 'path',
+        schema: [{ name: 'id', type: 'number', required: true }],
+    })
     @CatchAsync
     async findById(req: Request, res: Response, next: NextFunction) {
         const id = Number(req.params.id);

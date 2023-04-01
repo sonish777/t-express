@@ -14,9 +14,7 @@ export class RoleService extends BaseService<RoleEntity> {
     protected readonly repository: Repository<RoleEntity>;
     protected filterColumns: string[] = ['name'];
 
-    constructor(
-        @Inject() private readonly permissionService: PermissionService
-    ) {
+    constructor(private readonly permissionService: PermissionService) {
         super();
     }
 
@@ -66,5 +64,21 @@ export class RoleService extends BaseService<RoleEntity> {
             ...payload,
             permissions: rolePermissions,
         });
+    }
+
+    async syncPermissionsAndUpdateRole() {
+        const syncedPermissions =
+            await this.permissionService.syncPermissions();
+        const superAdminRole = await this.findOne({ slug: 'super-admin' }, [
+            'permissions',
+        ]);
+        if (!superAdminRole) {
+            return;
+        }
+        superAdminRole.permissions = [
+            ...(superAdminRole.permissions || []),
+            ...syncedPermissions,
+        ];
+        return this.save(superAdminRole);
     }
 }

@@ -23,6 +23,7 @@ import {
     MulterUpload,
     QueueConfig,
 } from 'shared/configs';
+import path from 'path';
 
 @Controller('/users')
 @CanAccess
@@ -60,7 +61,9 @@ export class UserController extends ResourceControllerFactory<
 
     @CatchAsync
     @MulterUpload([{ name: 'avatar', maxCount: 1 }], {
-        storage: multerDiskStorage('public/uploads/admins'),
+        storage: multerDiskStorage(
+            path.join(__dirname, '../../../public/uploads/admins')
+        ),
         fileFilter: multerFileFilter(['image/jpg', 'image/jpeg', 'image/png']),
         limits: {
             fileSize: 2000000,

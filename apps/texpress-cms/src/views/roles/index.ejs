@@ -3,16 +3,25 @@
         <div class="col col-md-6 col-lg-3 col-xl-4">
             <%- include("../common/search-field") %>
         </div>
-        <% if(hasPermission(locals.user, 'roles:create')) { %>
-        <div class="col-4 col-md-2 col-xl-2 ps-md-0 text-end">
-            <a href="/roles/create" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
-                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                New Role
-            </a>
+        <div class="col-6 col-md-6 col-xl-6 ps-md-0 text-end">
+            <div class="d-flex justify-content-end">            
+                <% if(hasPermission(locals.user, 'roles:create')) { %>
+                <a href="/roles/create" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center mx-1">
+                    <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    New Role
+                </a>
+                <% } %>
+                <% if(hasPermission(locals.user, 'roles:sync_permissions')) { %>
+                    <form action="/roles/sync-permissions" method="post">
+                        <button type="submit" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center mx-1">
+                            Sync Permissions
+                        </button>
+                    </form>
+                <% } %>
+            </div>
         </div>
-        <% } %>
     </div>
 </div>
 <div class="card card-body border-0 shadow table-wrapper table-responsive">
