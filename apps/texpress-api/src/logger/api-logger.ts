@@ -5,9 +5,9 @@ const loggerConfigs: LoggerConfig[] = [
     { fileName: 'combined.log' },
 ];
 
-export const ApiLogger = Logger.configure(
-    process.env.NODE_ENV !== 'production' ? loggerConfigs : []
-);
+export const ApiLogger = Logger.configure(loggerConfigs, {
+    dirname: __dirname + '/../../logs',
+});
 
 export const Log = (title = '', message = '') =>
     LogDecoratorFactory(ApiLogger, title, message);

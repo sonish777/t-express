@@ -12,7 +12,10 @@ const winstonLoggerFormats = [
 ];
 
 export class Logger {
-    static configure(configs: LoggerConfig[] = []) {
+    static configure(
+        configs: LoggerConfig[] = [],
+        options?: { dirname?: string }
+    ) {
         const transports: winston.transport[] = [];
         if (process.env.NODE_ENV !== 'production') {
             transports.push(
@@ -32,7 +35,7 @@ export class Logger {
             ...configs.map(
                 (conf) =>
                     new winston.transports.File({
-                        dirname: 'src/logs',
+                        dirname: options?.dirname ?? 'src/logs',
                         filename: conf.fileName ?? `${conf.level}.log`,
                         format: format.combine(
                             ...winstonLoggerFormats,
