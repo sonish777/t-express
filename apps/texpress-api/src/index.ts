@@ -11,12 +11,9 @@ import {
     StaticServeProvider,
     StaticServeProviderOptions,
 } from 'shared/providers';
-import {
-    PassportProvider,
-    SwaggerDocProvider,
-    SwaggerDocProviderProps,
-} from '@api/providers';
+import { PassportProvider } from '@api/providers';
 import { ApiExceptionHandler } from '@api/exceptions';
+import { SwaggerDocProvider, SwaggerDocProviderProps } from 'core/swagger';
 
 export function bootstrap() {
     const server = new Server(controllers);
@@ -35,6 +32,7 @@ export function bootstrap() {
                 title: 'Texpress API Documentation',
                 apiPaths: [__dirname + '/controllers/**/*.ts'],
                 servers: [{ url: `${ServerConfig.URL}/api/v1` }],
+                authSchemes: ['BearerAuth'],
                 controllers,
             }),
         ],

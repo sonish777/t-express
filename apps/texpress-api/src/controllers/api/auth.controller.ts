@@ -35,7 +35,7 @@ import { PaginationOptions, PaginationResponse } from 'core/interfaces';
 import { ApiUserEntity } from 'shared/entities';
 import { Log } from '@api/logger';
 import { Throttle } from 'shared/services';
-import { ApiBody, ApiTag, ApiMetadata } from 'core/swagger';
+import { ApiBody, ApiTag, ApiMetadata, ApiBearerAuth } from 'core/swagger';
 
 @ApiController('/auth')
 @ApiTag('Authentication')
@@ -90,6 +90,7 @@ export class ApiAuthController extends APIBaseController {
     }
 
     @APIProtectedRoute({ method: HTTPMethods.Get, path: '/profile' })
+    @ApiBearerAuth()
     @RespondItem()
     profile(req: Request) {
         return this.authService.getProfile(req.user!.id);

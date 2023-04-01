@@ -15,7 +15,7 @@ export function ApiBody(props: ApiBodyProps): MethodDecorator {
                 target.constructor
             ) || {};
 
-        const { contentType, schema, ...rest } = props;
+        const { contentType = 'application/json', schema, ...rest } = props;
         const requestBodySpec: RequestBodySpec = {
             ...rest,
             content: {

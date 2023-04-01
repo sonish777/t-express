@@ -11,9 +11,15 @@ import { HTTPMethods, HttpStatus } from 'core/utils';
 import { ApiUserService } from '@api/services';
 import { ApiUserEntity } from 'shared/entities';
 import { HttpException, CatchAsync } from 'core/exceptions';
-import { CommonSearchQueryDto, CreateUser } from 'shared/dtos';
+import { CommonSearchQueryDto, CreateUserDto } from 'shared/dtos';
 import { CreateUserValidator } from 'shared/validators';
-import { ApiMetadata, ApiParameter, ApiTag } from 'core/swagger';
+import {
+    ApiBearerAuth,
+    ApiBody,
+    ApiMetadata,
+    ApiParameter,
+    ApiTag,
+} from 'core/swagger';
 
 @ApiController('/users')
 @ApiTag('Users')
@@ -25,8 +31,8 @@ export class ApiUserController extends APIBaseController {
         super();
     }
 
-    @Route({ method: HTTPMethods.Get, path: '/' })
-    @ApiMetadata({ description: 'Get all users' })
+    @APIProtectedRoute({ method: HTTPMethods.Get, path: '/' })
+    @ApiBearerAuth()
     @ApiParameter({ in: 'query', schema: CommonSearchQueryDto })
     @CatchAsync
     async findAll(req: TypedQuery<CommonSearchQueryDto>, res: Response) {
@@ -37,9 +43,7 @@ export class ApiUserController extends APIBaseController {
     }
 
     @APIProtectedRoute({ method: HTTPMethods.Get, path: '/:id' })
-    @ApiMetadata({
-        description: 'Get detail of user by id',
-    })
+    @ApiBearerAuth()
     @ApiParameter({
         in: 'path',
         schema: [{ name: 'id', type: 'number', required: true }],
@@ -66,7 +70,10 @@ export class ApiUserController extends APIBaseController {
         path: '/',
         validators: [CreateUserValidator],
     })
-    async create(req: TypedBody<CreateUser>, res: Response) {
+    @ApiBody({
+        schema: CreateUserDto,
+    })
+    async create(req: TypedBody<CreateUserDto>, res: Response) {
         res.json(req.body);
     }
 }

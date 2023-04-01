@@ -7,6 +7,8 @@ import { ControllerMetadataKeys, SwaggerMetadataKeys } from 'core/utils';
 import { Router } from 'core/controllers';
 import {
     SchemaDefinitionSpec,
+    SecuritySchemes,
+    SecuritySchemeTypes,
     SwaggerPathSpec,
     SwaggerSpec,
 } from 'core/swagger';
@@ -16,6 +18,11 @@ export interface SwaggerDocProviderProps {
     version?: string;
     apiPaths: string[];
     servers: Server[];
+    authSchemes?: SecuritySchemeTypes[];
+    apiKeyConfig?: {
+        in?: 'header' | 'query';
+        name?: string;
+    };
     controllers?: { [key: string]: Class };
 }
 
@@ -79,11 +86,32 @@ export class SwaggerDocProvider
                     controllerClass
                 ) || {};
 
+            const apiKeyAuthRoot: boolean = Reflect.getMetadata(
+                'ApiKeyAuth',
+                controllerClass
+            );
             swaggerSchemaDefinitions = {
                 ...swaggerSchemaDefinitions,
                 ...schemaDefinitions,
             };
             routers.forEach((router) => {
+                const apiBearerAuth: boolean = Reflect.getMetadata(
+                    'ApiBearerAuth',
+                    controllerClass,
+                    router.handlerName
+                );
+                const apiKeyAuth: boolean = Reflect.getMetadata(
+                    'ApiKeyAuth',
+                    controllerClass,
+                    router.handlerName
+                );
+                const securitySchemesForRoute: Record<string, []>[] = [];
+                if (apiBearerAuth) {
+                    securitySchemesForRoute.push({ BearerAuth: [] });
+                }
+                if (apiKeyAuth || apiKeyAuthRoot) {
+                    securitySchemesForRoute.push({ ApiKeyAuth: [] });
+                }
                 const swaggerPath = router.path
                     .split('/')
                     .map((token) => {
@@ -93,6 +121,7 @@ export class SwaggerDocProvider
                     .join('/'); // convert all ':param' to '{param}' for swagger
 
                 swaggerPaths[`${basePath}${swaggerPath}`] = {
+                    ...(swaggerPaths[`${basePath}${swaggerPath}`] || {}),
                     [router.method.toLowerCase()]: {
                         ...(swaggerSpec[router.handlerName] ?? {}),
                         responses: {
@@ -106,6 +135,7 @@ export class SwaggerDocProvider
                                   tags: [apiTag],
                               }
                             : {}),
+                        security: securitySchemesForRoute,
                     },
                 };
             });
@@ -115,6 +145,24 @@ export class SwaggerDocProvider
         swaggerSpec.definitions = swaggerSchemaDefinitions;
         swaggerSpec.components = {};
         swaggerSpec.components['schemas'] = swaggerSchemaDefinitions;
+        const securitySchemes: Record<string, any> = {};
+        if (apiMetadata.authSchemes && apiMetadata.authSchemes.length > 0) {
+            apiMetadata.authSchemes.forEach((scheme) => {
+                switch (scheme) {
+                    case 'BearerAuth':
+                    case 'BasicAuth':
+                        securitySchemes[scheme] = SecuritySchemes(scheme);
+                        break;
+                    case 'ApiKeyAuth':
+                        securitySchemes[scheme] = SecuritySchemes(scheme, {
+                            in: apiMetadata.apiKeyConfig?.in || 'header',
+                            name: apiMetadata.apiKeyConfig?.name || 'X-API-KEY',
+                        });
+                        break;
+                }
+            });
+        }
+        swaggerSpec.components['securitySchemes'] = securitySchemes;
         swaggerSpec.servers = apiMetadata.servers;
         app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
     }

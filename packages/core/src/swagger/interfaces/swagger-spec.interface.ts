@@ -40,6 +40,8 @@ export interface SwaggerSpec {
 
 export interface SwaggerPathSpec {
     [path: string]: {
-        [method: string]: OpenAPISpec;
+        [method: string]: OpenAPISpec & {
+            security: { [scheme: string]: string[] } | {};
+        };
     };
 }
