@@ -3,7 +3,9 @@ import passport from 'passport';
 import {
     BaseController,
     Controller,
+    ProtectedRequest,
     ProtectedRoute,
+    ProtectedTypedBody,
     Route,
     TypedBody,
     TypedQuery,
@@ -19,6 +21,7 @@ import { AuthService } from '@cms/services';
 import { CatchAsync } from 'core/exceptions';
 import { ResetPasswordDto } from '@cms/dtos';
 import { SkipTwoFA } from 'shared/services';
+import { ConsoleLogger } from 'shared/logger';
 
 @Controller('/auth')
 export class AuthController extends BaseController {
@@ -27,7 +30,10 @@ export class AuthController extends BaseController {
     _viewPath = 'auth';
     _module = 'auth';
 
-    constructor(private readonly authService: AuthService) {
+    constructor(
+        private readonly authService: AuthService,
+        private readonly logger: ConsoleLogger
+    ) {
         super();
     }
 
@@ -102,24 +108,27 @@ export class AuthController extends BaseController {
         ],
     })
     @Log()
-    async login(req: Request, res: Response) {
-        if (req.user!.twoFAEnabled) {
-            if (!req.user!.twoFASecret) {
+    async login(req: ProtectedRequest, res: Response) {
+        if (req.user.twoFAEnabled) {
+            if (!req.user.twoFASecret) {
                 // 2FA is enabled but not setup yet.
-                await this.authService.generate2FASecretAndQRCode(req.user!);
+                await this.authService.generate2FASecretAndQRCode(req.user);
             }
             return res.redirect('/auth/twofa');
         }
         return res.redirect('/home');
     }
 
-    @Route({ method: HTTPMethods.Post, path: '/twofa/verify' })
+    @ProtectedRoute({ method: HTTPMethods.Post, path: '/twofa/verify' })
     @CatchAsync
-    async verifyTwoFA(req: TypedBody<{ token: string }>, res: Response) {
+    async verifyTwoFA(
+        req: ProtectedTypedBody<{ token: string }>,
+        res: Response
+    ) {
         try {
             const token = req.body.token;
             const isValid = await this.authService.verifyTwoFaToken(
-                req.user!,
+                req.user,
                 token
             );
             if (!isValid) {
@@ -129,7 +138,7 @@ export class AuthController extends BaseController {
             req.session.twoFAVerified = true;
             return res.redirect('/home');
         } catch (error) {
-            req.logOut(console.log);
+            req.logOut(this.logger.error);
             throw error;
         }
     }
@@ -140,10 +149,10 @@ export class AuthController extends BaseController {
     })
     @SkipTwoFA
     @CatchAsync
-    async twoFA(req: Request, res: Response) {
+    async twoFA(req: ProtectedRequest, res: Response) {
         this.page = 'twofa';
         return this.render(res, {
-            twoFASetupCompleted: !!req.user!.twoFASecret,
+            twoFASetupCompleted: !!req.user.twoFASecret,
         });
     }
 
@@ -154,7 +163,7 @@ export class AuthController extends BaseController {
     logout(req: Request, res: Response) {
         req.logOut((err) => {
             if (err) {
-                console.log(err);
+                this.logger.error(err);
             }
         });
         return res.redirect('/auth/login');

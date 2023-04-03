@@ -1,6 +1,6 @@
 import { BaseEntity, SetRepository } from 'core/entities';
 import { postgresDataSource } from 'shared/connections';
-import { Column, CreateDateColumn, Entity } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'adminActivityLogs' })
 @SetRepository(postgresDataSource)

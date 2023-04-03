@@ -5,6 +5,7 @@ import {
     APIProtectedRoute,
     APIBaseController,
     TypedQuery,
+    ProtectedRequest,
 } from 'core/controllers';
 import {
     RespondCreated,
@@ -15,7 +16,6 @@ import {
     RespondItem,
 } from 'core/utils';
 import { AuthService } from '@api/services';
-import { Request } from 'express';
 import { CreateApiUserValidator } from 'shared/validators';
 import {
     CreateUserDto,
@@ -35,7 +35,9 @@ import { PaginationOptions, PaginationResponse } from 'core/interfaces';
 import { ApiUserEntity } from 'shared/entities';
 import { Log } from '@api/logger';
 import { Throttle } from 'shared/services';
-import { ApiBody, ApiTag, ApiMetadata, ApiBearerAuth } from 'core/swagger';
+import { ApiBody, ApiTag, ApiBearerAuth, ApiResponse } from 'core/swagger';
+import { Tokens } from '@api/schemas';
+import { ConsoleLogger } from 'shared/logger';
 
 @ApiController('/auth')
 @ApiTag('Authentication')
@@ -43,7 +45,10 @@ export class ApiAuthController extends APIBaseController {
     protected title = 'Auth';
     protected module = 'auth';
 
-    constructor(private readonly authService: AuthService) {
+    constructor(
+        private readonly authService: AuthService,
+        private readonly logger: ConsoleLogger
+    ) {
         super();
     }
 
@@ -53,10 +58,7 @@ export class ApiAuthController extends APIBaseController {
         validators: [CreateApiUserValidator],
     })
     @RespondCreated(true)
-    @ApiBody({
-        contentType: 'application/json',
-        schema: CreateUserDto,
-    })
+    @ApiBody({ schema: CreateUserDto })
     register(req: TypedBody<CreateUserDto>) {
         return this.authService.register(req.body);
     }
@@ -66,9 +68,10 @@ export class ApiAuthController extends APIBaseController {
         path: '/verify-otp',
         validators: [VerifyOTPValidator],
     })
-    @ApiBody({
-        contentType: 'application/json',
-        schema: VerifyOTPDto,
+    @ApiBody({ schema: VerifyOTPDto })
+    @ApiResponse({
+        contentType: 'text/plain',
+        schema: { type: 'string', example: 'OK' },
     })
     @RespondOK()
     verifyOtp(req: TypedBody<VerifyOTPDto>) {
@@ -80,10 +83,7 @@ export class ApiAuthController extends APIBaseController {
         path: '/set-password',
         validators: [SetPasswordValidator],
     })
-    @ApiBody({
-        contentType: 'application/json',
-        schema: SetPasswordDto,
-    })
+    @ApiBody({ schema: SetPasswordDto })
     @RespondItem()
     setPassword(req: TypedBody<SetPasswordDto>) {
         return this.authService.setPassword(req.body);
@@ -92,19 +92,13 @@ export class ApiAuthController extends APIBaseController {
     @APIProtectedRoute({ method: HTTPMethods.Get, path: '/profile' })
     @ApiBearerAuth()
     @RespondItem()
-    profile(req: Request) {
-        return this.authService.getProfile(req.user!.id);
+    profile(req: ProtectedRequest) {
+        return this.authService.getProfile(req.user.id);
     }
 
     @Route({ method: HTTPMethods.Post, path: '/login' })
-    @ApiMetadata({
-        description: 'Login using email and password',
-        summary: 'User Login',
-    })
-    @ApiBody({
-        contentType: 'application/json',
-        schema: LoginDto,
-    })
+    @ApiBody({ schema: LoginDto })
+    @ApiResponse({ schema: Tokens })
     @RespondItem()
     @Log()
     @Throttle<ApiAuthController, 'login'>((req) => `login:throttle_${req.ip}`, {
@@ -118,13 +112,14 @@ export class ApiAuthController extends APIBaseController {
 
     @Route({ method: HTTPMethods.Post, path: '/logout' })
     @RespondDeleted()
-    @ApiBody({
-        contentType: 'application/json',
-        schema: RefreshTokenDto,
-    })
-    logout(req: TypedBody<RefreshTokenDto>) {
-        if (req.body.refreshToken) {
-            this.authService.logout(req.body).catch(console.log);
+    @ApiBody({ schema: RefreshTokenDto })
+    async logout(req: TypedBody<RefreshTokenDto>) {
+        try {
+            if (req.body.refreshToken) {
+                await this.authService.logout(req.body);
+            }
+        } catch (error: any) {
+            this.logger.error(error);
         }
     }
 
@@ -133,10 +128,7 @@ export class ApiAuthController extends APIBaseController {
         path: '/refresh',
         validators: [RefreshTokenValidator],
     })
-    @ApiBody({
-        contentType: 'application/json',
-        schema: RefreshTokenDto,
-    })
+    @ApiBody({ schema: RefreshTokenDto })
     @RespondItem()
     async refresh(req: TypedBody<RefreshTokenDto>) {
         return this.authService.getAccessTokenFromRefreshToken(req.body);
@@ -148,10 +140,7 @@ export class ApiAuthController extends APIBaseController {
         validators: [ForgotPasswordValidator],
     })
     @RespondOK('Check your email to reset your password')
-    @ApiBody({
-        contentType: 'application/json',
-        schema: ForgotPasswordDto,
-    })
+    @ApiBody({ schema: ForgotPasswordDto })
     forgotPassword(req: TypedBody<ForgotPasswordDto>) {
         return this.authService.forgotPassword(req.body);
     }
@@ -169,12 +158,9 @@ export class ApiAuthController extends APIBaseController {
         path: '/social-login',
         validators: [SocialLoginValidator],
     })
-    @ApiBody({
-        contentType: 'application/json',
-        schema: SocialLoginDto,
-    })
+    @ApiBody({ schema: SocialLoginDto })
     @RespondItem()
-    socailLogin(req: TypedBody<SocialLoginDto>) {
+    socialLogin(req: TypedBody<SocialLoginDto>) {
         return this.authService.socialLogin(req.body);
     }
 }

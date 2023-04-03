@@ -12,16 +12,12 @@ import {
 } from 'shared/exceptions';
 import { AuthService } from './auth.service';
 import { CommonConfigs } from '@api/configs';
+import { Tokens } from '@api/schemas';
 
 interface IVerifiedToken {
     _id: string;
     sub: string;
     jti: string;
-}
-
-export interface ITokens {
-    accessToken: string;
-    refreshToken: string;
 }
 
 @Service()
@@ -32,7 +28,7 @@ export class TokenService extends BaseService<TokenEntity> {
     @Inject(() => AuthService)
     private readonly authService: AuthService;
 
-    async signTokens(user: ApiUserEntity): Promise<ITokens> {
+    async signTokens(user: ApiUserEntity): Promise<Tokens> {
         const payload = { _id: user._id };
         const accessToken = jwt.sign(payload, CommonConfigs.Jwt.AccessSecret, {
             expiresIn: CommonConfigs.Jwt.AccessExpiresIn,
@@ -64,9 +60,7 @@ export class TokenService extends BaseService<TokenEntity> {
         return this.repository.save(token);
     }
 
-    async refresh(
-        refreshToken: string
-    ): Promise<Omit<ITokens, 'refreshToken'>> {
+    async refresh(refreshToken: string): Promise<Omit<Tokens, 'refreshToken'>> {
         const { token, user } = await this.decode(refreshToken);
         return this.sign(user, token);
     }
@@ -74,7 +68,7 @@ export class TokenService extends BaseService<TokenEntity> {
     sign(
         user: ApiUserEntity,
         token?: TokenEntity
-    ): Omit<ITokens, 'refreshToken'> {
+    ): Omit<Tokens, 'refreshToken'> {
         const signOptions: SignOptions = {
             subject: user._id,
         };

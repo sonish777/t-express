@@ -25,6 +25,7 @@ export class AppLocalsProvider
         });
 
         app.locals.log = (...args: any[]) => {
+            // eslint-disable-next-line no-console
             console.log(...args);
         };
 

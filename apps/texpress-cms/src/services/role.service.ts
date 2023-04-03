@@ -3,7 +3,7 @@ import { HttpException } from 'core/exceptions';
 import { BaseService } from 'core/services';
 import { RoleEntity } from 'shared/entities';
 import { CreateRole } from 'shared/dtos';
-import { Inject, Service } from 'typedi';
+import { Service } from 'typedi';
 import { DeepPartial, Repository } from 'typeorm';
 import { PermissionService } from './permission.service';
 import { DTO, Sanitize } from 'core/utils';

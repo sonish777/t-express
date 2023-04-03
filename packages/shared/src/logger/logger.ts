@@ -14,7 +14,7 @@ const winstonLoggerFormats = [
 export class Logger {
     static configure(
         configs: LoggerConfig[] = [],
-        options?: { dirname?: string }
+        options?: { dirname?: string; consoleOnly?: boolean }
     ) {
         const transports: winston.transport[] = [];
         if (process.env.NODE_ENV !== 'production') {

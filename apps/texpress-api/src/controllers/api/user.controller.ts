@@ -5,7 +5,6 @@ import {
     APIBaseController,
     APIProtectedRoute,
     TypedQuery,
-    Route,
 } from 'core/controllers';
 import { HTTPMethods, HttpStatus } from 'core/utils';
 import { ApiUserService } from '@api/services';
@@ -13,13 +12,7 @@ import { ApiUserEntity } from 'shared/entities';
 import { HttpException, CatchAsync } from 'core/exceptions';
 import { CommonSearchQueryDto, CreateUserDto } from 'shared/dtos';
 import { CreateUserValidator } from 'shared/validators';
-import {
-    ApiBearerAuth,
-    ApiBody,
-    ApiMetadata,
-    ApiParameter,
-    ApiTag,
-} from 'core/swagger';
+import { ApiBearerAuth, ApiBody, ApiParameter, ApiTag } from 'core/swagger';
 
 @ApiController('/users')
 @ApiTag('Users')

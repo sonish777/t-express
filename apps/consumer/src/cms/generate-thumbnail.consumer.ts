@@ -47,8 +47,8 @@ export class ThumbnailGenerator extends Consumer {
                                 thumbnailName
                             )
                         )
-                        .then((result) => console.log(result))
-                        .catch(console.log);
+                        // .then((result) => this.logger.log('Thumbnail Generated', result))
+                        .catch(this.logger.error);
 
                     const user = await this.userRepository.findOne({
                         where: {

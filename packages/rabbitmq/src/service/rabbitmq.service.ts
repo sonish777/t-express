@@ -1,5 +1,6 @@
 import amqp, { Channel, Connection } from 'amqplib';
 import config, { IConfig } from 'config';
+import { ConsoleLogger } from 'shared/logger';
 import Container from 'typedi';
 
 const rabbitmqConfig = config.get<IConfig>('rabbitmq');
@@ -8,6 +9,7 @@ export class RabbitMQClient {
     private static _instance: RabbitMQClient;
     private _connection: Connection;
     private _channel: Channel;
+    private readonly logger = Container.get(ConsoleLogger);
 
     public get connection(): Connection {
         return this._connection;
@@ -29,7 +31,7 @@ export class RabbitMQClient {
     private static async init(instance: RabbitMQClient) {
         instance._connection = await amqp.connect(rabbitmqConfig.get('url'));
         instance._channel = await instance._connection.createChannel();
-        console.log('Queue connection established');
+        instance.logger.log('Queue connection established');
     }
 }
 

@@ -1,7 +1,6 @@
 import {
     check,
     Meta,
-    Schema,
     ValidationChain,
     CustomValidator as ExpressCustomValidator,
 } from 'express-validator';

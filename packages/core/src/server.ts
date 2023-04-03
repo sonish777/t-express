@@ -13,13 +13,16 @@ import dotenv from 'dotenv';
 import { MultipartConfigs, MultipartFields, uploader } from 'shared/configs';
 import multer from 'multer';
 import { UnprocessableEntityException } from 'shared/exceptions';
+import { ConsoleLogger } from 'shared/logger';
 
 dotenv.config({ path: __dirname + '../../../.env' });
 
 export class Server {
     private readonly _app: Express;
+    private readonly logger: ConsoleLogger;
 
     constructor(private readonly controllers?: { [key: string]: Class }) {
+        this.logger = Container.get(ConsoleLogger);
         this._app = express();
     }
 
@@ -185,7 +188,7 @@ export class Server {
         this.registerRoutes(options.routePrefixes);
         this.registerErrorHandlers(options.exceptionHandlers);
         return this._app.listen(port, () => {
-            console.log(
+            this.logger.log(
                 `${options.name || 'Server'} listening on port ${port}`
             );
         });

@@ -4,7 +4,6 @@ import { BaseService } from 'core/services';
 import { PermissionEntity } from 'shared/entities';
 import { Service } from 'typedi';
 import { DeepPartial, In, Repository } from 'typeorm';
-import { RoleService } from './role.service';
 
 export interface ModulePermissions {
     module: string;

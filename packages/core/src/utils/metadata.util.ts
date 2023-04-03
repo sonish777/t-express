@@ -28,4 +28,7 @@ export enum SwaggerMetadataKeys {
     SCHEMA_PROPERTIES = 'schema_properties',
     API_METADATA = 'api_metadata',
     API_TAG = 'api_tag',
+    API_BEARER_AUTH = 'api_bearer_auth',
+    API_KEY_AUTH = 'api_key_auth',
+    API_RESPONSE = 'api_response',
 }

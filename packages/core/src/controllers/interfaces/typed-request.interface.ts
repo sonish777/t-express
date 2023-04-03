@@ -1,5 +1,5 @@
-import { UserEntity } from 'shared/entities';
+import { Request } from 'express';
 
-export interface TypedRequest extends Request {
-    user: UserEntity;
+export interface ProtectedRequest extends Request {
+    user: NonNullable<Request['user']>;
 }

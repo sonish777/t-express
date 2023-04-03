@@ -32,6 +32,7 @@ export class TwoFAService {
         (userId) => `user:${userId}_temp_2FA_secret`,
         300
     )
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async generate2FASecret(_userId: number) {
         return speakeasy.generateSecret();
     }
@@ -45,7 +46,10 @@ export class TwoFAService {
         if (!secret) {
             throw new BadRequestException('Token expired');
         }
-        return QRCode.toDataURL(secret.otpauth_url!);
+        if (!secret.otpauth_url) {
+            throw new BadRequestException('Invalid QR Code');
+        }
+        return QRCode.toDataURL(secret.otpauth_url);
     }
 
     async verifyTwoFaToken(

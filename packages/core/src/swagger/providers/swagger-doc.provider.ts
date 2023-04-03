@@ -11,6 +11,7 @@ import {
     SecuritySchemeTypes,
     SwaggerPathSpec,
     SwaggerSpec,
+    ResponseSpec,
 } from 'core/swagger';
 
 export interface SwaggerDocProviderProps {
@@ -87,7 +88,7 @@ export class SwaggerDocProvider
                 ) || {};
 
             const apiKeyAuthRoot: boolean = Reflect.getMetadata(
-                'ApiKeyAuth',
+                SwaggerMetadataKeys.API_KEY_AUTH,
                 controllerClass
             );
             swaggerSchemaDefinitions = {
@@ -96,15 +97,21 @@ export class SwaggerDocProvider
             };
             routers.forEach((router) => {
                 const apiBearerAuth: boolean = Reflect.getMetadata(
-                    'ApiBearerAuth',
+                    SwaggerMetadataKeys.API_BEARER_AUTH,
                     controllerClass,
                     router.handlerName
                 );
                 const apiKeyAuth: boolean = Reflect.getMetadata(
-                    'ApiKeyAuth',
+                    SwaggerMetadataKeys.API_KEY_AUTH,
                     controllerClass,
                     router.handlerName
                 );
+                const responseSpec: ResponseSpec = {
+                    '200': {
+                        description: 'Success',
+                        content: { 'application/json': {} },
+                    },
+                };
                 const securitySchemesForRoute: Record<string, []>[] = [];
                 if (apiBearerAuth) {
                     securitySchemesForRoute.push({ BearerAuth: [] });
@@ -124,12 +131,11 @@ export class SwaggerDocProvider
                     ...(swaggerPaths[`${basePath}${swaggerPath}`] || {}),
                     [router.method.toLowerCase()]: {
                         ...(swaggerSpec[router.handlerName] ?? {}),
-                        responses: {
-                            '200': {
-                                description: 'Success',
-                                content: { 'application/json': {} },
-                            },
-                        },
+                        ...(swaggerSpec[router.handlerName]?.responses
+                            ? {}
+                            : {
+                                  responses: responseSpec,
+                              }),
                         ...(apiTag
                             ? {
                                   tags: [apiTag],

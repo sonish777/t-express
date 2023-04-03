@@ -1,9 +1,12 @@
 import 'reflect-metadata';
 import { RabbitMQClient, InjectRMQ } from '../service';
+import Container from 'typedi';
+import { ConsoleLogger } from 'shared/logger';
 
 export class Consumer {
     public queues: { name: string; handler: Function }[] = [];
     @InjectRMQ() private client: RabbitMQClient;
+    protected readonly logger = Container.get(ConsoleLogger);
 
     async configure() {
         if (this.client instanceof Promise) {
@@ -15,7 +18,7 @@ export class Consumer {
                 noAck: true,
             });
         }
-        console.log(
+        this.logger.log(
             'configured queues for',
             this.queues.map((q) => q.name)
         );

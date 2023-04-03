@@ -108,9 +108,11 @@ export class AuthService extends BaseService<UserEntity> {
                   ]
                 : false
     )
-    async generate2FASecretAndQRCode(user: Partial<UserEntity>) {
+    async generate2FASecretAndQRCode(
+        user: Partial<UserEntity> & { id: number }
+    ) {
         const twoSecret = await this.twoFAService.generate2FASecretAndQRCode(
-            user.id!
+            user.id
         );
         return {
             user,
@@ -118,10 +120,13 @@ export class AuthService extends BaseService<UserEntity> {
         };
     }
 
-    async verifyTwoFaToken(user: Partial<UserEntity>, token: string) {
+    async verifyTwoFaToken(
+        user: Partial<UserEntity> & { id: number },
+        token: string
+    ) {
         const { isValid, base32SecretKey } =
             await this.twoFAService.verifyTwoFaToken(
-                user.id!,
+                user.id,
                 token,
                 user.twoFASecret
             );

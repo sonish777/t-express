@@ -1,10 +1,13 @@
 /* eslint-disable no-console */
 import { createClient, RedisClientType } from 'redis';
 import { RedisConfig } from 'shared/configs';
+import { ConsoleLogger } from 'shared/logger';
+import Container from 'typedi';
 
 class RedisConnection {
     public readonly client: RedisClientType;
     private static _instance: RedisConnection;
+    private readonly logger: ConsoleLogger = Container.get(ConsoleLogger);
 
     private constructor(public readonly ttl: number) {
         this.client = createClient({
@@ -16,9 +19,11 @@ class RedisConnection {
         this.client
             .connect()
             .then(() =>
-                console.log('Redis connection established successfully')
+                this.logger.log('Redis connection established successfully')
             )
-            .catch((error) => console.log('Error connecting to Redis', error));
+            .catch((error) =>
+                this.logger.error('Error connecting to Redis', error)
+            );
     }
 
     public static get instance() {

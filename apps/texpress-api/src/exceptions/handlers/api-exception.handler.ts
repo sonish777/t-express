@@ -13,6 +13,7 @@ export class ApiExceptionHandler extends ExceptionHandler {
         error: HttpException,
         req: Request,
         res: Response,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _next: NextFunction
     ): Response<APIErrorPayload | APIValidationErrorPayload> {
         if (!req.headers.accept || req.headers.accept !== 'application/json') {

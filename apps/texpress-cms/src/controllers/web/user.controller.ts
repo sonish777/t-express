@@ -3,7 +3,7 @@ import {
     Controller,
     CanAccess,
     ProtectedRoute,
-    TypedBody,
+    ProtectedTypedBody,
 } from 'core/controllers';
 import { ResourceControllerFactory } from 'core/controllers';
 import { AdminActivityLogEntity, UserEntity } from 'shared/entities';
@@ -69,8 +69,8 @@ export class UserController extends ResourceControllerFactory<
             fileSize: 2000000,
         },
     })
-    async add(req: TypedBody<CreateUserDto>, res: Response) {
-        await this.service.createUser(req.body, req.files, req.user!.id);
+    async add(req: ProtectedTypedBody<CreateUserDto>, res: Response) {
+        await this.service.createUser(req.body, req.files, req.user.id);
         req.flash('message:toast', 'User created successfully');
         return res.redirect('back');
     }
@@ -98,9 +98,12 @@ export class UserController extends ResourceControllerFactory<
         validators: [ResetPasswordValidator],
     })
     @CatchAsync
-    async changePassword(req: TypedBody<ResetPasswordDto>, res: Response) {
+    async changePassword(
+        req: ProtectedTypedBody<ResetPasswordDto>,
+        res: Response
+    ) {
         const _id = req.params.id;
-        await this.service.changePassword(_id, req.body, req.user!.id);
+        await this.service.changePassword(_id, req.body, req.user.id);
         req.flash('message:toast', 'Password changed successfully');
         return res.redirect('back');
     }
@@ -126,7 +129,10 @@ export class UserController extends ResourceControllerFactory<
     }
 
     @CatchAsync
-    async update(req: TypedBody<UpdateUserDto>, res: Response): Promise<void> {
+    async update(
+        req: ProtectedTypedBody<UpdateUserDto>,
+        res: Response
+    ): Promise<void> {
         const id = req.params.id;
         const updatedUser = await this.service.updateUser(Number(id), req.body);
         this.publisher.publish<Partial<AdminActivityLogEntity>>(
@@ -136,7 +142,7 @@ export class UserController extends ResourceControllerFactory<
                 module: 'Admins',
                 action: 'Update',
                 description: `Updated the details of admin @ ${updatedUser.email}`,
-                userId: req.user!.id,
+                userId: req.user.id,
                 activityTimestamp: new Date(),
             }
         );
@@ -146,7 +152,10 @@ export class UserController extends ResourceControllerFactory<
 
     @ProtectedRoute({ method: HTTPMethods.Put, path: '/:id/toggle-status' })
     @CatchAsync
-    async toggleStatus(req: TypedBody<{ status: string }>, res: Response) {
+    async toggleStatus(
+        req: ProtectedTypedBody<{ status: string }>,
+        res: Response
+    ) {
         const id = req.params.id;
         const updatedUser = await this.service.update(Number(id), req.body);
         this.publisher.publish<Partial<AdminActivityLogEntity>>(
@@ -156,7 +165,7 @@ export class UserController extends ResourceControllerFactory<
                 module: 'Admins',
                 action: 'Toggle Admin Status',
                 description: `Change account status to ${req.body.status} of admin @ ${updatedUser.email}`,
-                userId: req.user!.id,
+                userId: req.user.id,
                 activityTimestamp: new Date(),
             }
         );

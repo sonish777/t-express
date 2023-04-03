@@ -1,10 +1,6 @@
 import { SwaggerMetadataKeys } from 'core/utils';
-import {
-    ApiBodyProps,
-    RequestBodySpec,
-    SchemaDefinitionSpec,
-    SwaggerSpec,
-} from '../interfaces';
+import { ApiBodyProps, RequestBodySpec, SwaggerSpec } from '../interfaces';
+import { passSchemaRefsToController } from '../utils';
 
 export function ApiBody(props: ApiBodyProps): MethodDecorator {
     return (target, propertyKey) => {
@@ -43,29 +39,7 @@ export function ApiBody(props: ApiBodyProps): MethodDecorator {
         );
 
         if (schema) {
-            const schemaDefinition: SchemaDefinitionSpec =
-                Reflect.getMetadata(
-                    SwaggerMetadataKeys.SCHEMA_DEFINITION,
-                    schema
-                ) || {};
-            const schemaDefinitionsInController: SchemaDefinitionSpec =
-                Reflect.getMetadata(
-                    SwaggerMetadataKeys.SCHEMA_DEFINITION,
-                    target.constructor
-                ) || {};
-            if (
-                schemaDefinition &&
-                !schemaDefinitionsInController[schema.name]
-            ) {
-                schemaDefinitionsInController[schema.name] = {
-                    ...schemaDefinition[schema.name],
-                };
-            }
-            Reflect.defineMetadata(
-                SwaggerMetadataKeys.SCHEMA_DEFINITION,
-                schemaDefinitionsInController,
-                target.constructor
-            );
+            passSchemaRefsToController(target, schema);
         }
     };
 }

@@ -14,8 +14,28 @@ export interface RequestBodySpec {
         [contentType: string]: {
             schema: {
                 $ref: string;
+                [props: string]: any;
             };
         };
+    };
+    [props: string]: any;
+}
+
+export interface ResponseSpec {
+    [code: string]: {
+        description: string;
+        content: {
+            [contentType: string]: {
+                schema?: {
+                    type?: string;
+                    format?: string;
+                    properties?: Record<string, any>;
+                    $ref?: string;
+                    [props: string]: any;
+                };
+            };
+        };
+        [props: string]: any;
     };
 }
 

@@ -92,7 +92,7 @@ export function ResourceControllerFactory<
                     module: _.capitalize(this._module),
                     action: 'Create',
                     description: `Created a new ${this._module}`,
-                    userId: req.user!.id,
+                    userId: (req.user as NonNullable<typeof req.user>).id,
                     activityTimestamp: new Date(),
                 }
             );
@@ -143,7 +143,7 @@ export function ResourceControllerFactory<
                     module: _.capitalize(this._module),
                     action: 'Update',
                     description: `Updated the details of ${this._module} @id:${updated.id}`,
-                    userId: req.user!.id,
+                    userId: (req.user as NonNullable<typeof req.user>).id,
                     activityTimestamp: new Date(),
                 }
             );
@@ -169,7 +169,7 @@ export function ResourceControllerFactory<
                     module: _.capitalize(this._module),
                     action: 'Delete',
                     description: `Deleted a ${this._module} @id:${id}`,
-                    userId: req.user!.id,
+                    userId: (req.user as NonNullable<typeof req.user>).id,
                     activityTimestamp: new Date(),
                 }
             );
