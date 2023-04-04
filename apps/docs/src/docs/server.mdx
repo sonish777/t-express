@@ -1,0 +1,72 @@
+---
+name: Server
+menu: Docs
+route: /server
+---
+
+# Server
+
+Every application starts with a server imported from the `core` package.
+
+## Server Initialization
+
+Create a new Server instance by passing a controllers parameter. controllers refers to the set of controllers that handle incoming requests and responses.
+
+```javascript
+
+const server = new Server(controllers);
+
+
+```
+
+## Server Startup
+
+The server is then started by calling the startup method of the Server instance. It takes two parameters: the port on which the server will run and an object with additional configuration options.
+
+### Configuration Options
+- `name`  
+The name option sets the name of the server, which is useful for logging and debugging purposes.
+
+- `middlewares`  
+The middlewares option is an array of middleware functions that will be used by the server. In this case, middlewares includes the methodOverride middleware.
+
+- `middlewareProviders`  
+The middlewareProviders option is an array of middleware providers. Middleware providers are used to add more advanced middleware to the server, such as CORS or Passport authentication.
+  > Middleware Providers are middlewares too, but the ones that require some extra configuration.
+
+- `exceptionHandlers`  
+The exceptionHandlers option is an array of exception handlers that will be used by the server. In this case, exceptionHandlers includes ApiExceptionHandler, which handles API exceptions and returns appropriate HTTP responses.
+  > Exception Handlers are classes that extends `ExceptionHandler` from core package. 
+
+- `routePrefixes`  
+The routePrefixes option is used to set prefixes to cms or api routes.
+
+- `locals`  
+The locals option is an array of values that are forwared to the `locals` variable of `Express.Response`.
+
+```javascript
+
+server.startup(Number(ServerConfig.PORT), {
+    name: 'Server Name',
+    middlewares: [methodOverride('_')],
+    middlewareProviders: [
+        CORSProvider,
+        PassportProvider,
+        provideMiddleware<StaticServeProviderOptions>(StaticServeProvider, {
+            pathToStaticContents: path.join(__dirname, '../public'),
+            prefix: 'static',
+        }),
+    ],
+    locals: [
+        { error: (req) => req.flash('error') }, // available in res.locals.error
+        { message: (req) => req.flash('message') },
+        { url: (req) => req.url },
+        { query: (req) => req.query },
+    ],
+    exceptionHandlers: [new ApiExceptionHandler()],
+    routePrefixes: {
+        cmsPrefix: 'cms'
+    }
+});
+
+```
