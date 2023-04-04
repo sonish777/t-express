@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "docz:dev": "cross-env NODE_OPTIONS=--openssl-legacy-provider docz dev --config doczrc.js",
-        "docz:build": "cross-env NODE_OPTIONS=--openssl-legacy-provider docz build",
+        "docz:build": "rimraf .docz && cross-env NODE_OPTIONS=--openssl-legacy-provider docz build",
         "docz:serve": "docz build && docz serve"
     },
     "dependencies": {
