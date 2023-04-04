@@ -1,37 +1,37 @@
-import React from 'react'
-import t from 'prop-types'
+import React from 'react';
+import t from 'prop-types';
 
 const kinds = {
-  info: '#5352ED',
-  positive: '#2ED573',
-  negative: '#FF4757',
-  warning: '#FFA502',
-}
+    info: '#5352ED',
+    positive: '#2ED573',
+    negative: '#FF4757',
+    warning: '#FFA502',
+};
 
 export const Alert = ({ children, kind, ...rest }) => (
-  <div
-    style={{
-      padding: 20,
-      background: 'white',
-      borderRadius: 8,
-      color: 'white',
-      background: kinds[kind],
-      opacity: 0.6,
-      marginBottom: '16px'
-    }}
-    {...rest}
-  >
-    {children}
-  </div>
-)
+    <div
+        style={{
+            padding: 20,
+            background: 'white',
+            borderRadius: 8,
+            color: 'white',
+            background: kinds[kind],
+            opacity: 0.6,
+            marginBottom: '16px',
+        }}
+        {...rest}
+    >
+        {children}
+    </div>
+);
 
 Alert.propTypes = {
-  /**
-   * The kind prop is used to set the alert's background color
-   */
-  kind: t.oneOf(['info', 'positive', 'negative', 'warning']),
-}
+    /**
+     * The kind prop is used to set the alert's background color
+     */
+    kind: t.oneOf(['info', 'positive', 'negative', 'warning']),
+};
 
 Alert.defaultProps = {
-  kind: 'info',
-}
+    kind: 'info',
+};

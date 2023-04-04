@@ -12,7 +12,6 @@ Middlewares are basically Express middlewares. Middleware Providers on the other
 
 Middleware providers are created as classes implementing the ProviderStaticMethod interface that enforces a static `register` method that takes `Express.App` as the first argument and an optional second argument that can be used to configure the middleware as needed.
 
-
 ### Example
 
 ```javascript
@@ -37,6 +36,7 @@ class CORSProvider implements ProviderStaticMethod<typeof CORSProvider> {
 ```
 
 In above above example, `CORSProvider` is a middleware provider for applying the `cors` middleware. The first argument is the Express.Application. The second argument is an array of string URLs that needs to be whitelisted for allowing CORS.
+
 > Passing `<typeof CORSProvider>` is needed to enforce overriding of the static `register` method.
 
 ## Applying Middleware Providers
@@ -46,15 +46,12 @@ Middleware providers are registered during the server startup process. There are
 1. Middleware Providers that **do not** require the second configuration argument
 
 ```javascript
-
 server.startup({
-    middlewareProviders: [
-        PassportProvider
-    ]
+    middlewareProviders: [PassportProvider],
 });
-
 ```
-> The `register` method in `PassportProvider` doesn't require the second configuration argument. 
+
+> The `register` method in `PassportProvider` doesn't require the second configuration argument.
 
 2. Middleware Providers that **require** the second configuration argument. For this, use the `provideMiddleware` function from the core package.
 
