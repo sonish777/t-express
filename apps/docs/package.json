@@ -4,9 +4,7 @@
     "scripts": {
         "docz:dev": "cross-env NODE_OPTIONS=--openssl-legacy-provider docz dev --config doczrc.js",
         "docz:build": "cross-env NODE_OPTIONS=--openssl-legacy-provider docz build",
-        "docz:serve": "docz build && docz serve",
-        "predeploy": "docz build",
-        "deploy": "gh-pages -d .docz/public"
+        "docz:serve": "docz build && docz serve"
     },
     "dependencies": {
         "@emotion/core": "10.1.1",

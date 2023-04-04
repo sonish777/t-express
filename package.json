@@ -29,7 +29,9 @@
         "seeder:run": "npm run typeorm migration:run -- -d ./packages/shared/src/data-sources/seeder.data-source.ts",
         "migration:rollback": "npm run typeorm migration:revert -- -d ./packages/shared/src/data-sources/migration.data-source.ts",
         "seeder:rollback": "npm run typeorm migration:revert -- -d ./packages/shared/src/data-sources/seeder.data-source.ts",
-        "test:e2e:api": "cross-env NODE_ENV=test jest --config ./test/api/e2e/jest-e2e.json --runInBand --detectOpenHandles --verbose --forceExit"
+        "test:e2e:api": "cross-env NODE_ENV=test jest --config ./test/api/e2e/jest-e2e.json --runInBand --detectOpenHandles --verbose --forceExit",
+        "predeploy": "turbo run docz:build --filter=docs",
+        "deploy": "gh-pages -d apps/docs/.docz/public"
     },
     "repository": {
         "type": "git",
@@ -40,7 +42,7 @@
     "bugs": {
         "url": "https://github.com/sonish777/t-express/issues"
     },
-    "homepage": "https://github.com/sonish777/t-express#readme",
+    "homepage": "https://sonish777.github.io/t-express",
     "dependencies": {
         "@types/config": "^3.3.0",
         "amqplib": "^0.10.3",

@@ -1,6 +1,6 @@
 {
     "pipeline": {
-        "dev": {
+        "docz:build": {
             "cache": false,
             "persistent": true
         },
