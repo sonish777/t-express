@@ -5,3 +5,4 @@ export * from './role.controller';
 export * from './api-user.controller';
 export * from './email-template.controller';
 export * from './cms-configs.controller';
+export * from './permission.controller';

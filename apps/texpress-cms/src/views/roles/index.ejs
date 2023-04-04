@@ -13,13 +13,6 @@
                     New Role
                 </a>
                 <% } %>
-                <% if(hasPermission(locals.user, 'roles:sync_permissions')) { %>
-                    <form action="/roles/sync-permissions" method="post">
-                        <button type="submit" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center mx-1">
-                            Sync Permissions
-                        </button>
-                    </form>
-                <% } %>
             </div>
         </div>
     </div>

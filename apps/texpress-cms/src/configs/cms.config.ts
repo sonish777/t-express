@@ -137,12 +137,6 @@ export const CMSModulesConfig: CMSModuleConfig = {
                 method: HTTPMethods.Delete,
                 route: '/roles/:id',
             },
-            {
-                name: 'Sync Permissions',
-                value: 'roles:sync_permissions',
-                method: HTTPMethods.Post,
-                route: '/roles/sync-permissions',
-            },
         ],
     },
     'api-users': {
@@ -233,16 +227,28 @@ export const CMSModulesConfig: CMSModuleConfig = {
                 value: 'permissions:view',
             },
             {
-                name: 'View Permissions',
+                name: 'Edit Permission',
                 method: HTTPMethods.Put,
                 route: '/permissions/:id',
                 value: 'permissions:edit',
             },
             {
-                name: 'View Permissions',
+                name: 'Edit Permission View',
+                method: HTTPMethods.Get,
+                route: '/permissions/:id',
+                value: 'permissions:edit',
+            },
+            {
+                name: 'Delete Permission',
                 method: HTTPMethods.Delete,
                 route: '/permissions/:id',
                 value: 'permissions:delete',
+            },
+            {
+                name: 'Sync Permissions',
+                value: 'permissions:sync_permissions',
+                method: HTTPMethods.Post,
+                route: '/roles/sync-permissions',
             },
         ],
     },

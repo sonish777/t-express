@@ -120,6 +120,7 @@ export class AuthController extends BaseController {
     }
 
     @ProtectedRoute({ method: HTTPMethods.Post, path: '/twofa/verify' })
+    @SkipTwoFA
     @CatchAsync
     async verifyTwoFA(
         req: ProtectedTypedBody<{ token: string }>,
