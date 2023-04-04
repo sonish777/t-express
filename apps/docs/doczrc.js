@@ -8,4 +8,5 @@ export default {
         },
     ],
     title: 'Texpress',
+    base: '/t-express',
 };
