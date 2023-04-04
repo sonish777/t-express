@@ -85,7 +85,7 @@
         "swagger-jsdoc": "^6.2.8",
         "swagger-ui-express": "^4.6.2",
         "typedi": "^0.10.0",
-        "typeorm": "^0.3.11",
+        "typeorm": "0.3.10",
         "uuid": "^9.0.0",
         "winston": "^3.8.2"
     },
