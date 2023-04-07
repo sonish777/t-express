@@ -1,0 +1,29 @@
+{
+    "name": "texpress-cms",
+    "version": "0.0.1",
+    "main": "src/index.ts",
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node dist/index.js",
+        "clean": "rimraf dist .turbo",
+        "build:tsc": "npx tsc",
+        "build": "babel src --root-mode upward --out-dir dist --extensions \".ts,.tsx\" --copy-files",
+        "build:dev": "babel src --root-mode upward --out-dir dist --extensions \".ts,.tsx\" --source-maps inline --watch --copy-files",
+        "dev": "rimraf ./dist/ && cross-env NODE_ENV=development concurrently \"npm run build:dev\" \"wait-on ./dist/index.js && nodemon\"",
+        "dev:tsc": "concurrently \"npx tsc --watch\" \"nodemon dist/index.js\"",
+        "prettier:check": "prettier --check .",
+        "prettier:write": "prettier --write .",
+        "lint": "eslint ./src",
+        "watch:js": "node esbuild.config.js --watch",
+        "build:js": "node esbuild.config.js"
+    },
+    "dependencies": {
+        "core": "*",
+        "shared": "*",
+        "rabbitmq": "*"
+    },
+    "devDependencies": {
+        "tsconfig": "*"
+    }
+}

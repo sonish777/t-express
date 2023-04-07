@@ -1,0 +1,9 @@
+<% if(exists(locals.error)) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span class="fas fa-bullhorn me-1"></span>
+        <%= locals.error %>
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } else if(exists(locals.errorToast)) { %>
+    <span class="d-none" id="error_toast_message"><%= locals.errorToast %></span>
+<% } %>

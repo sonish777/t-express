@@ -1,11 +1,17 @@
 node_modules
 dist
 .env
-**/config/*.ts
-!**/config/*.example.ts
+logs
+**/config/*.json
+!**/config/*.example.json
 
-/public/**
-!public/theme
-!public/theme/**
-!public/backend
-!public/backend/**
+**/public/**
+!**/public/theme
+!**/blic/theme/**
+!**/public/backend
+!**/public/backend/**
+!**/public/uploads
+!**/public/uploads/logo
+!**/public/uploads/logo/logo.png
+
+.turbo

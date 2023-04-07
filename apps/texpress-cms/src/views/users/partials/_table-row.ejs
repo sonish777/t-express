@@ -1,0 +1,43 @@
+<!-- Item -->
+<tr>
+    <td>
+        <a href="#" class="fw-bold"><%= sn %></a>
+    </td>
+    <td>
+        <span class="fw-bold"><%= get(user?.firstName) + ' ' + get(user?.lastName) %></span>
+    </td>
+    <td><span class="fw-bold"><%= get(user?.mobileNumber, "N/A") %></span></td>
+    <td><span class="fw-bold"><%= get(user?.email, "N/A") %></span></td>
+    <td><span class="fw-bold badge bg-info"><%= get(user?.role?.[0]?.name, "N/A") %></span></td>
+    <td>
+        <% if(hasPermission(loggedInUser, 'users:edit') && get(user?.email) !== loggedInUser.email) { %>
+            <form action="/users/<%= get(user?.id) %>/toggle-status?_method=PUT" method="post">
+                <input type="hidden" name="status" value="<%= get(user?.status) === 'active' ? 'inactive' : 'active' %>">
+                <button type="submit" class="btn btn-link badge bg-<%= get(user?.status) === "active" ? "success": "danger" %>"><%= get(user?.status?.toUpperCase()) %></button></td>
+            </form>
+        <% } else { %>
+            <span class="badge bg-<%= get(user?.status) === "active" ? "success": "danger" %>"><%= get(user?.status?.toUpperCase()) %></span></td>
+        <% } %>
+    <td>
+        <div class="btn-group">
+            <div class=" py-0">
+                <% if(hasPermission(loggedInUser, 'users:edit')) { %>
+                    <a class="btn btn-sm btn-primary rounded" href="/users/<%= get(user?.id) %>">Edit</a>
+                    <a class="btn btn-sm btn-secondary rounded" href="/users/<%= get(user?._id) %>/change-password">Change Password</a>
+                <% } %>
+                <% if(hasPermission(loggedInUser, 'users:delete') && get(user?.role?.[0]?.slug) !== 'super-admin') { %>
+                    <%- include('../../common/delete-modal', {
+                            modalId: `deleteAdmin_${get(user?.id)}`,
+                            title: 'Delete Admin',
+                            body: 'Are you sure you want to delete this admin?',
+                            deleteActionUrl: `/users/${user?.id}`,
+                            buttonText: 'Yes'
+                    }) %>
+                    <button class="btn btn-sm btn-danger rounded" data-bs-toggle="modal" data-bs-target="#deleteAdmin_<%= get(user?.id) %>">
+                        <%= exists(locals.buttonText) ? locals.buttonText: 'Delete' %>
+                    </button>
+                <% } %>
+            </div>
+        </div>
+    </td>
+</tr>

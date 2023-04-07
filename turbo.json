@@ -1,0 +1,25 @@
+{
+    "pipeline": {
+        "docz:dev": {
+            "cache": false,
+            "persistent": true
+        },
+        "dev": {
+            "cache": false,
+            "persistent": true
+        },
+        "docz:deploy": { "cache": false },
+        "docz:build": { "cache": true },
+        "build": {
+            "dependsOn": ["^build"],
+            "outputs": ["dist/**"]
+        },
+        "watch:js": { "cache": false },
+        "build:js": { "cache": true },
+        "lint": { "cache": true },
+        "lint:fix": { "cache": true },
+        "clean": { "cache": false },
+        "build:tsc": { "cache": false, "outputs": ["dist/**"] },
+        "start": { "cache": false, "dependsOn": ["build"] }
+    }
+}

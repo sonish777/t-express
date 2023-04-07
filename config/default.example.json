@@ -1,12 +1,56 @@
 {
-  "server": {
-    "port": 8000
-  },
-  "database": {
-    "host": "localhost",
-    "port": 5432,
-    "username": "postgres",
-    "password": "test",
-    "database_name": "texpress"
-  }
+    "server": {
+        "cms:host": "http://localhost",
+        "api:host": "http://localhost",
+        "cms:port": 8000,
+        "api:port": 8001
+    },
+    "database": {
+        "host": "localhost",
+        "port": 5432,
+        "username": "postgres",
+        "password": "test",
+        "database_name": "texpress"
+    },
+    "jwt": {
+        "access:secret": "t3X:pR3Ss",
+        "access:expiresIn": 900,
+        "refresh:secret": "sS3Rq:X3t",
+        "refresh:expiresIn": "2 days"
+    },
+    "socialLogin": {
+        "facebook": "https://graph.facebook.com/me?fields=id,name,email,picture,first_name,last_name,short_name",
+        "google": "https://www.googleapis.com/oauth2/v3/userinfo?access_token=",
+        "apple": "https://appleid.apple.com/auth/keys.json"
+    },
+    "otp": {
+        "nextOtpWaitTime": 600000
+    },
+    "mail": {
+        "host": "",
+        "port": 587,
+        "username": "",
+        "password": "",
+        "secure": false,
+        "from": "admin@texpress.com"
+    },
+    "redis": {
+        "host": "localhost",
+        "port": 6379,
+        "username": "",
+        "password": "",
+        "ttl": 1800
+    },
+    "throttle": {
+        "attempts": 5,
+        "windowDuration": 10,
+        "blockDuration": 10
+    },
+    "rabbitmq": {
+        "url": "amqp://localhost"
+    },
+    "queue:exchanges": {
+        "cms": "cms",
+        "api": "api"
+    }
 }

@@ -1,0 +1,50 @@
+<div class="card card-body border-0 shadow mb-4">
+    <h2 class="h5 mb-4">Create a new email template</h2>
+    <form method="post" action="/email-templates/<%= locals.data.id %>?_method=PUT">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <%- include('../common/input-field', { 
+                    label: 'Subject', 
+                    name: 'subject', 
+                    value: getEditFormData(locals.data, "subject", locals.inputData) ?? "", 
+                    placeholder: "Enter email subject",
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'subject')
+                }) %>
+            </div>
+            <div class="col-md-6 mb-3">
+                <%- include('../common/input-field', { 
+                    label: 'Code', 
+                    name: 'code', 
+                    value: getEditFormData(locals.data, "code", locals.inputData) ?? "", 
+                    placeholder: "Email code",
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'code')
+                }) %>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <textarea class="form-control" name="content" id="editor" cols="30" rows="10">
+                    <%= getEditFormData(locals.data, "content", locals.inputData) ?? "" %>
+                </textarea>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save all</button>
+        </div>
+    </form>
+</div>
+<script>
+    ClassicEditor
+            .create(document.querySelector('#editor'), {
+                htmlEmbed: {
+                    showPreviews: true
+                },
+            })
+            .then( editor => {
+                    console.log( editor );
+            } )
+            .catch( error => {
+                    console.error( error );
+            } );
+</script>

@@ -1,0 +1,9 @@
+<% if(exists(locals.message)) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <span class="fas fa-bullhorn me-1"></span>
+        <%= get(locals.message) %>
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } else if(exists(locals.messageToast)) { %>
+    <span id="success_toast_message" class="message d-none"><%= get(locals.messageToast) %></span>
+<% } %>

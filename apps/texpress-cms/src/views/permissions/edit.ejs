@@ -1,0 +1,48 @@
+<div class="card card-body border-0 shadow mb-4">
+    <h2 class="h5 mb-4">Edit permission</h2>
+    <form method="post" action="/permissions/<%= get(locals.data?.id) %>?_method=PUT">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <%- include('../common/input-field', { 
+                    label: 'Permission Name', 
+                    name: 'name', 
+                    value: getEditFormData(locals.data, "name", locals.inputData) ?? "", 
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'name')
+                }) %>
+            </div>
+            <div class="col-md-6 mb-3">
+                <%- include('../common/input-field', { 
+                    label: 'Permission Action', 
+                    name: 'action', 
+                    value: getEditFormData(locals.data, "action", locals.inputData) ?? "", 
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'action')
+                }) %>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <%- include('../common/input-field', { 
+                    label: 'Permission Route', 
+                    name: 'route', 
+                    value: getEditFormData(locals.data, "route", locals.inputData) ?? "", 
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'route')
+                }) %>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="method">Permission Method</label>
+                <select class="form-select mb-0 <%= getErrorMessage(locals.mappedErrors, 'method') ? "is-invalid": "" %>" id="method" name="method" required>
+                    <option>Methods</option>
+                    <% ['get', 'post', 'put', 'delete'].forEach(method => { %>
+                        <option 
+                            value="<%= method %>" 
+                            <%= getEditFormData(locals.data, "method", locals.inputData) === method ? 'selected': ''%> ><%= method.toUpperCase() %></option>
+                    <% }) %>
+                </select>
+                <%- include('../common/invalid-feedback', {errorMessage: getErrorMessage(locals.mappedErrors, 'method')}) %>
+            </div>
+        </div>
+        <div class="mt-3">
+            <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Update</button>
+        </div>
+    </form>
+</div>

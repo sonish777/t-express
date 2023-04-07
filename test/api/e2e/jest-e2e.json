@@ -1,0 +1,16 @@
+{
+    "moduleFileExtensions": ["js", "json", "ts"],
+    "rootDir": "../../../apps/texpress-api/test",
+    "testEnvironment": "node",
+    "testRegex": ".e2e-spec.ts$",
+    "transform": {
+        "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "modulePaths": ["."],
+    "moduleNameMapper": {
+        "^shared(|/.*)$": "<rootDir>/../../../packages/shared/src/$1",
+        "^core(|/.*)$": "<rootDir>/../../../packages/core/src/$1",
+        "^@api(|/.*)$": "<rootDir>/../../../apps/texpress-api/src/$1",
+        "^@cms(|/.*)$": "<rootDir>/../../../apps/texpress-cms/src/$1"
+    }
+}

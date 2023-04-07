@@ -1,0 +1,80 @@
+<div class="card card-body border-0 shadow mb-4">
+    <h2 class="h5 mb-4">Edit role</h2>
+    <form method="post" action="/roles/<%= get(locals.data?.role?.id) %>?_method=PUT">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <%- include('../common/input-field', { 
+                    label: 'Name', 
+                    name: 'name', 
+                    placeholder: "Name",
+                    value: getEditFormData(locals.data?.role, "name", locals.inputData) ?? "", 
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'name'),
+                    options: ["required"]
+                }) %>
+            </div>
+            <div class="col-md-6 mb-3">
+                <%- include('../common/input-field', { 
+                    label: 'Slug', 
+                    name: 'slug:display', 
+                    placeholder: "Slug",
+                    value: getEditFormData(locals.data?.role, "slug", locals.inputData) ?? "", 
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'slug'),
+                    options: ["disabled"]
+                }) %>
+                <%- include('../common/input-field', {
+                    type: 'hidden',
+                    label: '', 
+                    name: 'slug', 
+                    placeholder: "",
+                    value: getEditFormData(locals.data?.role, "slug", locals.inputData) ?? ""
+                }) %>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label><b>Permissions</b></label>
+                <%- include('../common/invalid-feedback.ejs', {
+                    errorMessage: getErrorMessage(locals.mappedErrors, 'permissions')
+                }) %>
+                <% exists(locals.data?.permissions) && locals.data.permissions.forEach(permission => { %>
+                    <div class="mb-3">
+                        <span class="h6 font-weight-bold"><%= capitalize(permission.module) %></span>
+                    </div>
+                    <% permission.permissions.forEach(p => { %>
+                        <% if(p.action) { %>
+                        <%- include('./partials/_permission-switch.ejs', {
+                                name: p.name, 
+                                id: p.id,
+                                action: p.action,
+                                module: permission.module,
+                                method: p.method,
+                                options: [
+                                    getEditFormData(locals.data?.role, "permissions", locals.inputData)
+                                    ?.map(p => Number(p))
+                                    .indexOf((p.id)) >= 0 
+                                        ? 'checked'
+                                        : ''
+                                ]
+                            }) %>
+                        <% } %>
+                    <% }) %>
+                <% }) %>
+            </div>
+        </div>
+        <div class="mt-3">
+            <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save all</button>
+        </div>
+    </form>
+</div>
+<script>
+    const nameEl = document.querySelector('input[name="name"]');
+    const slugEl =  document.querySelector('input[name="slug"]');
+    const slugDisplayEl =  document.querySelector('input[name="slug:display"]');
+    if(nameEl) {
+        nameEl.addEventListener('keyup', function (e) {
+            const nameValue = e.target.value;
+            const slug = nameValue.toLowerCase().trim().split(" ").join("-");
+            slugDisplayEl.value = slugEl.value = slug;
+        })
+    }
+</script>

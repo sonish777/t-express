@@ -1,0 +1,37 @@
+<div class="modal d-block" id="modal-subscribe" tabindex="-1" role="dialog" aria-labelledby="modal-subscribe" aria-hidden="true">
+<div class="modal-dialog modal-tertiary modal-dialog-centered modal-lg" role="document">
+<div class="modal-content bg-dark text-white">
+    <div class="modal-body text-center py-3">
+        <span class="modal-icon">
+            <svg class="icon icon-xl text-gray-200 mb-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M2.94 6.412A2 2 0 002 8.108V16a2 2 0 002 2h12a2 2 0 002-2V8.108a2 2 0 00-.94-1.696l-6-3.75a2 2 0 00-2.12 0l-6 3.75zm2.615 2.423a1 1 0 10-1.11 1.664l5 3.333a1 1 0 001.11 0l5-3.333a1 1 0 00-1.11-1.664L10 11.798 5.555 8.835z" clip-rule="evenodd"></path></svg>
+        </span>
+        <h3 class="modal-title mb-3">Two Factor Authentication</h3>
+        <p class="mb-4 lead">
+            <% if (!get(locals.data?.twoFASetupCompleted)) { %>
+                A two-step verification mail have been sent to your email, please scan the QR Code in the mail to get your verification code in order to continue.
+            <% } else { %>
+                Open the two-step verification app on your device to get your verification code.
+            <% } %>
+        </p>
+        <div class="form-group px-lg-5">
+            <form action="/auth/twofa/verify" method="post">
+                <div class="d-flex mb-3 justify-content-center">
+                    <input 
+                        type="text" class="me-sm-1 mb-sm-0 form-control form-control-lg" 
+                        placeholder="XXXXXX" maxlength="6" name="token"
+                    />
+                    <div>
+                        <button type="submit" class="ms-2 btn large-form-btn btn-secondary">Authenticate</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer z-2 mx-auto text-center">
+        <a class="btn btn-danger" href="/auth/logout">
+            Logout
+        </a>
+    </div>
+</div>
+</div>
+</div>
