@@ -28,9 +28,9 @@ class CreateRoleValidator
 @Controller('/roles')
 class RoleController {
 
-    @Route({ 
-        path: '/', 
-        method: HttpMethods.Post, 
+    @Route({
+        path: '/',
+        method: HttpMethods.Post,
         validators: [CreateRoleValidator] // Pass validators here
     })
     create() {
@@ -51,26 +51,27 @@ ValidationBuilder from core package can be used to easily define validation rule
 To define rules for a field, start chaining the methods followed by the `ForField()` staic method. After chaining the methods, chain the `build()` method at the end to build the validation chain.
 
 ```javascript
-
 class CreateRoleValidator
     implements ValidatorWithStaticProps<typeof CreateRoleValidator>
 {
     static get rules(): Record<string, ValidationChain> {
         return {
-            name: ValidationBuilder.ForField('name').Required().MinCharacters(5).build()
+            name: ValidationBuilder.ForField('name')
+                .Required()
+                .MinCharacters(5)
+                .build(),
         };
     }
 }
-
 ```
 
-Each validation rule takes an optional `ValidationOptions` argument that has a 'fieldDisplayName' and 'message' optional properties.  
+Each validation rule takes an optional `ValidationOptions` argument that has a 'fieldDisplayName' and 'message' optional properties.
 
-- fieldDisplayName  
-`fieldDisplayName` is used to replace the field's name in the validation message.
+-   fieldDisplayName  
+    `fieldDisplayName` is used to replace the field's name in the validation message.
 
-- message__
-`message` is used to pass a custom validation message.
+-   message\_\_
+    `message` is used to pass a custom validation message.
 
 ```javascript
 
@@ -95,20 +96,19 @@ class CreateRoleValidator
 
 ```
 
-In above example, the name field uses a custom validation message:   `Name is required`  . In case of slug, the validation is formed by replacing the `fieldDisplayName` in the generic required message. Generic required messages are validation message constants exported from the core package.
+In above example, the name field uses a custom validation message: `Name is required` . In case of slug, the validation is formed by replacing the `fieldDisplayName` in the generic required message. Generic required messages are validation message constants exported from the core package.
 
 ```javascript
-
 ValidationMessages = {
     required: '%field% is a required field',
     // other validation messages
-}
-
+};
 ```
- These validation messages will be as follows:
 
-- For name field: **Name is required.**
-- For slug field: **Slugged Text is a required field.**
+These validation messages will be as follows:
+
+-   For name field: **Name is required.**
+-   For slug field: **Slugged Text is a required field.**
 
 ## Creating Custom Validators
 
@@ -130,21 +130,18 @@ class UniqueValidator implements CustomValidator {
 To apply the custom validator, simply use the `Custom` method from the ValidationBuilder interface.
 
 ```javascript
-
 class CreateRoleValidator
     implements ValidatorWithStaticProps<typeof CreateRoleValidator>
 {
     static get rules(): Record<string, ValidationChain> {
         return {
-        slug: ValidationBuilder
-                    .ForField('slug')
-                    .Custom(UniqueValidator) // Pass the custom validator here
-                    .build(),
+            slug: ValidationBuilder.ForField('slug')
+                .Custom(UniqueValidator) // Pass the custom validator here
+                .build(),
             // ...other validation rules
         };
     }
 }
-
 ```
 
 ## Using express-validator
@@ -152,7 +149,6 @@ class CreateRoleValidator
 If for some reason, you wish to stick to using express-validator, simply chain the validation rules from express-validator in the same way we did with the `ValidationBuilder`.
 
 ```javascript
-
 import { check } from 'express-validator';
 
 class CreateRoleValidator
@@ -165,5 +161,4 @@ class CreateRoleValidator
         };
     }
 }
-
 ```

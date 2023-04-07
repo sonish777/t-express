@@ -18,7 +18,6 @@ Custom Exceptions can be created by extending the HttpException class from `core
 ### Creating a custom exception
 
 ```javascript
-
 class UnauthorizedException extends HttpException {
     constructor(message = 'You are not authorized') {
         super(
@@ -29,7 +28,6 @@ class UnauthorizedException extends HttpException {
         );
     }
 }
-
 ```
 
 The given example creates an Unauthorized exception. The isOperational flag is set to true, meaning, the error message 'You are not authorized' will be passed along to the response. For errors with isOperational flag set to false, a default error message of 'Something went wrong' could be passed or an error HTML page could be rendered.
@@ -62,7 +60,6 @@ class UnauthorizedExceptionHandler extends ExceptionHandler {
 ### Regitering the handler
 
 ```javascript
-
 server.startup(Number(ServerConfig.PORT), {
     name: 'CMS Server',
     // ... other configurations
@@ -70,8 +67,8 @@ server.startup(Number(ServerConfig.PORT), {
         new UnauthorizedExceptionHandler(),
         new UnprocessableEntityExceptionHandler(),
         new GlobalExceptionHandler(), // GlobalExceptionHandler should be kept at the end of the list;
-    ]
+    ],
 });
-
 ```
+
 In above example, three exception handlers have been registered. Note how `new GlobalExceptionHandler()` is kept at the end of the list. Since errors are passed from one handler to the next, if none of the handlers contain the logic to handle the current exception, it is handled by the `GlobalExceptionHandler`.

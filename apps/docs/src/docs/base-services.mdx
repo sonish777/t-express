@@ -9,19 +9,21 @@ route: /base-services
 The BaseService class is an abstract class that serves as a base for creating services for different resources. It provides a set of common CRUD methods that can be used for interacting with the resource's data. The class is a generic class, and it takes a type parameter K that extends the BaseEntity class. This allows the class to work with any entity that extends the BaseEntity class.
 
 ## Properties
-- repository: A protected abstract property that must be implemented in derived classes. It represents the repository for the resource.
-- filterColumns: A protected readonly property that is an array of column names that can be used for filtering data. This property can be overridden in derived classes.
-- resource: A protected readonly property that represents the name of the resource. This property can be overridden in derived classes.
+
+-   repository: A protected abstract property that must be implemented in derived classes. It represents the repository for the resource.
+-   filterColumns: A protected readonly property that is an array of column names that can be used for filtering data. This property can be overridden in derived classes.
+-   resource: A protected readonly property that represents the name of the resource. This property can be overridden in derived classes.
 
 ## Methods
-- findAll(): This method returns a promise that resolves to an array of all the entities of type K in the repository.
-- findOrFail(): This method takes a where argument and an optional relations argument. It returns a promise that resolves to an entity of type K that matches the where argument. If no entity is found, a NotFoundException is thrown.
-- findOne(): This method takes a where argument and an optional relations argument. It returns a promise that resolves to an entity of type K that matches the where argument.
-- create(): This method takes a payload argument of type `DeepPartial<K>`. It creates a new entity of type K using the create method of the repository and saves it to the database.
-- update(): This method takes an id argument of type number and a payload argument of type `DeepPartial<K>`. It retrieves the entity with the given id  and saves updates to the database.
-- delete(): This method takes an id argument of type number. It deletes the enitity matching the id from the database.
-- paginate(): This method takes an optional query argument of type CommonSearchQuery and an optional relations argument of type string[]. It paginates the entities of type K in the repository based on the query argument and returns a PaginationResponse object that contains the paginated data and metadata.
-- serialize(): Serializes the given model to the specified serializeToClass. The method returns the serialized instance of the given class.
+
+-   findAll(): This method returns a promise that resolves to an array of all the entities of type K in the repository.
+-   findOrFail(): This method takes a where argument and an optional relations argument. It returns a promise that resolves to an entity of type K that matches the where argument. If no entity is found, a NotFoundException is thrown.
+-   findOne(): This method takes a where argument and an optional relations argument. It returns a promise that resolves to an entity of type K that matches the where argument.
+-   create(): This method takes a payload argument of type `DeepPartial<K>`. It creates a new entity of type K using the create method of the repository and saves it to the database.
+-   update(): This method takes an id argument of type number and a payload argument of type `DeepPartial<K>`. It retrieves the entity with the given id and saves updates to the database.
+-   delete(): This method takes an id argument of type number. It deletes the enitity matching the id from the database.
+-   paginate(): This method takes an optional query argument of type CommonSearchQuery and an optional relations argument of type string[]. It paginates the entities of type K in the repository based on the query argument and returns a PaginationResponse object that contains the paginated data and metadata.
+-   serialize(): Serializes the given model to the specified serializeToClass. The method returns the serialized instance of the given class.
 
 ## Using the BaseService
 

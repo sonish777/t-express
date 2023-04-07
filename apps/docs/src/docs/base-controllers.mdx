@@ -6,22 +6,22 @@ route: /base-controllers
 
 # Base Controllers
 
-Texpress comes with built-in abstract base controllers that already consists of some common methods needed for a route handler. There are two base controllers that can be extended, a `BaseController` and an `ApiBaseController`. 
+Texpress comes with built-in abstract base controllers that already consists of some common methods needed for a route handler. There are two base controllers that can be extended, a `BaseController` and an `ApiBaseController`.
 
 ## BaseController
 
 This base controller is to be extended for CMS controllers. It consists of properties and methods that could be shared for all kinds of cms controllers.
 
-- Properties:
+-   Properties:
 
-  - baseView: The name of the base layout view.
-  - viewPath: The name of the directory that contains the view for the current resource.
-  - title: The title of the page being rendered.
-  - page: The name of the current page view.
+    -   baseView: The name of the base layout view.
+    -   viewPath: The name of the directory that contains the view for the current resource.
+    -   title: The title of the page being rendered.
+    -   page: The name of the current page view.
 
-- Methods
-  - setBreadcrumbs(): This method is used to set the breadcrumb for the current page. A breadcrumb object has two properties, `url` and `name`.
-  - render(): This method is used to render the view. The first argument is the res object of Express, and the second argument is n Object that needs to be passed to the response.
+-   Methods
+    -   setBreadcrumbs(): This method is used to set the breadcrumb for the current page. A breadcrumb object has two properties, `url` and `name`.
+    -   render(): This method is used to render the view. The first argument is the res object of Express, and the second argument is n Object that needs to be passed to the response.
 
 ```javascript
 
@@ -47,29 +47,28 @@ export class AuthController extends BaseController {
 ```
 
 In above example, AuthController extends the BaseController and sets the common properties for it as required. For the `/login` route, the view is rendered from the path combined from `views_directory/_viewPath/page`.
+
 > Renders view from **views/auth/login.ejs**
 
 ## ApiBaseController
+
 Similar to BaseController but for APIs. This base controller consists of methods that can be shared between the different controllers for APIs. It includes the following methods:
 
-- ok(): Sends an 200 Ok response.
-- created(): Sends a 201 Created response.
-- deleted(): Sends a 204 No Content response.
-- send(): Sends a payload with 200 Ok response.
-- paginate(): Sends a paginated payload with 200 Ok response.
+-   ok(): Sends an 200 Ok response.
+-   created(): Sends a 201 Created response.
+-   deleted(): Sends a 204 No Content response.
+-   send(): Sends a payload with 200 Ok response.
+-   paginate(): Sends a paginated payload with 200 Ok response.
 
 ```javascript
-
 @ApiController('/users')
 export class ApiUserController extends APIBaseController {
-    
     @Route({ method: HTTPMethods.Get, path: '/:id' })
     findUserByEmail(req: Request, res: Response) {
         const data = getUserByEmail('test@test.com'); //get user
         return this.send(res, data);
     }
 }
-
 ```
-Above example uses the `send()` method from the base controller to send the user entity as a response with 200 status.
 
+Above example uses the `send()` method from the base controller to send the user entity as a response with 200 status.

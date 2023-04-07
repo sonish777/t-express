@@ -1,4 +1,4 @@
 {
-    "./apps/**/*.{ts,js,json,*rc}": ["npm run prettier:write"],
-    "./packages/**/*.{ts,js,json,*rc}": ["npm run prettier:write"]
+    "./apps/**/*.{ts,js,json,mdx,*rc}": ["npm run prettier:write"],
+    "./packages/**/*.{ts,js,json,mdx,*rc}": ["npm run prettier:write"]
 }

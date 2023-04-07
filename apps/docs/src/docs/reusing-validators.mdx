@@ -10,7 +10,6 @@ Once a `Validator` has been created, you can use the `customize()` utility metho
 To customize a Validator, pass the Validator you wish to customize to the customize() utility method that returns a customizer. You can then use this customizer to remove some rules, replace rules for existing fields, or make some of the fields optional.
 
 ```javascript
-
 class CreateUserValidator
     implements ValidatorWithStaticProps<typeof CreateUserValidator>
 {
@@ -37,20 +36,14 @@ class CreateUserValidator
         };
     }
 }
-
 ```
 
 Now lets customize above `CreateUserValidator` to be used for a forgot password action which only requires the `email` field.
 
 ```javascript
-
 const forgotPasswordValidatorCustomizer = customize(CreateUserValidator);
-forgotPasswordValidatorCustomizer.removeRules([
-    'name',
-    'password',
-]);
+forgotPasswordValidatorCustomizer.removeRules(['name', 'password']);
 export const ForgotPassword = forgotPasswordValidatorCustomizer.done();
-
 ```
 
 Similar to this, you may also make some fields optional by using the `makeOptional` method or replace rules for some field by using the `replace` method.

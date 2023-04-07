@@ -40,17 +40,14 @@ Texpress comes with built in decorators that helps you manage your repositories 
 When creating the repository, use `@SetRepository()` decorator on your entity class. The decorator takes the typeorm data source as the first argument. This data source is the database connection instance exported by your database connection file.
 
 ```javascript
-
 @Entity({ name: 'users' })
 @SetRepository(postgresConnection)
 class UserEntity {
-
     @Column()
     id: number;
-
 }
-
 ```
+
 #### Injecting a Repository
 
 To inject a repository, use `@GetRepository()` decorator on the class property. This decorator retrieves the repository instance for the specified entity and injects it into the class property. The decorator takes the Entity class for which the repository is to be injected as the first argument
@@ -70,5 +67,5 @@ class UserService {
 }
 
 ```
-Repositories are always injected outside of the constructor (unlike the contructor based injection used in typedi).
 
+Repositories are always injected outside of the constructor (unlike the contructor based injection used in typedi).
