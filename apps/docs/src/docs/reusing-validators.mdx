@@ -1,0 +1,75 @@
+---
+name: Reusing Validators
+menu: Docs
+route: /resusing-validators
+---
+
+# Reusing Validators
+
+Once a `Validator` has been created, you can use the `customize()` utility method to customize it and reuse it for validating different requests. The customize function is exported from the `core` package.  
+To customize a Validator, pass the Validator you wish to customize to the customize() utility method that returns a customizer. You can then use this customizer to remove some rules, replace rules for existing fields, or make some of the fields optional.
+
+```javascript
+
+class CreateUserValidator
+    implements ValidatorWithStaticProps<typeof CreateUserValidator>
+{
+    static get rules(): Record<string, ValidationChain> {
+        return {
+            name: ValidationBuilder.ForField('name')
+                .Required({ fieldDisplayName: 'Name' })
+                .MinCharacters(3, { fieldDisplayName: 'Name' })
+                .MaxCharacters(25, { fieldDisplayName: 'Name' })
+                .build(),
+            email: ValidationBuilder.ForField('email')
+                .Required({ fieldDisplayName: 'Email' })
+                .IsEmail({ fieldDisplayName: 'Email' })
+                .Custom(UniqueEmailValidator)
+                .build(),
+            password: ValidationBuilder.ForField('password')
+                .If(
+                    (_value: string, { req }: Meta) =>
+                        req.body.sendActivationLink !== 'on'
+                )
+                .MinCharacters(8, { fieldDisplayName: 'password' })
+                .MaxCharacters(20, { fieldDisplayName: 'password' })
+                .build(),
+        };
+    }
+}
+
+```
+
+Now lets customize above `CreateUserValidator` to be used for a forgot password action which only requires the `email` field.
+
+```javascript
+
+const forgotPasswordValidatorCustomizer = customize(CreateUserValidator);
+forgotPasswordValidatorCustomizer.removeRules([
+    'name',
+    'password',
+]);
+export const ForgotPassword = forgotPasswordValidatorCustomizer.done();
+
+```
+
+Similar to this, you may also make some fields optional by using the `makeOptional` method or replace rules for some field by using the `replace` method.
+
+```javascript
+// Making email field optional
+const validatorWithOptionalEmail = customize(CreateUserValidator);
+validatorWithOptionalEmail.makeOptional(['email'])
+export const ValidatorWithOptionalEmail = validatorWithOptionalEmail.done();
+
+// Replacing email field to remove the UniqueEmailValidator rule
+const validatorWithoutUniqueEmail = customize(CreateUserValidator);
+const validatorWithoutUniqueEmail.replace(
+    'email',
+    ValidationBuilder.ForField('email')
+        .Required({ fieldDisplayName: 'Email' })
+        .IsEmail({ fieldDisplayName: 'Email' })
+        .build()
+);
+export const ValidatorWithoutUniqueEmail = validatorWithoutUniqueEmail.done();
+
+```

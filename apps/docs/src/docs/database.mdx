@@ -1,0 +1,74 @@
+---
+name: Database Connections and Repositories
+menu: Docs
+route: /database
+---
+
+# Database Connections and Repositories
+
+Typedi uses `typeorm` as the ORM for interacting with the database. The database connection is a shared library located in the `shared` package since both API and CMS share a common database connection. By default, texpress comes with PostgreSQL database connection configured. You may change the configurations as desired.
+
+## Creating Database Connections
+
+To create database connections, create a class extending the `Database` abstract class from `core` package and set the conection property to the `DataSource` for the database dialect of your choice. Connection is initialized by calling the `init()` method.
+
+```javascript
+
+class PostgresConnection extends Database {
+    public connection: DataSource = new DataSource({
+        type: 'postgres',
+        // ...other database configurations
+    });
+
+    constructor() {
+        super();
+        this.init();
+    }
+}
+
+export const postgresDataSource = new PostgresConnection().connection;
+
+```
+
+## Repositories
+
+Repositories in typeorm provide a way to interact with a particular entity type in your database. A repository is responsible for creating, updating, deleting, and querying entities of a specific type.  
+Texpress comes with built in decorators that helps you manage your repositories and ensure that they are properly injected into the parts of your application where they are needed. These decorators include:
+
+#### Creating an Injectable Repository
+
+When creating the repository, use `@SetRepository()` decorator on your entity class. The decorator takes the typeorm data source as the first argument. This data source is the database connection instance exported by your database connection file.
+
+```javascript
+
+@Entity({ name: 'users' })
+@SetRepository(postgresConnection)
+class UserEntity {
+
+    @Column()
+    id: number;
+
+}
+
+```
+#### Injecting a Repository
+
+To inject a repository, use `@GetRepository()` decorator on the class property. This decorator retrieves the repository instance for the specified entity and injects it into the class property. The decorator takes the Entity class for which the repository is to be injected as the first argument
+
+```javascript
+
+class UserService {
+
+    @GetRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>;
+
+    constructor() {}
+
+    findAll() {
+        return this.userRepository.find();
+    }
+}
+
+```
+Repositories are always injected outside of the constructor (unlike the contructor based injection used in typedi).
+

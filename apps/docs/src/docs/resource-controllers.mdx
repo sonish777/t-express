@@ -1,0 +1,135 @@
+---
+name: Resource Controllers
+menu: Docs
+route: /resource-controllers
+---
+
+# Resource Controllers
+
+The resource controller is an extension of the CMS's `BaseController`. The ResourceController provides six additional methods to BaseController that supports basic CRUD operations for a resource. These methods are:
+
+## Resource CRUD Operations and their routes
+
+### index() 
+`Route: GET  /`  
+`View: index.ejs`  
+`Base Service Method: paginate()`  
+`Description: `Renders the `index.ejs` view file in the viewPath. Also fetches a paginated list of the current resource from the database and sends it with the response.
+
+### create()
+`Route: GET /create`  
+`View: create.ejs`  
+`Base Service Method: None`  
+`Description: `Renders the `create.ejs` view file in the viewPath for rendering the create form for the resource.
+
+### add()
+`Route: POST /`  
+`Base Service Method: create()`  
+`Description: `This handler handles a POST request and creates a new resource.
+
+### edit()
+`Route: GET /:id`  
+`View: edit.ejs`  
+`Base Service Method: findOne()`  
+`Description: `Renders the `edit.ejs` view file in the viewRoute for rendering the edit form for the resource. Also fetches the resource matching the current id (in request parameters) and sends it with the response.
+
+### update()
+`Route: PUT /:id`  
+`Base Service Method: update()`  
+`Description: `This handler handles a PUT request and updates the resource matching the current id (in request parameters) of the resouce.
+
+### delete()
+`Route: DELETE /:id`  
+`Base Service Method: delete()`  
+`Description: `This handler handles a DELTE request and deletes the resource matching the current id (in request paramteres)
+
+> NOTE: All the above routes are prefixed with the base path set on the Controller.
+
+## Creating Resource Controllers and Factory
+
+To extend the ResourceController, texpress provides a higer order factory function for generating resource controller for the given resource. The ResourceControllerFactory function generates a class definition for a controller that will handle CRUD operations for a given resource.
+The factory function takes an options object with the following properties:
+
+- resource: a string representing the name of the resource.
+- findRelations: an optional array of strings representing the relations to be included in the query results.
+- validators: an optional object with two properties: create and update, each containing an array of validators for their respective operations.
+
+ResourceControllerFactory also requires two generic type parameters that allows the ResourceController to be used with different types of resources and services, making it a versatile and reusable function.
+
+- The Model type parameter specifies the type of the entity model that the Service will operate on. 
+- The Service type parameter specifies the service that provides CRUD operations for the specified entity model. 
+
+By using generics, the ResourceControllerFactory can generate a ResourceController that works with any type of entity model and service, without requiring any modifications to the code.
+
+```javascript
+
+@Controller('/users')
+export class UserController extends ResourceControllerFactory<UserEntity, UserService>({
+    resource: 'users',
+    findRelations: ['role'],
+    validators: {
+        create: [CreateUserValidator],
+        update: [UpdateUserValidator],
+    },
+}) {
+    _title = 'Users';
+    _viewPath = 'users';
+
+    constructor(
+        public readonly service: UserService
+    ) {
+        super(service);
+    }
+}
+
+```
+
+With above example, an UserController is craeted with a set of CRUD routes that work out of the box.
+
+- `GET /users` (Renders `views/users/index.ejs`)
+- `GET /users/create` (Renders `views/users/index.create.ejs`)
+- `POST /users` (Creates the user resource in database)
+- `GET /users/:id` (Renders `views/users/index.create.ejs`)
+- `PUT /users/:id` (Updates the user resource matching the paramter `id`)
+- `DELETE /users/:id` (Deletes the user resource matching the paramter `id`)
+
+## Overriding Methods
+
+Sometimes, you may want to override some of the route handlers to add extra custom logic. To do this, simply override the respective method.
+
+```javascript
+
+@Controller('/users')
+@CanAccess
+export class UserController extends ResourceControllerFactory<
+    UserEntity,
+    UserService
+>({
+    resource: 'users',
+    findRelations: ['role'],
+    validators: {
+        create: [CreateUserValidator],
+        update: [UpdateUserValidator],
+    },
+}) {
+    _title = 'Users';
+    _viewPath = 'users';
+
+    constructor(
+        public readonly service: UserService,
+        public readonly publisher: Publisher
+    ) {
+        super(service, publisher);
+    }
+
+    // overriding the create method
+    async create(req: Request, res: Response) {
+        this.page = 'create';
+        // some custom extra logic
+        return this.render(res);
+    }
+}
+
+```
+
+Note that the @Route() decorator are not applied since they have already been configured in the ResourceController. You only need to override the handler as needed.

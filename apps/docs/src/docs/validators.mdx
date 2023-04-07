@@ -1,0 +1,169 @@
+---
+name: Validators
+menu: Docs
+route: /validators
+---
+
+# Validators
+
+Texpress uses express-validator to validate incoming requests. Validators are created by implementing the ValidatorWithStaticProps generic type, that takes the type of current ValidatorClass as the type argument. To add validation rules, define a `getter` for `static` property named `rules` in the class. The rules are basically Objects with name of the fields to validate as `keys` and express validation chain as `values`.
+
+## Creating a Validator
+
+```javascript
+
+class CreateRoleValidator
+    implements ValidatorWithStaticProps<typeof CreateRoleValidator>
+{
+    static get rules(): Record<string, ValidationChain> {
+        return {
+            name: // Some rules for name field
+            slug: // Some rules for slug field
+        };
+    }
+}
+
+/* Use these validators by passing these Validators in the validators array whilst registering routes */
+
+@Controller('/roles')
+class RoleController {
+
+    @Route({ 
+        path: '/', 
+        method: HttpMethods.Post, 
+        validators: [CreateRoleValidator] // Pass validators here
+    })
+    create() {
+
+    }
+
+}
+
+```
+
+## Defining Rules using ValidationBuilder
+
+ValidationBuilder from core package can be used to easily define validation rules. ValidationBuilder is a utility class that provides static methods to chain multiple validation rules. ValidationBuilder uses express-validator under the hood to construct the validation chain.  
+**Using ValidationBuilder gives you advantage of customizing and re-using already created Validators.**
+
+### Chaining Rules
+
+To define rules for a field, start chaining the methods followed by the `ForField()` staic method. After chaining the methods, chain the `build()` method at the end to build the validation chain.
+
+```javascript
+
+class CreateRoleValidator
+    implements ValidatorWithStaticProps<typeof CreateRoleValidator>
+{
+    static get rules(): Record<string, ValidationChain> {
+        return {
+            name: ValidationBuilder.ForField('name').Required().MinCharacters(5).build()
+        };
+    }
+}
+
+```
+
+Each validation rule takes an optional `ValidationOptions` argument that has a 'fieldDisplayName' and 'message' optional properties.  
+
+- fieldDisplayName  
+`fieldDisplayName` is used to replace the field's name in the validation message.
+
+- message__
+`message` is used to pass a custom validation message.
+
+```javascript
+
+class CreateRoleValidator
+    implements ValidatorWithStaticProps<typeof CreateRoleValidator>
+{
+    static get rules(): Record<string, ValidationChain> {
+        return {
+            name: ValidationBuilder
+                    .ForField('name')
+                    .Required({
+                        message: "Name is required"
+                    })
+                    .build()
+            slug: ValidationBuilder
+                    .ForField('slug')
+                    .Required({ fieldDisplayName: 'Slugged Text'})
+                    .build()
+        };
+    }
+}
+
+```
+
+In above example, the name field uses a custom validation message:   `Name is required`  . In case of slug, the validation is formed by replacing the `fieldDisplayName` in the generic required message. Generic required messages are validation message constants exported from the core package.
+
+```javascript
+
+ValidationMessages = {
+    required: '%field% is a required field',
+    // other validation messages
+}
+
+```
+ These validation messages will be as follows:
+
+- For name field: **Name is required.**
+- For slug field: **Slugged Text is a required field.**
+
+## Creating Custom Validators
+
+Custom validators can be created by implementing the CustomValidator interface imported from the core package. The CustomValidator interface requires a validate method to be implemented. The validate method takes two arguments: the value of the field the validation rule is applied to, and second `Meta` argument of the express-validator which contains the current request and path metadata.
+
+```javascript
+
+class UniqueValidator implements CustomValidator {
+    @GetRepository(UserEntity)
+    protected readonly repository: Repository<UserEntity>;
+
+    async validate(value: string, { req, path }: Meta) {
+        // use repository to check if email already exists in the db and throw error if exists.
+    }
+}
+
+```
+
+To apply the custom validator, simply use the `Custom` method from the ValidationBuilder interface.
+
+```javascript
+
+class CreateRoleValidator
+    implements ValidatorWithStaticProps<typeof CreateRoleValidator>
+{
+    static get rules(): Record<string, ValidationChain> {
+        return {
+        slug: ValidationBuilder
+                    .ForField('slug')
+                    .Custom(UniqueValidator) // Pass the custom validator here
+                    .build(),
+            // ...other validation rules
+        };
+    }
+}
+
+```
+
+## Using express-validator
+
+If for some reason, you wish to stick to using express-validator, simply chain the validation rules from express-validator in the same way we did with the `ValidationBuilder`.
+
+```javascript
+
+import { check } from 'express-validator';
+
+class CreateRoleValidator
+    implements ValidatorWithStaticProps<typeof CreateRoleValidator>
+{
+    static get rules(): Record<string, ValidationChain> {
+        return {
+            name: check('name').notEmpty().withMessage('Name is required'),
+            // ...other validation rules
+        };
+    }
+}
+
+```
