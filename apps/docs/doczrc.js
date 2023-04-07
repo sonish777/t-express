@@ -16,6 +16,8 @@ export default {
                 'Resource Controllers',
                 'Validators',
                 'Reusing Validators',
+                'Events',
+                'Event Emitter Decorator',
             ],
         },
     ],

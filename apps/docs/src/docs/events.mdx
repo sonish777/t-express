@@ -1,0 +1,66 @@
+---
+name: Events
+menu: Docs
+route: /events
+---
+
+# Events
+
+Texpress provides a BaseEvent class that extends the built-in EventEmitter class from the Node.js standard library. It provides a base implementation for creating custom event classes that can emit and handle events with strongly typed payloads.
+
+## Creating Event Types
+
+Before creating events, you need to define a type for the events it can emit and handle. This type should be a TypeScript interface with keys for each event name and values for an array of payload type of each event. For example:
+
+```javascript
+export interface MyEventTypes {
+    'event-a': [string, number];
+    'event-b': [{ foo: string }, boolean];
+}
+```
+
+This interface defines two events: 'event-a' and 'event-b'. The payload type for 'event-a' is a tuple with a string and a number, while the payload type for 'event-b' is an object with a foo property of type string and a boolean value.
+
+## Creating Event
+
+Next, you can create a class that extend the BaseEvent by passing your `EventTypes` as generic type. The BaseEvent class provides methods for emitting and handling these events. In the constructor, you only need to register the handlers for each of the event types.
+
+```javascript
+class MyEvent extends BaseEvent<MyEventTypes> {
+    eventAHandler(...payload: MyEventTypes['event-a']) {
+        // logic with Event A's payload which is
+        // payload[0] string
+        // payload[1] number
+    }
+
+    eventBHandler(...payload: MyEventTypes['event-b']) {
+        // logic with Event B's payload which is
+        // payload[0] {foo: string}
+        // payload[1] boolean
+    }
+
+    constructor() {
+        super();
+        this.on('event-a', this.eventAHandler);
+        this.on('event-b', this.eventBHandler);
+    }
+}
+```
+
+## Emitting Events
+
+Once the custom event has been created, you can use this class to emit events. For example,
+
+```javascript
+class MyService {
+    constructor(
+        myEvent: MyEvent // using typedi dependency injection to inject MyEvent instance
+    ) {}
+
+    doSomethingAndEmitEvent() {
+        // some logic goes here
+        this.myEvent.emit('event-a', 'some string', 15);
+        this.myEvent.emit('event-b', { foo: 'some val' }, false);
+    }
+}
+```
