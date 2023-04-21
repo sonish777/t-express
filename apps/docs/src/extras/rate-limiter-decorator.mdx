@@ -1,0 +1,57 @@
+---
+name: Rate Limiting with Decorators
+menu: Extras
+route: /rate-limiting-decorator
+---
+
+# Rate Limiting with Decorators
+
+Texpress also provides a `@Throttle` decorator for rate limiting. The `@Throttle` decorator provides a convenient way to apply rate limiting to specific methods or endpoints in an application, without having to manually call the RateLimiterService every time. Using the RateLimiterService directly may be more suitable in situations where more granular control over the rate limiting configuration is required. In most cases, the `Throttle` decorator should be sufficient.
+
+## Using the Rate Limiting Decorator
+
+The `@Throttle` decorator takes two arguments, the key to used for throtting the request as the first argument and an optional `RateLimiterOptions` argument. The `RateLimiterOptions` is an object that has 3 optional properties, attempts, windowDuration, and blockDuration. These values are the same as the ones used by the `RateLimiterService`.  
+These arguments, if not provided, will fallback to the default values set in the configuration JSON file.
+
+```typescript
+class AuthService {
+    @Throttle('login', {
+        attempts: 5,
+        windowDuration: 10,
+        blockDuration: 10,
+    })
+    async login(username: string, password: string) {
+        // Log in the user with the provided credentials
+    }
+}
+```
+
+In above example, if the login method is called more than `5 times` within the duration of `10 seconds`, the request will be blocked for `10 seconds` for any login attempts.
+
+## Generating Dynamic Rate Limiting Keys
+
+In some cases, you might need to limit the request rate based on dynamically generated keys. Keys can be generated dynamically using the arguments passed to the method, and applying your key generation logic with those data.  
+**To do this, pass a callback method as the first argument that takes the same argument list as the method.**
+
+### Example
+
+Consider a scenario where you need to rate limit the login route based on the request IP Address.
+
+```typescript
+@Controller('/auth')
+class AuthController {
+    @Route({ path: '/login', method: HTTPMethods.Post })
+    @Throttle<AuthController, 'login'>((req) => `login_ip:${req.ip}`, {
+        attempts: 2,
+        blockDuration: 20,
+    })
+    async login(req: Request) {
+        // Log in the user based on provided credentials
+    }
+}
+```
+
+In above example, the `login` route when accessed is rate limited based on the requested IP Address. The `@Throttle` decorator takes an key generation callback method as the first argument, that takes the same argument list as the method it is being applied to i.e. `login`. Therefore, both the callback key generation method, and the login method takes `req` as the first argument which is of type `Express.Request`.  
+If the requesting IP Address is 127.12.09.01 then the rate limiting key for this request will be `'login_ip:127.12.09.01'`.
+
+The `Type` argument in `@Throttle` decorator are passed the same way as they are passed in `@Cache` decorator. Please refer to [`Cache` Decorator](./cache-decorator#understanding-the-type-arguments-authservice-getuserbyid) if you want to understand how these type arguments are passed.

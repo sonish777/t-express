@@ -1,0 +1,38 @@
+---
+name: Rate Limiting
+menu: Extras
+route: /rate-limiting
+---
+
+# Rate Limiting
+
+Texpress provides a `RateLimiterService` utility class that can be used to limit the requests rate. It uses `Redis` under the hood. To use the service, call the `static` `getInstance` method on the class which takes 3 optional argments.
+
+-   attempts: The maximum number of requests that can be made in the given time window.
+-   windowDuration: The time window in which the maximum number of requests can be made.
+-   blockDuration: The duration for which to block the user after exceeding the maximum number of requests.
+
+These arguments, if not provided, will fallback to the default values set in the configuration JSON file.
+
+## Limiting the Requests
+
+To limit the requests, use the `consume()` method to consume the attempt points. Once the maximum allowed attempts are consumed, a `TOO_MANY_REQUESTS` HTTP Exception will be thrown. The `consume` method takes a single argument, the `key` under which the consumed points are registered in redis.
+
+## Creating and Using the Limiter
+
+```typescript
+class AuthService {
+    rateLimiterService: RateLimiterService;
+    constructor() {
+        // creates a limiter with maximum 5 attempts within 10 secods. And blocks for 10 secods if the maximum attemp is exceeded
+        this.rateLimiterService = RateLimiterService.getInstance(5, 10, 10);
+    }
+
+    async login(username: string, password: string) {
+        this.rateLimiterService.consume(username);
+        // Log in the user with the provided credentials
+    }
+}
+```
+
+In above example, if the login method is called more than `5 times` within the duration of `10 seconds` with the same `username`, the request will be blocked for `10 seconds` for any login attempts with that `username`.
