@@ -20,6 +20,17 @@ export default {
                 'Event Emitter Decorator',
             ],
         },
+        {
+            name: 'Extras',
+            menu: [
+                'Mail',
+                'Caching',
+                'Caching with Decorators',
+                'Rate Limiting',
+                'Rate Limiting with Decorators',
+                'Two Factor Authentication',
+            ],
+        },
     ],
     title: 'Texpress',
     base: '/t-express',
