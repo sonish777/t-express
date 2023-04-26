@@ -30,7 +30,7 @@ export class Server {
         return this._app;
     }
 
-    private applyMiddlewares(
+    protected applyMiddlewares(
         middlewares: any[] = [],
         providers: (Provider | ProviderWithOptions<Object>)[] = []
     ) {
@@ -50,7 +50,7 @@ export class Server {
         return this;
     }
 
-    private registerRoutes(routePrefixes: RoutePrefixes = {}) {
+    protected registerRoutes(routePrefixes: RoutePrefixes = {}) {
         if (!this.controllers) {
             return;
         }

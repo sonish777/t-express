@@ -1,22 +1,24 @@
-import { StartupOptions } from 'core/interfaces';
+import { Class, StartupOptions } from 'core/interfaces';
 import { Server } from 'core/server';
 import { ConsumersMetadataKeys } from 'core/utils';
 import { Consumer } from './consumer.base';
 
 export class ConsumerServer extends Server {
     constructor(
-        private readonly consumers?: {
-            [key: string]: new (...args: any) => Consumer;
+        private readonly options?: {
+            consumers?: { [key: string]: new (...args: any) => Consumer };
+            controllers?: { [key: string]: Class };
         }
     ) {
-        super();
+        super(options?.controllers);
     }
 
     subscribeConsumers() {
-        if (!this.consumers) {
+        const consumers = this.options?.consumers;
+        if (!consumers) {
             return;
         }
-        Object.values(this.consumers).forEach(async (consumer) => {
+        Object.values(consumers).forEach(async (consumer) => {
             const consumerInstance = await new consumer();
             const consumers =
                 Reflect.getMetadata(
@@ -29,7 +31,9 @@ export class ConsumerServer extends Server {
     }
 
     startupConsumer(port: number, options: StartupOptions = {}) {
+        this.registerRoutes();
         this.subscribeConsumers();
+        this.applyMiddlewares(options.middlewares, options.middlewareProviders);
         this.startup(port, options);
     }
 }

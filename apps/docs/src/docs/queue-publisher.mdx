@@ -1,0 +1,79 @@
+---
+name: Queue Publisher
+menu: Docs
+route: /queue-publisher
+---
+
+# Queue - Publisher
+
+The `Publisher` is responsible for registering queues, and publishing messages to those queues. For this, create an instance of the `Publisher` class imported from the `rabbitmq` package and use the following methods.
+
+## Registering Queues
+
+The `registerQueues()` method is responsible for registering queues with the exchange on the RabbitMQ server. The method takes 3 arguments, the name of the exchange to register the queue to, the routing keys for binding the queue to, and an optional options object that takes durableExchange and durableQueue properties. This method will create a queue for each routing key specified and bind it to the exchange.
+
+```typescript
+import { Publisher } from 'rabbitmq';
+
+class SomeController {
+    constructor(
+        // Inject an instance of Publisher
+        private readonly publisher: Publisher
+    ) {
+        this.publisher.registerQueues('CMS_EXCHANGE', [
+            'activity_log',
+            'generate_thumbnail',
+        ]);
+    }
+}
+```
+
+Above example registers two queues in the exchange `CMS_EXCHANGE` and binds them to the routing keys `activity_log` and `generate_thumbnail`.
+
+Sometimes, it is often desirable to register to queues on system startup. To do this, wrap your application bootstrap function with the `InjectPublisher` higher order function to get the publisher instance as the first argument.
+
+```typescript
+import { InjectPublisher, Publisher } from 'rabbitmq';
+// Get the publisher instance as the first argument
+function bootstrap(publisher: Publisher) {
+    const server = new Server(controllers);
+    publisher.registerQueues('CMS_EXCHANGE', [
+        'activity_log',
+        'generate_thumbnail',
+    ]);
+}
+
+InjectPublisher(bootstrap)();
+```
+
+## Publishing Messages to Queue
+
+The `publish()` method is responsible for sending a message to the queue. This method will take the exchange name, routing key, and message as parameters and publish the message to the appropriate queue. This method takes 3 arguments: the exchange name, the routing key to pass the message to, and the message itself.
+
+```typescript
+interface IActivityLogPayload {
+    activityTimestamp: Date;
+    description: string;
+}
+
+class MyService {
+    constructor(
+        // Inject the publisher instance
+        private readonly publisher: Publisher
+    ) {}
+
+    doSomethingAndPublishMessage() {
+        // do something...
+        this.publisher.publish<IActivityLogPayload>(
+            'CMS_EXCHANGE',
+            'activity_log',
+            {
+                activityTimestamp: new Date(),
+                description: `Someone did "something"`,
+            }
+        );
+    }
+}
+```
+
+Above example publishes a message to `'activity_queue'` routing key in the `'CMS_EXCHANGE'` exchange. The optional `type` argument `IActivityLogPayload` can be passed to add type safety to the message payload.

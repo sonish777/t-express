@@ -3,7 +3,9 @@
         "cms:host": "http://localhost",
         "api:host": "http://localhost",
         "cms:port": 8000,
-        "api:port": 8001
+        "api:port": 8001,
+        "consumer:host": "http://localhost",
+        "consumer:port": 9999
     },
     "database": {
         "host": "localhost",

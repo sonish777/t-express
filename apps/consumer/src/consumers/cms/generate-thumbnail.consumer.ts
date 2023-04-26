@@ -7,7 +7,7 @@ import { QueueConfig } from 'shared/configs';
 import { UserEntity } from 'shared/entities';
 import sharp from 'sharp';
 import { Repository } from 'typeorm';
-import { Log } from '../logger';
+import { Log } from '../../logger';
 
 export class ThumbnailGenerator extends Consumer {
     @GetRepository(UserEntity)

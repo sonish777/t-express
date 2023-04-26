@@ -1,0 +1,31 @@
+---
+name: Texpress API and Built-In APIs
+menu: Extras
+route: /api
+---
+
+# Texpress API and Built-In APIs
+
+Texpress API comes with some built-in RESTful APIs ready to be consumed by the web application or mobile application as you desire. The built-in APIs include complete users registration operations with OTP verifications.
+
+## Built-in APIs
+
+All of the following APIs are prefixed by the API prefix used during the API Server startup. If not provided, the default API prefix `/api/v1` will be used.
+
+-   `POST /auth/register`: Creates a new user and creates a new OTP code and sends the code to user's email address. Development environment uses a static OTP code of `000000`.
+
+-   `POST /auth/verify-otp`: Verify the OTP code sent in above API.
+
+-   `POST /auth/set-password`: Once the OTP code has been verified, consume this API to set the new password.
+
+-   `POST /auth/login`: Login the user and get the `accessToken` and `refreshToken` JWT tokens.
+
+-   `GET /auth/profile`: Get the profile of the currently logged in user.
+
+-   `POST /auth/refresh`: Refresh the user's expired access token using refresh token.
+
+-   `POST /auth/logout`: Logout the user.
+
+-   `POST /auth/forgot-password`: Request for a forgot password email. This process then follows the `verify-otp` and `set-password` APIs to reset the users's password.
+
+-   `POST /auth/social-login`: Login with other social accounts. Requires the consumer to send the appropriate tokens/access tokens for the selected social login account. Currently supports `Facebook`, `Google`, and `Apple` login.

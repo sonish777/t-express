@@ -3,7 +3,9 @@
         "cms:host": "http://localhost",
         "api:host": "http://localhost",
         "cms:port": 5000,
-        "api:port": 5001
+        "api:port": 5001,
+        "consumer:host": "http://localhost",
+        "consumer:port": 9999
     },
     "database": {
         "type": "postgres",

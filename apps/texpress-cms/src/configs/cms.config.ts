@@ -24,6 +24,7 @@ interface CMSModuleConfig {
     [moduleName: string]: Module;
 }
 
+// ******These are synced to the database either by seeding, or by syncing from within the CMS******
 export const CMSModulesConfig: CMSModuleConfig = {
     home: {
         name: 'Dashboard',

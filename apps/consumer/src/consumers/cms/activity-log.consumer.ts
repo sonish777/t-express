@@ -4,7 +4,7 @@ import { Consume, Consumer } from 'rabbitmq';
 import { QueueConfig } from 'shared/configs';
 import { AdminActivityLogEntity } from 'shared/entities';
 import { Repository } from 'typeorm';
-import { Log } from '../logger';
+import { Log } from '../../logger';
 
 export class ActivityLogConsumer extends Consumer {
     @GetRepository(AdminActivityLogEntity)
