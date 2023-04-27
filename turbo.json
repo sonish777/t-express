@@ -1,15 +1,9 @@
 {
     "pipeline": {
-        "docz:dev": {
-            "cache": false,
-            "persistent": true
-        },
         "dev": {
             "cache": false,
             "persistent": true
         },
-        "docz:deploy": { "cache": false },
-        "docz:build": { "cache": true },
         "build": {
             "dependsOn": ["^build"],
             "outputs": ["dist/**"]

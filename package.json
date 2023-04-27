@@ -32,9 +32,7 @@
         "seeder:run": "npm run typeorm migration:run -- -d ./packages/shared/src/data-sources/seeder.data-source.ts",
         "migration:rollback": "npm run typeorm migration:revert -- -d ./packages/shared/src/data-sources/migration.data-source.ts",
         "seeder:rollback": "npm run typeorm migration:revert -- -d ./packages/shared/src/data-sources/seeder.data-source.ts",
-        "test:e2e:api": "cross-env NODE_ENV=test jest --config ./test/api/e2e/jest-e2e.json --runInBand --detectOpenHandles --verbose --forceExit",
-        "docz:dev": "turbo run docz:dev --filter=docs",
-        "docz:deploy": "turbo run docz:deploy --filter=docs"
+        "test:e2e:api": "cross-env NODE_ENV=test jest --config ./test/api/e2e/jest-e2e.json --runInBand --detectOpenHandles --verbose --forceExit"
     },
     "repository": {
         "type": "git",

@@ -13,5 +13,8 @@ logs
 !**/public/uploads
 !**/public/uploads/logo
 !**/public/uploads/logo/logo.png
+!**/public/uploads
+!**/public/uploads/admins
+!**/public/uploads/admins/default.jpg
 
 .turbo
