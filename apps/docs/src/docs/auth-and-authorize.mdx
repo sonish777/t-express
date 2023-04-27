@@ -1,0 +1,110 @@
+---
+name: Authentication and Authorization
+menu: Docs
+route: /auth-and-authotize
+---
+
+# Authentication and Authorization
+
+Texpress comes with built-in authentication and authorization features. For authentication, you may use the `ProtectedRoute` for CMS or the `APIProtectedRoute` decorator for APIs for creating protected routes.
+
+## Protected Routes
+
+The CMS's `ProtectedRoute` decorator uses the Passport's `Local Strategy` by storing sessions on redis to authenticate the users. You may swap this part with your own authentication logic as required. To swap this, you can change the logic of the `auth` shared middleware being used by the `ProtectedRoute` decorator.
+
+```typescript
+import { Controller, ProtectedRoute } from 'core/controllers';
+
+@Controller('/my-resource')
+export class MyResourceController {
+    @ProtectedRoute({
+        // Registers a protected route in CMS
+        path: '/',
+        method: HTTPMethods.Get,
+    })
+    @CatchAsync
+    async getMyProtectedResouces(req: Request, res: Response) {
+        // handle GET
+    }
+}
+```
+
+Above example registers a protected route `GET /my-resource` which throws an `Unauthorized Exception` if the user is not logged in.  
+Similar to this, the `APIProtectedRoute` uses Passport's `JWT Strategy` to authenticate the user. Again, if you need, you may swap this part with your own authentication logic as required. To swap this, you can change the logic of the `jwtAuth` shared middleware being used by the `APIProtectedRoute` decorator.
+
+```typescript
+import { ApiController, APIProtectedRoute } from 'core/controllers';
+
+@ApiController('/my-resource')
+export class ApiResourceController {
+    @APIProtectedRoute({
+        // Registers a protected route for API
+        path: '/',
+        method: HTTPMethods.Get,
+    })
+    async getMyProtectedResouces(req: Request, res: Response) {
+        // handle GET
+    }
+}
+```
+
+## Authorization
+
+The authorization features helps you manage permissions in the `CMS` application. The authorization features uses the `users`, `roles`, `permissions` entities to handle the permissions. Authorization can be done in two ways, action based or route based.
+
+### Users, Roles, and Permissions
+
+Permissions in the CMS are synced to the database from the `cms.config.ts` file in the `texpress-cms/src/configs` application directory. The permissions from this file are synced to the database when you first run the seeders when setting up `texpress`. Along with the permissions, a user with the role of `'super-admin'` is also created. The `'super-admin'` role always has all the permissions allowed by default. Next time you add new modules, and their permissions to the CMS config file, you can resync these permissions with the database by clicking on the `Sync Permissions` button in the CMS application's Permissions page.
+
+### Action Based Authorization
+
+The action based authorization simply works by checking if the specified action is in the allowed permissions list of the currently authenticated user. These actions are checked against the `action` values stored in the `permissions` table. To use this, add the `canAccess` middleware whilst registering routes.
+
+```typescript
+import { canAccess } from 'shared/middlewares';
+
+@Controller('/my-resource')
+export class ApiResourceController {
+    @ProtectedRoute({
+        path: '/',
+        method: HTTPMethods.Get,
+        middlewares: [canAccess('my-resource.view')], // check if 'my-resource.view' permission is allowed the user
+    })
+    async getMyProtectedResouces(req: Request, res: Response) {
+        // handle GET
+    }
+}
+```
+
+Above example checks if the logged in user is allowed to perform the action `'my-resource.view'`. If not, a `Forbidden Exception` will be thrown.
+
+### Route Based Authorization
+
+The route based authorization checks if the users permission list is allowed to access both the `route` as well as the `HTTP method`. To add route based authorization, add the `@CanAccess` decorator to the controller class.  
+**Note: For now, using `@CanAccess` decorator will authorize all the routes registered in the controller.**
+
+```typescript
+import { Controller, ProtectedRoute, CanAccess } from 'core/controllers';
+
+@Controller('/my-resource')
+@CanAccess
+export class ApiResourceController {
+    @ProtectedRoute({
+        path: '/',
+        method: HTTPMethods.Get,
+    })
+    async getMyProtectedResouces(req: Request, res: Response) {
+        // handle GET
+    }
+
+    @ProtectedRoute({
+        path: '/',
+        method: HTTPMethods.Post,
+    })
+    async createMyProtectedResouces(req: Request, res: Response) {
+        // handle POST
+    }
+}
+```
+
+In above example, since the `@CanAccess` decorator has been used, accessing any of the routes `GET /my-resource` or `POST /my-resource`, the permissions will be checked against the permissions list of the logged in user. For example, when a logged in user tries to access `GET /my-resource`, a check will be made if the user has permission to perform `GET` method on the route `/my-resource`. If not, a `Forbidden Exception` will be thrown.

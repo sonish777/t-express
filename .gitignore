@@ -1,0 +1,17 @@
+node_modules
+dist
+.env
+logs
+**/config/*.json
+!**/config/*.example.json
+
+**/public/**
+!**/public/theme
+!**/blic/theme/**
+!**/public/backend
+!**/public/backend/**
+!**/public/uploads
+!**/public/uploads/logo
+!**/public/uploads/logo/logo.png
+
+.turbo

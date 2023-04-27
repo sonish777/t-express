@@ -1,0 +1,39 @@
+{
+    "name": "texpress",
+    "version": "1.0.0",
+    "description": "TExpress is a base project setup for using ExpressJS with Typescript",
+    "private": true,
+    "workspaces": [
+        "apps/*"
+    ],
+    "scripts": {
+        "prettier:check": "prettier --check .",
+        "prettier:write": "prettier --write .",
+        "lint": "turbo run lint --concurrency=1 --continue --",
+        "lint:fix": "turbo run lint:fix",
+        "prepare": "husky install",
+        "precommit": "npm run lint && lint-staged",
+        "clean": "turbo run clean",
+        "dev": "turbo run docz:dev --filter=docs",
+        "deploy": "turbo run docz:deploy --filter=docs"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/sonish777/t-express.git"
+    },
+    "author": "Sonish Maharjan",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/sonish777/t-express/issues"
+    },
+    "homepage": "https://sonish777.github.io/t-express",
+    "dependencies": {},
+    "devDependencies": {
+        "@commitlint/cli": "^17.6.1",
+        "@commitlint/config-conventional": "^17.6.1",
+        "cross-env": "^7.0.3",
+        "husky": "^8.0.3",
+        "lint-staged": "^13.2.2",
+        "typescript": "^5.0.4"
+    }
+}

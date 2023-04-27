@@ -1,0 +1,13 @@
+{
+    "pipeline": {
+        "docz:dev": {
+            "cache": false,
+            "persistent": true
+        },
+        "docz:deploy": { "cache": false },
+        "docz:build": { "cache": true },
+        "lint": { "cache": true },
+        "lint:fix": { "cache": true },
+        "clean": { "cache": false }
+    }
+}
