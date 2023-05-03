@@ -1,0 +1,329 @@
+---
+name: Swagger Documentation
+menu: Docs
+route: /swagger-doc
+---
+
+# Swagger Documentation
+
+Texpress comes with built-in provider and decorators to help you genereate OpenAPI specification swagger documentation for your APIs. To add swagger documentation, use the `SwaggerDocProvider` when starting up the API server.
+
+## Setting up Swagger Documentation
+
+Pass the `SwaggerDocProvider` provider imported from `core` package to your providers list during the API server startup. Proivde the middleware by passing the necessary options from `SwaggerDocProviderProps`.
+
+```typescript
+import { SwaggerDocProvider, SwaggerDocProviderProps } from 'core/swagger';
+import * as controllers from '@api/controllers';
+
+export function bootstrap() {
+    const server = new Server(controllers);
+    return server.startup(Number(ServerConfig.PORT), {
+        name: 'API Server',
+        middlewareProviders: [
+            // other providers
+            provideMiddleware<SwaggerDocProviderProps>(SwaggerDocProvider, {
+                title: 'Texpress API Documentation',
+                apiPaths: [__dirname + '/controllers/**/*.ts'],
+                servers: [{ url: `${ServerConfig.URL}/api/v1` }],
+                authSchemes: ['BearerAuth'],
+                controllers,
+            }),
+        ],
+    });
+}
+```
+
+The `SwaggerDocProviderProps` takes the following properties:
+
+-   title (required): The title of your API documentation.
+-   version (optional): The version of your API.
+-   apiPaths (required): An array of paths to your API controllers. This is used by Swagger to generate documentation for your API.
+-   servers (required): An array of server objects. Each object should contain a url property, which represents the base URL of your API.
+-   authSchemes (optional): An array of authentication schemes used by your API. Swagger supports several authentication schemes, such as BasicAuth and BearerAuth.
+-   apiKeyConfig (optional): An object that specifies the configuration for an API key. This is used for API key authentication.
+-   controllers (optional): An object that contains the controllers used by your API.
+
+## Defining Routes and Methods
+
+Routes and Methods are automatically defined when using the `ApiController` and `Route` decorators.
+
+## Grouping Operations
+
+You can group APIs by using the `@ApiTag` decorator which takes the name of the group as the first argument.
+
+```typescript
+@ApiController('/users')
+@ApiTag('Users') // All APIs under this controller are grouped into `Users`
+export class ApiUserController extends APIBaseController {}
+```
+
+## Defining Metadatas
+
+You can use the `@ApiMetadata` decorator to define metadatas for the APIs. It takes an `ApiMetadataProps` option argument which takes the following properties.
+
+-   description: a string that provides a brief description of the API method. This description can be used to help users understand what the method does.
+
+-   summary: a string that provides a summary of the API method. This summary can be used to provide a concise description of the method.
+
+-   consumes: an array of strings that specifies the media types that are consumed by the API method. This property can be used to provide information about the request body of the API method.
+
+```typescript
+import { ApiMetadata } from 'core/swagger';
+
+@ApiController('/users')
+@ApiTag('Users')
+export class ApiUserController extends APIBaseController {
+    @Route({ method: HTTPMethods.Get, path: '/' })
+    @ApiMetadata({
+        description: 'Get all the users list',
+        summary: 'Returns users',
+        consumes: ['application/json'],
+    })
+    @CatchAsync
+    async findAll(req: Request, res: Response) {
+        // fetch and return users
+    }
+}
+```
+
+## Defining API Parameters
+
+You can use the `@ApiParameter` decorator to define API parameters i.e. path parameters or query parameters. It takes an `ApiParametersProps` option paramter which takes the following properties.
+
+-   in: a string that specifies the location of the parameter. It can have one of two values: 'path' or 'query'. If the value is 'path', the parameter is extracted from the URL path. If the value is 'query', the parameter is extracted from the query string.
+
+-   schema: an array of object that specifies the schema of the parameter. The schema object has a name and type property.
+
+-   description: an optional string that provides a brief description of the parameter.
+
+```typescript
+import { ApiMetadata } from 'core/swagger';
+
+@ApiController('/users')
+@ApiTag('Users')
+export class ApiUserController extends APIBaseController {
+    @Route({ method: HTTPMethods.Get, path: '/' })
+    @ApiParameter({
+        in: 'query',
+        schema: [
+            {
+                name: 'keywords',
+                type: 'string',
+                required: false,
+            },
+            {
+                name: 'page',
+                type: 'number',
+                required: false,
+            },
+            {
+                name: 'limit',
+                type: 'number',
+                required: false,
+            },
+        ],
+    })
+    @CatchAsync
+    async findAll(req: Request, res: Response) {
+        // fetch and return users
+    }
+}
+```
+
+In above example, the `/users` API takes 3 optional query parameters, `keywords` of type string and `page` and `limit` of type numbers which are usually used for generating paginated responses.
+
+## Defining Schemas
+
+Instead of passing each of the schema properties in an `@ApiParameter` decorator directly, a better way is to defines these schemas separately using the `@Schema` and `@SchemaProperty` decorators. Then use this `schema` on the ApiParameter decorator.
+
+```typescript
+import { Schema, SchemaProperty } from 'core/swagger';
+
+@Schema()
+export class CommonSearchQueryDto implements CommonSearchQuery {
+    @SchemaProperty({
+        type: 'string',
+    })
+    keywords?: string;
+
+    @SchemaProperty({
+        type: 'number',
+        example: '1',
+    })
+    page?: number;
+
+    @SchemaProperty({
+        type: 'number',
+        example: '25',
+    })
+    take?: number;
+}
+```
+
+After defining the schema, simply import and pass the schema when defining the parameters with `ApiParameter`.
+
+```typescript
+import { ApiMetadata } from 'core/swagger';
+
+@ApiController('/users')
+@ApiTag('Users')
+export class ApiUserController extends APIBaseController {
+    @Route({ method: HTTPMethods.Get, path: '/' })
+    @ApiParameter({ in: 'query', schema: CommonSearchQueryDto }) //import and use the Schema defined above
+    @CatchAsync
+    async findAll(req: Request, res: Response) {
+        // fetch and return users
+    }
+}
+```
+
+## Defining API Body
+
+You can use the `@ApiBody` decorator to define body of the request. It takes an `ApiBodyProps` option paramter which takes the following properties.
+
+-   contentType: a string that specifies the MIME type of the request body. The supported values are 'application/json' and 'multipart/form-data'. The default value is 'application/json'.
+
+-   schema: a schema class decorated with the `@Schema` decorator as described above.
+
+-   required: an optional boolean property that specifies whether the request body is required or not.
+
+```typescript
+@Schema()
+export class CreateUserDto {
+    @SchemaProperty({
+        type: 'string',
+    })
+    email: string;
+
+    @SchemaProperty({
+        type: 'string',
+    })
+    password: string;
+}
+```
+
+Then, we can define the API body as follows:
+
+```typescript
+import { ApiBody } from 'core/swagger';
+
+@ApiController('/users')
+@ApiTag('Users')
+export class ApiUserController extends APIBaseController {
+    @APIProtectedRoute({
+        method: HTTPMethods.Post,
+        path: '/',
+    })
+    @ApiBody({
+        schema: CreateUserDto,
+    })
+    async create(req: TypedBody<CreateUserDto>, res: Response) {
+        // create user
+    }
+}
+```
+
+## Defining API Responses
+
+You can use the `@ApiResponse` decorator to define the response of an API. It takes an `ApiResponseProps` option paramter which takes the following properties.
+
+-   code: This property is an optional string that specifies the HTTP status code of the response. If not specified, the default value is '200'.
+
+-   description: This property is an optional string that describes the response.
+
+-   contentType: This property is an optional string that specifies the MIME type of the response body. The supported values are 'application/json', 'text/plain', 'application/pdf', etc. The default value is 'application/json'.
+
+-   schema: This property takes the `@Schema` decorated classes that represent the body of the response. If you donot have a separate schema class, you may also define the schema properties using the OpenAPI's specification
+
+```typescript
+import { ApiResponse } from 'core/swagger';
+
+@Schema()
+export class Tokens {
+    @SchemaProperty({ type: 'string' })
+    accessToken: string;
+
+    @SchemaProperty({ type: 'string' })
+    refreshToken: string;
+}
+
+@ApiController('/users')
+@ApiTag('Users')
+export class ApiUserController extends APIBaseController {
+    @Route({ method: HTTPMethods.Post, path: '/login' })
+    @ApiBody({ schema: LoginDto })
+    @ApiResponse({ schema: Tokens })
+    async login(req: Request) {
+        // user login
+    }
+}
+```
+
+Or without a schema class, using OpenAPI 3's specifications,
+
+```typescript
+import { ApiResponse } from 'core/swagger';
+
+@ApiController('/users')
+@ApiTag('Users')
+export class ApiUserController extends APIBaseController {
+    @Route({ method: HTTPMethods.Post, path: '/login' })
+    @ApiBody({ schema: LoginDto })
+    @ApiResponse({
+        code: '200',
+        contentType: 'application/json',
+        schema: {
+            type: 'object',
+            properties: {
+                accessToken: {
+                    type: 'string',
+                    description: 'Access Token of logged in user',
+                },
+                refreshToken: {
+                    type: 'string',
+                    description:
+                        'Refresh Token for refreshing expired access token',
+                },
+            },
+        },
+    })
+    async login(req: Request) {
+        // user login
+    }
+}
+```
+
+For more details on the schema properties, please refer to the OpenAPI Specification of Swagger.
+
+## Authentication
+
+You can add `BearerAuth` and/or `ApiKeyAuth` authentication schemes using Texpress. To add auth schemes, first register the schemes when registering the `SwaggerDocProvider`. This is shown in the first section `Setting up Swagger Documentation`. Then you can use the `@ApiBearerAuth` or `@ApiKeyAuth` to add authentication to the routes.
+
+```typescript
+import { ApiBody, ApiBearerAuth } from 'core/swagger';
+
+@ApiController('/users')
+@ApiTag('Users')
+export class ApiUserController extends APIBaseController {
+    @APIProtectedRoute({ method: HTTPMethods.Post, path: '/' })
+    @ApiBearerAuth() // pass bearer auth token to the request
+    @ApiBody({ schema: CreateUserDto })
+    async create(req: Request, res: Response) {
+        // create user
+    }
+}
+```
+
+Similarly, you can use `@ApiKeyAuth` decorator to add API key authentication to the routes. With ApiKeyAuth, you can also use the decorator at controller class level if you need to add api key authentication to all the routes within the controller. To do so, pass the first argument of root as `true`.
+
+```typescript
+import { ApiBody, ApiKeyAuth } from 'core/swagger';
+
+@ApiController('/users')
+@ApiKeyAuth(true) // Adds API key authentication to all the routes
+@ApiTag('Users')
+export class ApiUserController extends APIBaseController {
+    // register routes
+}
+```
