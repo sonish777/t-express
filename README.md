@@ -39,7 +39,9 @@ yarn install
 
 > Texpress uses [config](https://www.npmjs.com/package/config) package for managing configurations
 
+
 4. Create env file `'.env'` and copy the contents from `'.env.example'` to the new file in the project root directory.
+
 
 5. Run migrations
 
@@ -87,6 +89,7 @@ Once you have started the development server, you can access the built-in apps a
     -   **Username:** admin@texpress.com
     -   **Password:** Test@1234
 -   API: [http://localhost:8001/api-docs](http://localhost:8001/api-docs)
+-   Consumer: [http://localhost:9999/healthz](http://localhost:9999/healthz)
 
 You can customize the apps and add your own functionality by editing the code in the `'apps'` and `'packages'` directory.
 
