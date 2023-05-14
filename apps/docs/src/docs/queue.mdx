@@ -6,4 +6,7 @@ route: /queues
 
 # Queues
 
-Texpress uses RabbitMQ under the hood to manage queues and message passing. RabbitMQService comes as a seprate shared package in texpress. The service is responsible for handling connections to the RabbitMQ server. There are two parts to the RabbitMQ Service, a `Publisher` and a `Consumer`.
+Texpress uses RabbitMQ under the hood to manage queues and message passing. RabbitMQService comes as a seprate shared package in texpress. The service is responsible for handling connections to the RabbitMQ server. There are two parts to the RabbitMQ Service, a `Publisher` and a `Consumer`.  
+
+While the `Publisher` is just an injectable service that you can inject to publish messages. The `Consumer` is a separate application that serves independently. Once you serve your consumer application, you can check its status by going to the URL:
+`http://localhost:9999/healthz`. You may replace the PORT with the one you've set in the config file.
