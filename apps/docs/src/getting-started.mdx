@@ -40,7 +40,9 @@ yarn install
 
 > Texpress uses [config](https://www.npmjs.com/package/config) package for managing configurations
 
+
 4. Create env file `'.env'` and copy the contents from `'.env.example'` to the new file in the project root directory.
+
 
 5. Run migrations
 
@@ -60,7 +62,18 @@ yarn seeder:run
 
 ```
 
-7. Start the development server
+7. Compile the Javascript files for the CMS application
+
+```bash
+
+yarn build:js
+
+```
+
+> Note: Use `yarn watch:js` to compile in watch mode.
+
+
+8. Start the development server
 
 ```bash
 
