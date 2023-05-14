@@ -35,11 +35,13 @@ yarn install
 
 ```
 
-3. Create configuration file `'default.json'` and copy the contents from `'default.example.json'` to the new file.
+3. Create configuration file `'default.json'` and copy the contents from `'default.example.json'` to the new file (inside `config` directory).
 
 > Texpress uses [config](https://www.npmjs.com/package/config) package for managing configurations
 
-4. Run migrations
+4. Create env file `'.env'` and copy the contents from `'.env.example'` to the new file in the project root directory.
+
+5. Run migrations
 
 > Note: Create a database named **`texpress`** (or the database name you have in previously created config file) in PostgreSQL.
 
@@ -49,7 +51,7 @@ yarn migration:run
 
 ```
 
-5. Run Seeder
+6. Run Seeder
 
 ```bash
 
@@ -57,7 +59,7 @@ yarn seeder:run
 
 ```
 
-6. Start the development server
+7. Start the development server
 
 ```bash
 
