@@ -9,3 +9,19 @@ route: /bundling-js-cms
 Texpress comes with `esbuild` setup configured for bundling CSS and Javascript files. The setup that comes with texpress is configured to watch the `resources` directory. From the resources directory, the single entry point to all Javascript files `resources/js/index.js` is minified, bundled and output to the `public/assets` directory. The same goes for CSS files with the directory `resources/css/index.css`.
 
 To change the directories and other configurations, make changes to the `esbuild.config.js` file.
+
+## To Build Javascript Files
+
+```bash
+
+yarn build:js
+
+```
+
+## To Build With Watch Mode for Development
+
+```bash
+
+yarn watch:js
+
+```
