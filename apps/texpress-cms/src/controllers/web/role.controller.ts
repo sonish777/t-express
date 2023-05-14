@@ -9,6 +9,7 @@ import { RoleEntity } from 'shared/entities';
 import { CreateRoleValidator } from 'shared/validators';
 import { CreateRole } from 'shared/dtos';
 import { Publisher } from 'rabbitmq';
+import { NotFoundException } from 'shared/exceptions';
 
 @Controller('/roles')
 @CanAccess
@@ -70,6 +71,9 @@ export class RoleController extends ResourceControllerFactory<
         ]);
         const permissions = await this.service.getModulePermissions();
         const role = await this.service.findOne({ id }, ['permissions']);
+        if (!role || role.slug === 'super-admin') {
+            throw new NotFoundException('Role not found');
+        }
         this.render(res, {
             role: { ...role, permissions: role?.permissions?.map((p) => p.id) },
             permissions,

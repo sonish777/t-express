@@ -2,6 +2,7 @@ node_modules
 dist
 .env
 logs
+yarn-error.log
 **/config/*.json
 !**/config/*.example.json
 

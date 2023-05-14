@@ -10,10 +10,10 @@
     <td>
         <div class="btn-group">
             <div class=" py-0">
-                <% if(hasPermission(loggedInUser, 'roles:edit')) { %>
+                <% if(hasPermission(loggedInUser, 'roles:edit') && role?.slug !== 'super-admin') { %>
                     <a class="btn btn-sm btn-primary" href="/roles/<%= get(role?.id) %>">Edit</a>
                 <% } %>
-                <% if(hasPermission(loggedInUser, 'roles:delete')) { %>
+                <% if(hasPermission(loggedInUser, 'roles:delete') && role?.slug !== 'super-admin') { %>
                     <%- include('../../common/delete-modal', {
                         modalId: `deleteRole_${get(role?.id)}`,
                         title: 'Delete Role',

@@ -5,7 +5,9 @@ import { QueueConfig } from 'shared/configs';
 import { AdminActivityLogEntity } from 'shared/entities';
 import { Repository } from 'typeorm';
 import { Log } from '../../logger';
+import { Service } from 'typedi';
 
+@Service()
 export class ActivityLogConsumer extends Consumer {
     @GetRepository(AdminActivityLogEntity)
     private readonly activityLogRepository: Repository<AdminActivityLogEntity>;

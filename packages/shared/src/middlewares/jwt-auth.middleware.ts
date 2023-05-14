@@ -3,7 +3,7 @@ import passport from 'passport';
 import { UnauthorizedException } from '../exceptions';
 
 export const jwtAuth = (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate('jwt', { session: false }, (err, user) => {
+    passport.authenticate('jwt', { session: false }, (err: any, user: any) => {
         if (err || !user) {
             return next(new UnauthorizedException());
         }

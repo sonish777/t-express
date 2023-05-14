@@ -1,6 +1,6 @@
 import { ConsumeMessage } from 'amqplib';
 import { GetRepository } from 'core/entities';
-import { readFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { Consume, Consumer } from 'rabbitmq';
 import { QueueConfig } from 'shared/configs';
@@ -8,7 +8,9 @@ import { UserEntity } from 'shared/entities';
 import sharp from 'sharp';
 import { Repository } from 'typeorm';
 import { Log } from '../../logger';
+import { Service } from 'typedi';
 
+@Service()
 export class ThumbnailGenerator extends Consumer {
     @GetRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>;
@@ -30,10 +32,17 @@ export class ThumbnailGenerator extends Consumer {
                 const [uploadColumn, thumbnailColumn] = mapper;
                 if (payload.uploadedFiles[uploadColumn]) {
                     const file = payload.uploadedFiles[uploadColumn][0];
-                    const fileContent = readFileSync(
-                        path.join(__dirname, '../../../texpress-cms', file.path)
-                    );
+                    const fileContent = readFileSync(path.join(file.path));
                     const thumbnailName = `thumb_${file.filename}`;
+                    const destPath = path.join(
+                        __dirname,
+                        '../../../../texpress-cms/public/uploads',
+                        payload.module,
+                        'thumbnails'
+                    );
+                    if (!existsSync(destPath)) {
+                        mkdirSync(destPath);
+                    }
                     sharp(fileContent)
                         .resize(200, 200)
                         .toFormat('jpeg')
@@ -41,14 +50,16 @@ export class ThumbnailGenerator extends Consumer {
                         .toFile(
                             path.join(
                                 __dirname,
-                                '../../../texpress-cms/public/uploads',
+                                '../../../../texpress-cms/public/uploads',
                                 payload.module,
                                 'thumbnails',
                                 thumbnailName
                             )
                         )
                         // .then((result) => this.logger.log('Thumbnail Generated', result))
-                        .catch(this.logger.error);
+                        .catch((err) => {
+                            this.logger.error(err);
+                        });
 
                     const user = await this.userRepository.findOne({
                         where: {

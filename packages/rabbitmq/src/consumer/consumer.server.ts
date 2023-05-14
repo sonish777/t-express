@@ -2,6 +2,7 @@ import { Class, StartupOptions } from 'core/interfaces';
 import { Server } from 'core/server';
 import { ConsumersMetadataKeys } from 'core/utils';
 import { Consumer } from './consumer.base';
+import Container from 'typedi';
 
 export class ConsumerServer extends Server {
     constructor(
@@ -19,7 +20,7 @@ export class ConsumerServer extends Server {
             return;
         }
         Object.values(consumers).forEach(async (consumer) => {
-            const consumerInstance = await new consumer();
+            const consumerInstance = Container.get(consumer);
             const consumers =
                 Reflect.getMetadata(
                     ConsumersMetadataKeys.CONSUMERS,

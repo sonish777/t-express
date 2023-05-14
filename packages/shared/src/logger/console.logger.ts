@@ -3,7 +3,7 @@ import winston from 'winston';
 
 @Service()
 export class ConsoleLogger {
-    logger: winston.Logger;
+    public logger: winston.Logger;
     constructor() {
         this.logger = winston.createLogger({
             format: winston.format.simple(),

@@ -9,7 +9,10 @@
                     placeholder: "Name",
                     value: getEditFormData(locals.data?.role, "name", locals.inputData) ?? "", 
                     errorMessage: getErrorMessage(locals.mappedErrors, 'name'),
-                    options: ["required"]
+                    options: [
+                        "required",
+                        get(locals.data?.role?.slug) === 'super-admin' ? 'disabled': ''
+                    ]
                 }) %>
             </div>
             <div class="col-md-6 mb-3">
@@ -53,7 +56,8 @@
                                     ?.map(p => Number(p))
                                     .indexOf((p.id)) >= 0 
                                         ? 'checked'
-                                        : ''
+                                        : '',
+                                    get(locals.data?.role?.slug) === 'super-admin' ? 'disabled': ''
                                 ]
                             }) %>
                         <% } %>
@@ -62,7 +66,9 @@
             </div>
         </div>
         <div class="mt-3">
-            <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save all</button>
+            <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit"
+                <%= get(locals.data?.role?.slug) === 'super-admin' ? 'disabled': '' %>
+            >Save all</button>
         </div>
     </form>
 </div>
