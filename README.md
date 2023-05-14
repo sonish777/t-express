@@ -59,7 +59,18 @@ yarn seeder:run
 
 ```
 
-7. Start the development server
+7. Compile the Javascript files for the CMS application
+
+```bash
+
+yarn build:js
+
+```
+
+> Note: Use `yarn watch:js` to compile in watch mode.
+
+
+8. Start the development server
 
 ```bash
 
